@@ -56,7 +56,6 @@
             transition: width 0.2s;
         }
 
-        /* প্রিমিয়াম কয়েন বক্স ডিজাইন */
         .coin-box {
             width: 170px;
             height: 170px;
@@ -124,7 +123,7 @@
 <body>
 
     <div class="header">
-        <div class="user-name" id="username">স্বাগতম, Error! 🚀</div>
+        <div class="user-name" id="username">স্বাগতম, গেমার! 🚀</div>
         <div style="font-size: 11px; color: #aaa;">CryptoTap X - Pro</div>
     </div>
 
@@ -133,9 +132,9 @@
             <h2 id="score">0</h2>
         </div>
         
-        <!-- এখানে আপনার আপলোড করা কয়েনের ছবি যুক্ত করা হলো -->
+        <!-- এখানে আপনার ছবির আসল ফাইলের নাম বসানো হয়েছে -->
         <div class="coin-box" onclick="tapCoin(event)">
-            <img src="coin.png" alt="Crypto Coin">
+            <img src="183263530_1786007231822439.jpg" alt="Crypto Coin">
         </div>
 
         <div style="font-size: 12px; color: #ccc; margin-top: 5px;">
@@ -161,7 +160,7 @@
         let tg = window.Telegram.WebApp;
         try {
             tg.expand();
-            let userName = "Error";
+            let userName = "গেমার";
             if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.first_name) {
                 userName = tg.initDataUnsafe.user.first_name;
             }
