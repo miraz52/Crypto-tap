@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CryptoTap X - Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CryptoTap X - Elite Web3</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * { 
@@ -15,11 +15,11 @@
             user-select: none; 
         }
         body {
-            background: linear-gradient(135deg, #0f172a, #1e1b4b);
+            background: radial-gradient(circle at center, #0f172a 0%, #030712 100%);
             color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             text-align: center;
-            padding: 15px;
+            padding: 12px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -27,145 +27,202 @@
             align-items: center;
             overflow-x: hidden;
         }
+
+        /* Elite Header */
         .header {
             width: 100%;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px;
-            border-radius: 15px;
+            max-width: 400px;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            padding: 12px 18px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
-        .user-name { font-size: 15px; font-weight: bold; color: #f39c12; }
-        .score-container { margin: 5px 0; }
-        #score { font-size: 45px; font-weight: bold; color: #f39c12; text-shadow: 0 0 20px rgba(243, 156, 18, 0.5); }
+        .user-name { font-size: 15px; font-weight: 700; color: #fbbf24; letter-spacing: 0.5px; }
         
+        /* Score Display */
+        .score-container { margin: 10px 0; }
+        #score { 
+            font-size: 50px; 
+            font-weight: 900; 
+            background: linear-gradient(180deg, #ffffff 15%, #fbbf24 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(251, 191, 36, 0.4);
+            letter-spacing: 1px;
+        }
+
+        /* Energy Section */
+        .energy-wrapper {
+            width: 100%;
+            max-width: 320px;
+            margin: 8px auto;
+        }
+        .energy-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
         .energy-box {
             width: 100%;
-            max-width: 300px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
             overflow: hidden;
-            height: 14px;
-            margin: 8px auto;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            height: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
         }
         #energyBar {
             height: 100%;
-            background: linear-gradient(90deg, #f39c12, #e67e22);
+            background: linear-gradient(90deg, #d97706, #fbbf24);
             width: 100%;
-            transition: width 0.2s;
+            border-radius: 20px;
+            transition: width 0.15s ease-out;
+            box-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
         }
 
+        /* Ultra Professional 3D Coin */
+        .coin-wrapper {
+            position: relative;
+            margin: 15px auto;
+        }
         .coin-box {
-            width: 170px;
-            height: 170px;
-            background: radial-gradient(circle at 35% 35%, #ffe600, #ff8c00, #965100);
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle at 35% 35%, #fde047 0%, #ca8a04 55%, #78350f 100%);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 15px auto;
             cursor: pointer;
-            transition: transform 0.08s ease;
+            transition: transform 0.06s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             outline: none;
-            border: 5px solid #fffae6;
-            box-shadow: 0 0 35px rgba(255, 215, 0, 0.5), inset 0 0 25px rgba(255, 255, 255, 0.6);
-            font-size: 70px;
-            font-weight: bold;
+            border: 5px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 50px rgba(234, 179, 8, 0.45), 
+                        inset 0 0 30px rgba(255, 255, 255, 0.7),
+                        0 15px 35px rgba(0, 0, 0, 0.6);
+            font-size: 80px;
+            font-weight: 900;
             color: #ffffff;
-            text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+            text-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
         }
-        .coin-box:active { transform: scale(0.92); }
+        .coin-box:active { 
+            transform: scale(0.91); 
+            box-shadow: 0 0 30px rgba(234, 179, 8, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.5);
+        }
 
+        /* Game Menu Grid */
         .menu-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
             width: 100%;
-            max-width: 350px;
+            max-width: 360px;
             margin-top: 10px;
         }
         .btn-feature {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 10px;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 10px;
             color: #fff;
             font-size: 13px;
-            font-weight: bold;
-            border-radius: 10px;
+            font-weight: 600;
+            border-radius: 14px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s ease;
             outline: none;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
         }
-        .btn-feature:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.2); }
+        .btn-feature:active { transform: scale(0.96); background: rgba(30, 41, 59, 0.8); }
         
+        /* Full Boost Button */
         .btn-boost-full {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
+            background: linear-gradient(135deg, #f59e0b, #b45309);
             border: none;
-            padding: 12px;
-            color: #000;
-            font-weight: bold;
+            padding: 14px;
+            color: #030712;
+            font-weight: 800;
             font-size: 15px;
-            border-radius: 10px;
+            border-radius: 14px;
             cursor: pointer;
             width: 100%;
-            max-width: 350px;
-            margin-top: 8px;
-            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+            max-width: 360px;
+            margin-top: 10px;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
             outline: none;
+            transition: transform 0.1s;
         }
         .btn-boost-full:active { transform: scale(0.97); }
 
-        /* প্রফেশনাল টাস্ক মোডাল ডিজাইন */
+        /* Professional Modal */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(3, 7, 18, 0.88);
+            backdrop-filter: blur(10px);
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            padding: 15px;
         }
         .modal-content {
-            background: #1e1b4b;
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 15px;
-            border-radius: 15px;
-            width: 92%;
+            background: linear-gradient(145deg, #0f172a, #090d16);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 22px;
+            border-radius: 20px;
+            width: 100%;
             max-width: 350px;
             max-height: 85vh;
             overflow-y: auto;
             text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+        }
+        .modal-content h3 {
+            font-size: 20px;
+            color: #fbbf24;
+            margin-bottom: 6px;
+            font-weight: 800;
         }
         .task-item {
-            background: rgba(255,255,255,0.08);
-            padding: 10px;
-            border-radius: 10px;
-            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 12px 14px;
+            border-radius: 14px;
+            margin: 10px 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 12px;
+            font-size: 13px;
             text-align: left;
+            font-weight: 500;
         }
         .btn-task-claim {
-            background: #2ecc71;
+            background: linear-gradient(135deg, #10b981, #047857);
             border: none;
-            padding: 6px 10px;
+            padding: 8px 14px;
             color: #fff;
-            border-radius: 6px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: bold;
-            font-size: 11px;
+            font-weight: 700;
+            font-size: 12px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
             white-space: nowrap;
         }
+        .btn-task-claim:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div class="user-name" id="username">স্বাগতম, গেমার! 🚀</div>
-        <div style="font-size: 11px; color: #aaa;">CryptoTap X - Pro</div>
+        <div class="user-name" id="username">Welcome, Gamer! 🚀</div>
+        <div style="font-size: 11px; color: #64748b; margin-top: 2px; letter-spacing: 1px;">CRYPTOTAP X • ELITE</div>
     </div>
 
     <div>
@@ -173,61 +230,61 @@
             <h2 id="score">0</h2>
         </div>
         
-        <div class="coin-box" onclick="tapCoin(event)">
-            X
+        <div class="coin-wrapper">
+            <div class="coin-box" onclick="tapCoin(event)">
+                X
+            </div>
         </div>
 
-        <div style="font-size: 12px; color: #ccc; margin-top: 5px;">
-            ⚡ এনার্জি: <span id="energyText">1000/1000</span>
-        </div>
-        <div class="energy-box">
-            <div id="energyBar"></div>
+        <div class="energy-wrapper">
+            <div class="energy-info">
+                <span>⚡ Energy</span>
+                <span id="energyText">1000/1000</span>
+            </div>
+            <div class="energy-box">
+                <div id="energyBar"></div>
+            </div>
         </div>
     </div>
 
     <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="menu-grid">
-            <button class="btn-feature" onclick="upgradeTap()">🛠️ পাওয়ার আপ (+১)<br><span style="font-size:10px; color:#f39c12;" id="upgradeCost">৫০০ কয়েন</span></button>
-            <button class="btn-feature" onclick="openTasks()">📋 টাস্ক সেন্টার<br><span style="font-size:10px; color:#2ecc71;">ফ্রি কয়েন পান</span></button>
-            <button class="btn-feature" onclick="claimDaily()">🎁 ডেইলি বোনাস<br><span style="font-size:10px; color:#3498db;">প্রতিদিন ২০০ কয়েন</span></button>
-            <button class="btn-feature" onclick="inviteFriend()">👥 ইনভাইট ফ্রেন্ড<br><span style="font-size:10px; color:#e74c3c;">বোনাস পান</span></button>
+            <button class="btn-feature" onclick="upgradeTap()">🛠️ Tap Power (+1)<br><span style="font-size:11px; color:#fbbf24;" id="upgradeCost">500 Coins</span></button>
+            <button class="btn-feature" onclick="openTasks()">📋 Task Center<br><span style="font-size:11px; color:#34d399;">+3500 Rewards</span></button>
+            <button class="btn-feature" onclick="claimDaily()">🎁 Daily Bonus<br><span style="font-size:11px; color:#60a5fa;">Daily 200 Coins</span></button>
+            <button class="btn-feature" onclick="inviteFriend()">👥 Invite Friends<br><span style="font-size:11px; color:#f87171;">Earn Bonus</span></button>
         </div>
 
-        <button class="btn-boost-full" onclick="buyBoost()">⭐ বুস্টার কিনুন (Telegram Stars)</button>
+        <button class="btn-boost-full" onclick="buyBoost()">⭐ Buy Booster (Telegram Stars)</button>
     </div>
 
-    <!-- টাস্ক পপআপ উইন্ডো (আপডেট করা সোশ্যাল লিংকসহ) -->
+    <!-- Task Modal (3500 Coins Reward & Instagram Removed) -->
     <div id="taskModal" class="modal">
         <div class="modal-content">
-            <h3>📋 সোশ্যাল টাস্ক সেন্টার</h3>
-            <p style="font-size: 11px; color: #aaa; margin-bottom: 12px;">চ্যানেল ও পেজ ফলো করে রিওয়ার্ড নিন!</p>
+            <h3>📋 Task Center</h3>
+            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 15px;">Complete tasks and claim 3500 coins each!</p>
             
             <div class="task-item">
-                <span>📢 টেলিগ্রাম চ্যানেলে জয়েন<br><b style="color:#f39c12;">+1000 কয়েন</b></span>
-                <button class="btn-task-claim" onclick="completeTask('task_tg', 1000, 'https://t.me/Cryptotapxofficial')">শুরু</button>
+                <span>📢 Join Telegram Channel<br><b style="color:#fbbf24;">+3500 Coins</b></span>
+                <button class="btn-task-claim" onclick="completeTask('task_tg', 3500, 'https://t.me/Cryptotapxofficial')">Start</button>
             </div>
 
             <div class="task-item">
-                <span>📺 ইউটিউব সাবস্ক্রাইব<br><b style="color:#f39c12;">+1000 কয়েন</b></span>
-                <button class="btn-task-claim" onclick="completeTask('task_yt', 1000, 'https://www.youtube.com/@Cryptotap-X')">শুরু</button>
+                <span>📺 Subscribe YouTube<br><b style="color:#fbbf24;">+3500 Coins</b></span>
+                <button class="btn-task-claim" onclick="completeTask('task_yt', 3500, 'https://www.youtube.com/@Cryptotap-X')">Start</button>
             </div>
 
             <div class="task-item">
-                <span>🐦 টুইটার (X) ফলো<br><b style="color:#f39c12;">+500 কয়েন</b></span>
-                <button class="btn-task-claim" onclick="completeTask('task_tw', 500, 'https://x.com/Cryptotapx')">শুরু</button>
+                <span>🐦 Follow Twitter (X)<br><b style="color:#fbbf24;">+3500 Coins</b></span>
+                <button class="btn-task-claim" onclick="completeTask('task_tw', 3500, 'https://x.com/Cryptotapx')">Start</button>
             </div>
 
             <div class="task-item">
-                <span>👥 ফেসবুক পেজ ফলো<br><b style="color:#f39c12;">+500 কয়েন</b></span>
-                <button class="btn-task-claim" onclick="completeTask('task_fb', 500, 'https://facebook.com/Cryptotapx')">শুরু</button>
+                <span>👥 Follow Facebook Page<br><b style="color:#fbbf24;">+3500 Coins</b></span>
+                <button class="btn-task-claim" onclick="completeTask('task_fb', 3500, 'https://facebook.com/Cryptotapx')">Start</button>
             </div>
 
-            <div class="task-item">
-                <span>📸 ইনস্টাগ্রাম ফলো<br><b style="color:#f39c12;">+500 কয়েন</b></span>
-                <button class="btn-task-claim" onclick="completeTask('task_ig', 500, 'https://instagram.com/your_handle')">শুরু</button>
-            </div>
-
-            <button onclick="closeTasks()" style="margin-top: 12px; background: #e74c3c; border:none; padding:8px 20px; color:#fff; border-radius:8px; cursor:pointer; font-weight:bold;">বন্ধ করুন</button>
+            <button onclick="closeTasks()" style="margin-top: 15px; background: #ef4444; border:none; padding:10px 26px; color:#fff; border-radius:12px; cursor:pointer; font-weight:700; font-size:13px;">Close</button>
         </div>
     </div>
 
@@ -235,11 +292,11 @@
         let tg = window.Telegram.WebApp;
         try {
             tg.expand();
-            let userName = "গেমার";
+            let userName = "Gamer";
             if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.first_name) {
                 userName = tg.initDataUnsafe.user.first_name;
             }
-            document.getElementById('username').innerText = `স্বাগতম, ${userName}! 🚀`;
+            document.getElementById('username').innerText = `Welcome, ${userName}! 🚀`;
         } catch(e) {}
 
         let score = parseInt(localStorage.getItem('taps')) || 0;
@@ -260,7 +317,7 @@
             document.getElementById('score').innerText = score;
             document.getElementById('energyText').innerText = `${energy}/${maxEnergy}`;
             document.getElementById('energyBar').style.width = (energy / maxEnergy) * 100 + '%';
-            document.getElementById('upgradeCost').innerText = `${upgradeCost} কয়েন`;
+            document.getElementById('upgradeCost').innerText = `${upgradeCost} Coins`;
         }
 
         setInterval(() => {
@@ -305,7 +362,7 @@
                     }
                 } catch(e) {}
             } else {
-                alert("আপনার এনার্জি শেষ! কিছুক্ষণ অপেক্ষা করুন রিফিল হওয়ার জন্য।");
+                alert("Energy is empty! Please wait for it to refill.");
             }
         }
 
@@ -317,9 +374,9 @@
                 localStorage.setItem('tapPower', tapPower);
                 localStorage.setItem('upgradeCost', upgradeCost);
                 updateUI();
-                alert(`সফল! আপনার প্রতি ট্যাপ পাওয়ার এখন ${tapPower}`);
+                alert(`Success! Your tap power is now ${tapPower}`);
             } else {
-                alert("পর্যাপ্ত কয়েন নেই!");
+                alert("Not enough coins!");
             }
         }
 
@@ -334,7 +391,7 @@
         function completeTask(taskId, reward, link) {
             let completed = localStorage.getItem(taskId);
             if (completed) {
-                alert("আপনি এই টাস্কটি ইতিমধ্যেই সম্পন্ন করেছেন!");
+                alert("You have already completed this task!");
                 return;
             }
             
@@ -342,19 +399,19 @@
             score += reward;
             localStorage.setItem(taskId, 'true');
             updateUI();
-            alert(`অভিনন্দন! আপনি টাস্ক সম্পন্ন করে ${reward} কয়েন বোনাস পেয়েছেন! 🎉`);
+            alert(`Congratulations! You completed the task and received ${reward} bonus coins! 🎉`);
         }
 
         function claimDaily() {
             let lastClaim = localStorage.getItem('lastClaim') || 0;
             let today = new Date().toDateString();
             if (lastClaim === today) {
-                alert("আজকের ডেইলি বোনাস আপনি ইতিমধ্যে নিয়ে নিয়েছেন! কাল আবার চেষ্টা করুন।");
+                alert("You have already claimed today's daily bonus! Try again tomorrow.");
             } else {
                 score += 200;
                 localStorage.setItem('lastClaim', today);
                 updateUI();
-                alert("অভিনন্দন! আপনি ডেইলি বোনাস হিসেবে ২০০ কয়েন পেয়েছেন! 🎁");
+                alert("Congratulations! You received 200 coins as a daily bonus! 🎁");
             }
         }
 
@@ -369,9 +426,9 @@
             let inviteLink = `https://t.me/miraztap_bot/cryptotap?startapp=ref_${userId}`;
             
             if (tg && tg.openTelegramLink) {
-                tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent("🔥 দারুণ একটি গেম! সরাসরি ট্যাপ করে কয়েন ইনকাম করুন:")}`);
+                tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent("🔥 Awesome game! Tap to earn crypto coins now:")}`);
             } else {
-                prompt("আপনার ইনভাইট লিংক কপি করুন:", inviteLink);
+                prompt("Copy your invite link:", inviteLink);
             }
         }
 
@@ -385,16 +442,16 @@
                         if (status === 'paid') {
                             score += 500;
                             updateUI();
-                            alert("অভিনন্দন! পেমেন্ট সফল হয়েছে এবং ৫০০ কয়েন বোনাস যুক্ত হয়েছে!");
+                            alert("Payment successful and 500 bonus coins added!");
                         } else {
-                            alert("পেমেন্ট সম্পন্ন হয়নি।");
+                            alert("Payment not completed.");
                         }
                     });
                 } else {
-                    alert("এরর: " + (data.error || "পেমেন্ট লিংক তৈরি করা যায়নি"));
+                    alert("Error: " + (data.error || "Could not generate payment link"));
                 }
             } catch (e) {
-                alert("সার্ভার কানেকশন ফেইলড!");
+                alert("Server connection failed!");
             }
         }
     </script>
