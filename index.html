@@ -117,7 +117,7 @@
 <body>
 
     <div class="header">
-        <div class="user-name" id="username">স্বাগতম, গেমার! 🚀</div>
+        <div class="user-name" id="username">স্বাগতম, Error! 🚀</div>
         <div style="font-size: 11px; color: #aaa;">CryptoTap X - Pro</div>
     </div>
 
@@ -153,7 +153,7 @@
         let tg = window.Telegram.WebApp;
         try {
             tg.expand();
-            let userName = "গেমার";
+            let userName = "Error";
             if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.first_name) {
                 userName = tg.initDataUnsafe.user.first_name;
             }
@@ -198,7 +198,6 @@
             localStorage.setItem('taps', score);
         }, 1000);
 
-        // সুন্দর সাউন্ড জেনারেটর ফাংশন
         function playClickSound() {
             try {
                 let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -221,7 +220,7 @@
                 score += tapPower;
                 energy -= 1;
                 updateUI();
-                playClickSound(); // ট্যাপ করলেই সাউন্ড বাজবে
+                playClickSound();
                 localStorage.setItem('taps', score);
                 localStorage.setItem('energy', energy);
 
@@ -274,11 +273,11 @@
                 }
             } catch(e) {}
 
-            let botUsername = "mirazcoinbot";
-            let inviteLink = `https://t.me/${botUsername}?start=ref_${userId}`;
+            // আপনার আসল মিনি অ্যাপ লিংক
+            let inviteLink = `https://t.me/miraztap_bot/cryptotap?startapp=ref_${userId}`;
             
             if (tg && tg.openTelegramLink) {
-                tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent("🔥 দারুণ একটি গেম! ট্যাপ করে কয়েন ইনকাম করুন এবং Telegram Stars দিয়ে বুস্টার কিনুন:")}`);
+                tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent("🔥 দারুণ একটি গেম! সরাসরি ট্যাপ করে কয়েন ইনকাম করুন:")}`);
             } else {
                 prompt("আপনার ইনভাইট লিংক কপি করুন:", inviteLink);
             }
