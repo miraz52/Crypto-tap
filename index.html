@@ -5,11 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CryptoTap X - Elite Web3</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
-    <!-- Firebase SDK (Version 8 compat for single file ease) -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
         body {
@@ -20,19 +15,6 @@
             display: flex; flex-direction: column; justify-content: space-between; align-items: center;
         }
 
-        /* Loading & Ban Screen Overlay */
-        #overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #030712; z-index: 9999; display: flex;
-            flex-direction: column; justify-content: center; align-items: center;
-        }
-        .loader {
-            border: 5px solid rgba(255,255,255,0.1); border-top: 5px solid #fbbf24;
-            border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* UI Styles */
         .header {
             width: 100%; max-width: 400px; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 215, 0, 0.15); padding: 12px 18px; border-radius: 16px;
@@ -62,54 +44,29 @@
 </head>
 <body>
 
-    <!-- Loading & Anti-Cheat Screen -->
-    <div id="overlay">
-        <div class="loader" id="loader"></div>
-        <h2 id="statusText" style="margin-top: 20px; font-size: 16px; color: #fbbf24;">Checking Security...</h2>
+    <div class="header">
+        <div class="user-name" id="username">Welcome, Gamer! 🚀</div>
+        <div style="font-size: 11px; color: #64748b; margin-top: 2px;">CRYPTOTAP X • ELITE</div>
     </div>
 
-    <!-- Main Game UI -->
-    <div id="gameUI" style="display: none; width: 100%; align-items: center; flex-direction: column;">
-        <div class="header">
-            <div class="user-name" id="username">Welcome, Gamer! 🚀</div>
-            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">CRYPTOTAP X • ELITE</div>
+    <div>
+        <div class="score-container"><h2 id="score">0</h2></div>
+        <div class="coin-wrapper"><div class="coin-box" onclick="tapCoin()">X</div></div>
+        <div class="energy-wrapper">
+            <div class="energy-info"><span>⚡ Energy</span><span id="energyText">1000/1000</span></div>
+            <div class="energy-box"><div id="energyBar"></div></div>
         </div>
+    </div>
 
-        <div>
-            <div class="score-container"><h2 id="score">0</h2></div>
-            <div class="coin-wrapper"><div class="coin-box" onclick="tapCoin()">X</div></div>
-            <div class="energy-wrapper">
-                <div class="energy-info"><span>⚡ Energy</span><span id="energyText">1000/1000</span></div>
-                <div class="energy-box"><div id="energyBar"></div></div>
-            </div>
+    <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <div class="menu-grid">
+            <button class="btn-feature" onclick="upgradeTap()">🛠️ Tap Power (+1)<br><span style="color:#fbbf24;" id="upgradeCost">500 Coins</span></button>
+            <button class="btn-feature" onclick="claimDaily()">🎁 Daily Bonus<br><span style="color:#60a5fa;">Daily 200 Coins</span></button>
         </div>
-
-        <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-            <div class="menu-grid">
-                <button class="btn-feature" onclick="upgradeTap()">🛠️ Tap Power (+1)<br><span style="color:#fbbf24;" id="upgradeCost">500 Coins</span></button>
-                <button class="btn-feature" onclick="claimDaily()">🎁 Daily Bonus<br><span style="color:#60a5fa;">Daily 200 Coins</span></button>
-            </div>
-            <button class="btn-boost-full">⭐ Buy Booster (Coming Soon)</button>
-        </div>
+        <button class="btn-boost-full">⭐ Buy Booster (Coming Soon)</button>
     </div>
 
     <script>
-        // ====================================================================
-        // আপনার FIREBASE CONFIG কোড এখানে পেস্ট করুন (Project Settings থেকে পাবেন)
-        // ====================================================================
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-        // ====================================================================
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
         let tg = window.Telegram.WebApp;
         let userId = "guest";
         let userName = "Gamer";
@@ -118,101 +75,31 @@
             tg.expand();
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 userId = String(tg.initDataUnsafe.user.id);
-                userName = tg.initDataUnsafe.user.first_name;
+                userName = tg.initDataUnsafe.user.first_name || "Gamer";
             }
         } catch(e) {}
 
-        // গেম ভ্যারিয়েবল
-        let score = 0;
-        let tapPower = 1;
-        let upgradeCost = 500;
+        document.getElementById('username').innerText = `Welcome, ${userName}! 🚀`;
+
+        // Unique User Storage Keys (এক ডিভাইসে আলাদা অ্যাকাউন্ট আলাদা রাখবে)
+        const scoreKey = 'taps_' + userId;
+        const powerKey = 'tapPower_' + userId;
+        const costKey = 'upgradeCost_' + userId;
+        const energyKey = 'energy_' + userId;
+        const timeKey = 'lastTime_' + userId;
+        const claimKey = 'lastClaim_' + userId;
+
+        let score = parseInt(localStorage.getItem(scoreKey)) || 0;
+        let tapPower = parseInt(localStorage.getItem(powerKey)) || 1;
+        let upgradeCost = parseInt(localStorage.getItem(costKey)) || 500;
         let maxEnergy = 1000;
-        let energy = 1000;
-        let lastTime = Date.now();
-        let isBanned = false;
+        let energy = parseInt(localStorage.getItem(energyKey)) || 1000;
+        let lastTime = parseInt(localStorage.getItem(timeKey)) || Date.now();
 
-        // Anti-Cheat & Login System
-        async function authenticateUser() {
-            if (firebaseConfig.apiKey === "YOUR_API_KEY") {
-                document.getElementById('statusText').innerText = "Developer: Setup Firebase Config First!";
-                return;
-            }
-
-            try {
-                document.getElementById('statusText').innerText = "Fetching IP Address...";
-                let ipRes = await fetch('https://api.ipify.org?format=json');
-                let ipData = await ipRes.json();
-                let userIp = ipData.ip;
-
-                document.getElementById('statusText').innerText = "Verifying Account...";
-                
-                // IP Address Database Check
-                const usersRef = db.collection('users');
-                const ipCheck = await usersRef.where('ip', '==', userIp).get();
-                
-                let isMultiAccount = false;
-                ipCheck.forEach(doc => {
-                    if (doc.id !== userId) isMultiAccount = true;
-                });
-
-                if (isMultiAccount) {
-                    showBanScreen("⛔ Account Banned!<br>Multiple accounts detected on this device/IP.");
-                    return;
-                }
-
-                // Load or Create User Data
-                const userDoc = await usersRef.doc(userId).get();
-                if (userDoc.exists) {
-                    let data = userDoc.data();
-                    if (data.banned) {
-                        showBanScreen("⛔ Account Suspended by Admin.");
-                        return;
-                    }
-                    score = data.score || 0;
-                    tapPower = data.tapPower || 1;
-                    upgradeCost = data.upgradeCost || 500;
-                    energy = data.energy || 1000;
-                    lastTime = data.lastTime || Date.now();
-                } else {
-                    // New User Registration
-                    await usersRef.doc(userId).set({
-                        telegramId: userId,
-                        name: userName,
-                        ip: userIp,
-                        score: 0,
-                        tapPower: 1,
-                        upgradeCost: 500,
-                        energy: 1000,
-                        lastTime: Date.now(),
-                        banned: false
-                    });
-                }
-
-                // Calculate Offline Energy
-                let secondsPassed = Math.floor((Date.now() - lastTime) / 1000);
-                energy = Math.min(maxEnergy, energy + (secondsPassed * 2));
-
-                startGame();
-
-            } catch (error) {
-                document.getElementById('statusText').innerText = "Network Error! Please restart the game.";
-                console.error(error);
-            }
-        }
-
-        function showBanScreen(msg) {
-            isBanned = true;
-            document.getElementById('loader').style.display = 'none';
-            document.getElementById('statusText').innerHTML = msg;
-            document.getElementById('statusText').style.color = '#ef4444';
-        }
-
-        function startGame() {
-            document.getElementById('overlay').style.display = 'none';
-            document.getElementById('gameUI').style.display = 'flex';
-            document.getElementById('username').innerText = `Welcome, ${userName}! 🚀`;
-            updateUI();
-        }
+        // Offline Energy Calculation
+        let secondsPassed = Math.floor((Date.now() - lastTime) / 1000);
+        energy = Math.min(maxEnergy, energy + (secondsPassed * 2));
+        updateUI();
 
         function updateUI() {
             document.getElementById('score').innerText = score;
@@ -221,33 +108,24 @@
             document.getElementById('upgradeCost').innerText = `${upgradeCost} Coins`;
         }
 
-        // Energy Recovery Loop
+        // Energy Recovery & Auto-save Loop
         setInterval(() => {
-            if (!isBanned && energy < maxEnergy) {
+            if (energy < maxEnergy) {
                 energy = Math.min(maxEnergy, energy + 1);
                 updateUI();
             }
+            localStorage.setItem(energyKey, energy);
+            localStorage.setItem(timeKey, Date.now());
+            localStorage.setItem(scoreKey, score);
         }, 1000);
 
-        // Save Data to Cloud every 5 seconds (To save Firebase Quota)
-        setInterval(() => {
-            if (!isBanned && score > 0) {
-                db.collection('users').doc(userId).update({
-                    score: score,
-                    energy: energy,
-                    tapPower: tapPower,
-                    upgradeCost: upgradeCost,
-                    lastTime: Date.now()
-                });
-            }
-        }, 5000);
-
         function tapCoin() {
-            if (isBanned) return;
-            if (energy >= tapPower) {
+            if (energy > 0) {
                 score += tapPower;
-                energy -= tapPower;
+                energy -= 1;
                 updateUI();
+                localStorage.setItem(scoreKey, score);
+                localStorage.setItem(energyKey, energy);
                 
                 try {
                     if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
@@ -260,6 +138,9 @@
                 score -= upgradeCost;
                 tapPower += 1;
                 upgradeCost = Math.floor(upgradeCost * 1.5);
+                localStorage.setItem(powerKey, tapPower);
+                localStorage.setItem(costKey, upgradeCost);
+                localStorage.setItem(scoreKey, score);
                 updateUI();
                 alert(`Success! Your tap power is now ${tapPower}`);
             } else {
@@ -267,11 +148,19 @@
             }
         }
 
-        // Start Process
-        window.onload = () => {
-            authenticateUser();
-        };
-
+        function claimDaily() {
+            let lastClaimDate = localStorage.getItem(claimKey) || 0;
+            let today = new Date().toDateString();
+            if (lastClaimDate === today) {
+                alert("You have already claimed today's daily bonus! Try again tomorrow.");
+            } else {
+                score += 200;
+                localStorage.setItem(claimKey, today);
+                localStorage.setItem(scoreKey, score);
+                updateUI();
+                alert("Congratulations! You received 200 coins as a daily bonus! 🎁");
+            }
+        }
     </script>
 </body>
 </html>
