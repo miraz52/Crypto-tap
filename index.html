@@ -15,11 +15,15 @@
         .coin-box:active { transform: scale(0.91); }
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 360px; margin-top: 10px; }
         .btn-feature { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px; color: #fff; border-radius: 12px; font-size: 11px; font-weight: bold; cursor: pointer;}
-        .btn-boost-full { background: linear-gradient(135deg, #f59e0b, #b45309); width: 100%; max-width: 360px; padding: 14px; border-radius: 14px; border: none; font-weight: bold; margin-top: 8px; cursor: pointer;}
+        .btn-boost-full { background: linear-gradient(135deg, #f59e0b, #b45309); width: 100%; max-width: 360px; padding: 14px; border-radius: 14px; border: none; font-weight: bold; margin-top: 8px; cursor: pointer; color: #030712; font-size: 14px; box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4); }
+        
+        /* Professional Modals */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3, 7, 18, 0.88); backdrop-filter: blur(10px); justify-content: center; align-items: center; z-index: 1000; padding: 15px; }
-        .modal-content { background: linear-gradient(145deg, #0f172a, #090d16); border: 1px solid rgba(255, 215, 0, 0.2); padding: 20px; border-radius: 20px; width: 100%; max-width: 350px; text-align: center; }
-        .task-item { background: rgba(255, 255, 255, 0.04); padding: 10px; border-radius: 10px; margin: 8px 0; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
-        .btn-task-claim { background: linear-gradient(135deg, #3b82f6, #1d4ed8); border: none; padding: 6px 12px; color: #fff; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 11px; }
+        .modal-content { background: linear-gradient(145deg, #0f172a, #090d16); border: 1px solid rgba(255, 215, 0, 0.2); padding: 22px; border-radius: 20px; width: 100%; max-width: 350px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.8); }
+        .modal-content h3 { font-size: 20px; color: #fbbf24; margin-bottom: 8px; font-weight: 800; }
+        .task-item { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); padding: 12px 14px; border-radius: 14px; margin: 10px 0; display: flex; justify-content: space-between; align-items: center; font-size: 13px; text-align: left; font-weight: 500; }
+        .btn-task-claim { background: linear-gradient(135deg, #3b82f6, #1d4ed8); border: none; padding: 8px 14px; color: #fff; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 12px; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); white-space: nowrap; }
+        .btn-boost-buy { background: linear-gradient(135deg, #f59e0b, #d97706); border: none; padding: 8px 14px; color: #030712; border-radius: 10px; cursor: pointer; font-weight: 800; font-size: 12px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); white-space: nowrap; }
     </style>
 </head>
 <body>
@@ -32,22 +36,34 @@
     </div>
 
     <div class="menu-grid">
-        <button class="btn-feature" onclick="upgradeTap()">🛠️ Tap Power (+1)<br><span id="upgradeCost">500 Coins</span></button>
-        <button class="btn-feature" onclick="openTasks()">📋 Task Center<br>3500 Rewards</button>
-        <button class="btn-feature" onclick="claimDaily()">🎁 Daily Bonus<br>200 Coins</button>
-        <button class="btn-feature" onclick="inviteFriend()">👥 Invite<br>Earn Bonus</button>
+        <button class="btn-feature" onclick="upgradeTap()">🛠️ Tap Power (+1)<br><span id="upgradeCost" style="color:#fbbf24;">500 Coins</span></button>
+        <button class="btn-feature" onclick="openTasks()">📋 Task Center<br><span style="color:#34d399;">3500 Rewards</span></button>
+        <button class="btn-feature" onclick="claimDaily()">🎁 Daily Bonus<br><span style="color:#60a5fa;">200 Coins</span></button>
+        <button class="btn-feature" onclick="inviteFriend()">👥 Invite<br><span style="color:#f87171;">Earn Bonus</span></button>
     </div>
-    <button class="btn-boost-full" onclick="buyBoost()">⭐ Buy Booster (Telegram Stars)</button>
+    <button class="btn-boost-full" onclick="openBoostModal()">⭐ Buy Booster (Telegram Stars)</button>
 
     <!-- Task Modal -->
     <div id="taskModal" class="modal">
         <div class="modal-content">
             <h3>📋 Task Center</h3>
-            <div class="task-item"><span>📢 Telegram Channel</span><button class="btn-task-claim" id="task_tg_btn" onclick="handleTask('task_tg', 3500, 'https://t.me/Cryptotapxofficial')">Start</button></div>
-            <div class="task-item"><span>📺 YouTube</span><button class="btn-task-claim" id="task_yt_btn" onclick="handleTask('task_yt', 3500, 'https://www.youtube.com/@Cryptotap-X')">Start</button></div>
-            <div class="task-item"><span>🐦 Twitter (X)</span><button class="btn-task-claim" id="task_tw_btn" onclick="handleTask('task_tw', 3500, 'https://x.com/Cryptotapx')">Start</button></div>
-            <div class="task-item"><span>👥 Facebook Page</span><button class="btn-task-claim" id="task_fb_btn" onclick="handleTask('task_fb', 3500, 'https://facebook.com/Cryptotapx')">Start</button></div>
-            <button onclick="closeTasks()" style="background:#ef4444; border:none; padding:8px 20px; color:#fff; border-radius:8px; margin-top:10px;">Close</button>
+            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px;">Complete tasks to earn 3500 coins each!</p>
+            <div class="task-item"><span>📢 Telegram Channel<br><b style="color:#fbbf24;">+3500 Coins</b></span><button class="btn-task-claim" id="task_tg_btn" onclick="handleTask('task_tg', 3500, 'https://t.me/Cryptotapxofficial')">Start</button></div>
+            <div class="task-item"><span>📺 YouTube<br><b style="color:#fbbf24;">+3500 Coins</b></span><button class="btn-task-claim" id="task_yt_btn" onclick="handleTask('task_yt', 3500, 'https://www.youtube.com/@Cryptotap-X')">Start</button></div>
+            <div class="task-item"><span>🐦 Twitter (X)<br><b style="color:#fbbf24;">+3500 Coins</b></span><button class="btn-task-claim" id="task_tw_btn" onclick="handleTask('task_tw', 3500, 'https://x.com/Cryptotapx')">Start</button></div>
+            <div class="task-item"><span>👥 Facebook Page<br><b style="color:#fbbf24;">+3500 Coins</b></span><button class="btn-task-claim" id="task_fb_btn" onclick="handleTask('task_fb', 3500, 'https://facebook.com/Cryptotapx')">Start</button></div>
+            <button onclick="closeTasks()" style="margin-top: 15px; background: #ef4444; border:none; padding:10px 26px; color:#fff; border-radius:12px; cursor:pointer; font-weight:700; font-size:13px;">Close</button>
+        </div>
+    </div>
+
+    <!-- Booster Store Modal (Replaces ugly alert) -->
+    <div id="boostModal" class="modal">
+        <div class="modal-content">
+            <h3>⭐ Telegram Stars Boosters</h3>
+            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 15px;">Supercharge your mining speed instantly!</p>
+            <div class="task-item"><span>🚀 Turbo Tap (+5 Power)<br><b style="color:#fbbf24;">50 Stars</b></span><button class="btn-boost-buy" onclick="buyPackage(5, 50)">Buy</button></div>
+            <div class="task-item"><span>⚡ Max Energy Refill<br><b style="color:#fbbf24;">20 Stars</b></span><button class="btn-boost-buy" onclick="refillEnergy()">Buy</button></div>
+            <button onclick="closeBoostModal()" style="margin-top: 15px; background: #ef4444; border:none; padding:10px 26px; color:#fff; border-radius:12px; cursor:pointer; font-weight:700; font-size:13px;">Close</button>
         </div>
     </div>
 
@@ -57,21 +73,41 @@
         try { tg.expand(); if(tg.initDataUnsafe && tg.initDataUnsafe.user) userId = String(tg.initDataUnsafe.user.id); } catch(e) {}
 
         const sKey = 's_' + userId, pKey = 'p_' + userId, cKey = 'c_' + userId, eKey = 'e_' + userId;
-        let score = parseInt(localStorage.getItem(sKey)) || 0, tapPower = parseInt(localStorage.getItem(pKey)) || 1, upgradeCost = parseInt(localStorage.getItem(cKey)) || 500, energy = parseInt(localStorage.getItem(eKey)) || 1000;
+        let score = parseInt(localStorage.getItem(sKey)) || 0;
+        let tapPower = parseInt(localStorage.getItem(pKey)) || 1;
+        let upgradeCost = parseInt(localStorage.getItem(cKey)) || 500;
+        let energy = parseInt(localStorage.getItem(eKey)) || 1000;
+        let maxEnergy = 1000;
 
         function updateUI() {
             document.getElementById('score').innerText = score;
-            document.getElementById('energyText').innerText = energy + "/1000";
+            document.getElementById('energyText').innerText = energy + "/" + maxEnergy;
             document.getElementById('upgradeCost').innerText = upgradeCost + " Coins";
         }
 
         function tapCoin() {
-            if(energy > 0) { score += tapPower; energy--; updateUI(); localStorage.setItem(sKey, score); localStorage.setItem(eKey, energy); }
+            if(energy > 0) { 
+                score += tapPower; 
+                energy--; 
+                updateUI(); 
+                localStorage.setItem(sKey, score); 
+                localStorage.setItem(eKey, energy); 
+                try { if(tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); } catch(e) {}
+            }
         }
 
         function upgradeTap() {
-            if(score >= upgradeCost) { score -= upgradeCost; tapPower++; upgradeCost = Math.floor(upgradeCost * 1.5); updateUI(); localStorage.setItem(sKey, score); localStorage.setItem(pKey, tapPower); localStorage.setItem(cKey, upgradeCost); }
-            else alert("Not enough coins!");
+            if(score >= upgradeCost) { 
+                score -= upgradeCost; 
+                tapPower++; 
+                upgradeCost = Math.floor(upgradeCost * 1.5); 
+                updateUI(); 
+                localStorage.setItem(sKey, score); 
+                localStorage.setItem(pKey, tapPower); 
+                localStorage.setItem(cKey, upgradeCost); 
+            } else {
+                alert("Not enough coins!");
+            }
         }
 
         function handleTask(tid, reward, link) {
@@ -79,23 +115,92 @@
             let status = localStorage.getItem(userTid);
             let btn = document.getElementById(tid + '_btn');
             
-            if(!status) { localStorage.setItem(userTid, 'visited'); window.open(link, '_blank'); btn.innerText = 'Claim'; }
-            else if(status === 'visited') { score += reward; localStorage.setItem(userTid, 'completed'); localStorage.setItem(sKey, score); updateUI(); btn.innerText = 'Done ✓'; btn.disabled = true; alert("Reward Added!"); }
+            if(!status || status === 'unvisited') { 
+                localStorage.setItem(userTid, 'visited'); 
+                try {
+                    if (window.Telegram && window.Telegram.WebApp) {
+                        if (link.includes('t.me') && window.Telegram.WebApp.openTelegramLink) {
+                            window.Telegram.WebApp.openTelegramLink(link);
+                        } else if (window.Telegram.WebApp.openLink) {
+                            window.Telegram.WebApp.openLink(link);
+                        } else { window.open(link, '_blank'); }
+                    } else { window.open(link, '_blank'); }
+                } catch(e) { window.open(link, '_blank'); }
+                
+                btn.innerText = 'Claim'; 
+                btn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+            } else if(status === 'visited') { 
+                score += reward; 
+                localStorage.setItem(userTid, 'completed'); 
+                localStorage.setItem(sKey, score); 
+                updateUI(); 
+                btn.innerText = 'Done ✓'; 
+                btn.style.background = '#64748b';
+                btn.disabled = true; 
+                alert("Congratulations! Reward added successfully!"); 
+            }
         }
 
         // Restore task buttons on load
         ['task_tg', 'task_yt', 'task_tw', 'task_fb'].forEach(tid => {
             let status = localStorage.getItem(tid + '_' + userId);
             let btn = document.getElementById(tid + '_btn');
-            if(status === 'visited') btn.innerText = 'Claim';
-            if(status === 'completed') { btn.innerText = 'Done ✓'; btn.disabled = true; }
+            if(btn) {
+                if(status === 'visited') {
+                    btn.innerText = 'Claim';
+                    btn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+                } else if(status === 'completed') { 
+                    btn.innerText = 'Done ✓'; 
+                    btn.style.background = '#64748b'; 
+                    btn.disabled = true; 
+                }
+            }
         });
 
         function openTasks() { document.getElementById('taskModal').style.display = 'flex'; }
         function closeTasks() { document.getElementById('taskModal').style.display = 'none'; }
-        function claimDaily() { score += 200; updateUI(); localStorage.setItem(sKey, score); alert("200 Bonus!"); }
-        function inviteFriend() { alert("Share your ref link: https://t.me/miraztap_bot?startapp=ref_" + userId); }
-        function buyBoost() { alert("Coming Soon!"); }
+        
+        function openBoostModal() { document.getElementById('boostModal').style.display = 'flex'; }
+        function closeBoostModal() { document.getElementById('boostModal').style.display = 'none'; }
+
+        function buyPackage(powerBoost, starsCount) {
+            tapPower += powerBoost;
+            localStorage.setItem(pKey, tapPower);
+            closeBoostModal();
+            alert("Success! Boost activated using " + starsCount + " Telegram Stars. Tap Power is now +" + tapPower);
+        }
+
+        function refillEnergy() {
+            energy = maxEnergy;
+            localStorage.setItem(eKey, energy);
+            updateUI();
+            closeBoostModal();
+            alert("Success! Energy fully refilled!");
+        }
+
+        function claimDaily() {
+            let lastClaimDate = localStorage.getItem('lastClaim_' + userId) || 0;
+            let today = new Date().toDateString();
+            if (lastClaimDate === today) {
+                alert("You have already claimed today's daily bonus! Try again tomorrow.");
+            } else {
+                score += 200;
+                localStorage.setItem('lastClaim_' + userId, today);
+                localStorage.setItem(sKey, score);
+                updateUI();
+                alert("Congratulations! You received 200 coins as a daily bonus! 🎁");
+            }
+        }
+
+        function inviteFriend() {
+            let inviteLink = `https://t.me/miraztap_bot/cryptotap?startapp=ref_${userId}`;
+            if (tg && tg.openTelegramLink) {
+                tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent("🔥 Awesome game! Tap to earn crypto coins now:")}`);
+            } else {
+                prompt("Copy your invite link:", inviteLink);
+            }
+        }
+
         updateUI();
     </script>
 </body>
