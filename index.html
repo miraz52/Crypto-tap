@@ -258,7 +258,7 @@
         <button class="btn-boost-full" onclick="buyBoost()">⭐ Buy Booster (Telegram Stars)</button>
     </div>
 
-    <!-- Task Modal with Verified Timer System -->
+    <!-- Task Modal with Perfect Link Handlers -->
     <div id="taskModal" class="modal">
         <div class="modal-content">
             <h3>📋 Task Center</h3>
@@ -389,7 +389,7 @@
             document.getElementById('taskModal').style.display = 'none';
         }
 
-        // Fixed Telegram Link Opener & Timer Verification Logic
+        // Updated Link Opener for Telegram & Web
         function handleTask(taskId, reward, link) {
             let status = localStorage.getItem(taskId);
             let btn = document.getElementById(taskId + '_btn');
@@ -400,10 +400,19 @@
             }
 
             if (!status || status === 'unvisited') {
-                // Open link correctly inside Telegram Mini App
-                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
-                    window.Telegram.WebApp.openLink(link);
-                } else {
+                try {
+                    if (window.Telegram && window.Telegram.WebApp) {
+                        if (link.includes('t.me') && window.Telegram.WebApp.openTelegramLink) {
+                            window.Telegram.WebApp.openTelegramLink(link);
+                        } else if (window.Telegram.WebApp.openLink) {
+                            window.Telegram.WebApp.openLink(link);
+                        } else {
+                            window.open(link, '_blank');
+                        }
+                    } else {
+                        window.open(link, '_blank');
+                    }
+                } catch(e) {
                     window.open(link, '_blank');
                 }
 
@@ -412,7 +421,6 @@
                 btn.disabled = true;
                 btn.style.background = '#64748b';
 
-                // 5 seconds timer before Claim button becomes active
                 let timeLeft = 5;
                 let timer = setInterval(() => {
                     timeLeft--;
@@ -452,7 +460,6 @@
         }
 
         function claimDaily() {
-            let lastClaim = localStorage.invalidClaim || 0; // fallback handled safely below
             let lastClaimDate = localStorage.getItem('lastClaim') || 0;
             let today = new Date().toDateString();
             if (lastClaimDate === today) {
