@@ -12,7 +12,7 @@
             color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
-            padding: 20px;
+            padding: 15px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -24,91 +24,253 @@
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 15px;
+            padding: 12px;
             border-radius: 15px;
         }
-        .user-name { font-size: 16px; font-weight: bold; color: #f39c12; }
-        .score-container { margin: 10px 0; }
-        #score { font-size: 52px; font-weight: bold; color: #f39c12; text-shadow: 0 0 20px rgba(243, 156, 18, 0.5); }
+        .user-name { font-size: 15px; font-weight: bold; color: #f39c12; }
+        .score-container { margin: 5px 0; }
+        #score { font-size: 45px; font-weight: bold; color: #f39c12; text-shadow: 0 0 20px rgba(243, 156, 18, 0.5); }
+        
+        /* এনার্জি বার */
+        .energy-box {
+            width: 100%;
+            max-width: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            height: 14px;
+            margin: 8px auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        #energyBar {
+            height: 100%;
+            background: linear-gradient(90deg, #f39c12, #e67e22);
+            width: 100%;
+            transition: width 0.2s;
+        }
+
         .coin-box {
-            width: 180px;
-            height: 180px;
+            width: 160px;
+            height: 160px;
             background: radial-gradient(circle, #f39c12, #d35400);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 20px auto;
+            margin: 10px auto;
             cursor: pointer;
             box-shadow: 0 10px 30px rgba(243, 156, 18, 0.4);
             transition: transform 0.1s ease;
-            font-size: 80px;
+            font-size: 75px;
             user-select: none;
         }
         .coin-box:active { transform: scale(0.92); }
-        .btn-boost {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            border: none;
-            padding: 14px 30px;
-            color: #000;
-            font-weight: bold;
-            font-size: 16px;
-            border-radius: 12px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+
+        /* ফিচারের গ্রিড বাটন */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
             width: 100%;
-            max-width: 300px;
+            max-width: 350px;
+            margin-top: 10px;
+        }
+        .btn-feature {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            color: #fff;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
             transition: 0.2s;
         }
-        .btn-boost:active { transform: scale(0.98); }
+        .btn-feature:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.2); }
+        
+        .btn-boost-full {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            border: none;
+            padding: 12px;
+            color: #000;
+            font-weight: bold;
+            font-size: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 350px;
+            margin-top: 8px;
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+        }
     </style>
 </head>
 <body>
 
+    <!-- হেডার -->
     <div class="header">
         <div class="user-name" id="username">স্বাগতম, গেমার! 🚀</div>
-        <div style="font-size: 12px; color: #aaa; margin-top: 3px;">CryptoTap X - Official Mini App</div>
+        <div style="font-size: 11px; color: #aaa;">CryptoTap X - Pro</div>
     </div>
 
+    <!-- স্কোর ও কয়েন -->
     <div>
-        <p style="font-size: 14px; color: #ccc; margin-bottom: 5px;">ট্যাপ করে কয়েন জমান!</p>
         <div class="score-container">
             <h2 id="score">0</h2>
         </div>
-
-        <div class="coin-box" onclick="tapCoin()">
+        
+        <div class="coin-box" onclick="tapCoin(event)">
             🪙
+        </div>
+
+        <!-- এনার্জি স্ট্যাটাস -->
+        <div style="font-size: 12px; color: #ccc; margin-top: 5px;">
+            ⚡ এনার্জি: <span id="energyText">1000/1000</span>
+        </div>
+        <div class="energy-box">
+            <div id="energyBar"></div>
         </div>
     </div>
 
+    <!-- ফিচার বাটনসমূহ -->
     <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-        <button class="btn-boost" onclick="buyBoost()">বুস্টার কিনুন (Telegram Stars)</button>
+        <div class="menu-grid">
+            <button class="btn-feature" onclick="upgradeTap()">🛠️ পাওয়ার আপ (+১)<br><span style="font-size:10px; color:#f39c12;" id="upgradeCost">৫০০ কয়েন</span></button>
+            <button class="btn-feature" onclick="claimDaily()">🎁 ডেইলি বোনাস<br><span style="font-size:10px; color:#2ecc71;">প্রতিদিন ২০০ কয়েন</span></button>
+            <button class="btn-feature" onclick="claimPassive()">💰 মাইনিং కలెక్ట్<br><span style="font-size:10px; color:#3498db;">অটো আর্নিং</span></button>
+            <button class="btn-feature" onclick="inviteFriend()">👥 ইনভাইট ফ্রেন্ড<br><span style="font-size:10px; color:#e74c3c;">বোনাস পান</span></button>
+        </div>
+
+        <button class="btn-boost-full" onclick="buyBoost()">⭐ বুস্টার কিনুন (Telegram Stars)</button>
     </div>
 
     <script>
         let tg = window.Telegram.WebApp;
         try {
             tg.expand();
+            let userName = "গেমার";
             if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.first_name) {
-                document.getElementById('username').innerText = `স্বাগতম, ${tg.initDataUnsafe.user.first_name}! 🚀`;
+                userName = tg.initDataUnsafe.user.first_name;
             }
+            document.getElementById('username').innerText = `স্বাগতম, ${userName}! 🚀`;
         } catch(e) {}
 
+        // গেমের ডাটা ও ভেরিয়েবল
         let score = parseInt(localStorage.getItem('taps')) || 0;
-        document.getElementById('score').innerText = score;
+        let tapPower = parseInt(localStorage.getItem('tapPower')) || 1;
+        let upgradeCost = parseInt(localStorage.getItem('upgradeCost')) || 500;
+        
+        let maxEnergy = 1000;
+        let energy = parseInt(localStorage.getItem('energy')) || 1000;
+        let lastTime = parseInt(localStorage.getItem('lastTime')) || Date.now();
 
-        function tapCoin() {
-            score++;
-            document.getElementById('score').innerText = score;
-            localStorage.setItem('taps', score);
-            try {
-                if (tg && tg.HapticFeedback) {
-                    tg.HapticFeedback.impactOccurred('light');
-                }
-            } catch(e) {}
+        // অফলাইন প্যাসিভ মাইনিং ও এনার্জি রিফিল হিসাব করা
+        let now = Date.now();
+        let secondsPassed = Math.floor((now - lastTime) / 1000);
+        
+        // প্রতি সেকেন্ডে ২ এনার্জি রিফিল হয়
+        energy = Math.min(maxEnergy, energy + (secondsPassed * 2));
+        
+        // অফলাইন মাইনিং: প্রতি ঘন্টায় ১০ কয়েন করে জমা হবে
+        let offlineCoins = Math.floor((secondsPassed / 3600) * 10);
+        if (offlineCoins > 0) {
+            score += offlineCoins;
+            alert(`অভিনন্দন! আপনি অফলাইনে থাকাকালীন মাইনিং থেকে ${offlineCoins} কয়েন পেয়েছেন! 🎉`);
         }
 
-        // টেলিগ্রাম স্টার পেমেন্ট রিকোয়েস্ট ফাংশন
+        updateUI();
+
+        // UI আপডেট ফাংশন
+        function updateUI() {
+            document.getElementById('score').innerText = score;
+            document.getElementById('energyText').innerText = `${energy}/${maxEnergy}`;
+            document.getElementById('energyBar').style.width = (energy / maxEnergy) * 100 + '%';
+            document.getElementById('upgradeCost').innerText = `${upgradeCost} কয়েন`;
+        }
+
+        // প্রতি সেকেন্ডে এনার্জি রিফিল ও টাইম সেভ
+        setInterval(() => {
+            if (energy < maxEnergy) {
+                energy = Math.min(maxEnergy, energy + 1);
+                updateUI();
+            }
+            localStorage.setItem('energy', energy);
+            localStorage.setItem('lastTime', Date.now());
+            localStorage.setItem('taps', score);
+        }, 1000);
+
+        // ট্যাপ ফাংশন
+        function tapCoin(event) {
+            if (energy > 0) {
+                score += tapPower;
+                energy -= 1;
+                updateUI();
+                localStorage.setItem('taps', score);
+                localStorage.setItem('energy', energy);
+
+                try {
+                    if (tg && tg.HapticFeedback) {
+                        tg.HapticFeedback.impactOccurred('light');
+                    }
+                } catch(e) {}
+            } else {
+                alert("আপনার এনার্জি শেষ! কিছুক্ষণ অপেক্ষা করুন রিফিল হওয়ার জন্য।");
+            }
+        }
+
+        // ১. মাল্টিট্যাপ আপগ্রেড
+        function upgradeTap() {
+            if (score >= upgradeCost) {
+                score -= upgradeCost;
+                tapPower += 1;
+                upgradeCost = Math.floor(upgradeCost * 1.5); // দাম বাড়বে
+                localStorage.setItem('tapPower', tapPower);
+                localStorage.setItem('upgradeCost', upgradeCost);
+                updateUI();
+                alert(`সফল! আপনার প্রতি ট্যাপ পাওয়ার এখন ${tapPower}`);
+            } else {
+                alert("পর্যাপ্ত কয়েন নেই!");
+            }
+        }
+
+        // ২. ডেইলি বোনাস
+        function claimDaily() {
+            let lastClaim = localStorage.getItem('lastClaim') || 0;
+            let today = new Date().toDateString();
+            if (lastClaim === today) {
+                alert("আজকের ডেইলি বোনাস আপনি ইতিমধ্যে নিয়ে নিয়েছেন! কাল আবার চেষ্টা করুন।");
+            } else {
+                score += 200;
+                localStorage.setItem('lastClaim', today);
+                updateUI();
+                alert("অভিনন্দন! আপনি ডেইলি বোনাস হিসেবে ২০০ কয়েন পেয়েছেন! 🎁");
+            }
+        }
+
+        // ৩. প্যাসিভ মাইনিং কালেক্ট
+        function claimPassive() {
+            alert("আপনার মাইনিং ব্যাকগ্রাউন্ডে অটোমেটিক চালু আছে এবং পয়েন্ট স্কোর এর সাথে যোগ হয়ে গেছে!");
+        }
+
+        // ৪. রেফারেল সিস্টেম
+        function inviteFriend() {
+            let userId = "12345";
+            try {
+                if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
+                    userId = tg.initDataUnsafe.user.id;
+                }
+            } catch(e) {}
+
+            let botUsername = "mirazcoinbot"; // আপনার বটের ইউজারনেম
+            let inviteLink = `https://t.me/${botUsername}?start=ref_${userId}`;
+            
+            if (tg && tg.openTelegramLink) {
+                tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent("🔥 দারুণ একটি গেম! ট্যাপ করে কয়েন ইনকাম করুন এবং Telegram Stars দিয়ে বুস্টার কিনুন:")}`);
+            } else {
+                prompt("আপনার ইনভাইট লিংক কপি করুন:", inviteLink);
+            }
+        }
+
+        // ৫. Telegram Stars পেমেন্ট (আগের সিস্টেম)
         async function buyBoost() {
             try {
                 let res = await fetch('/api/buy');
@@ -117,7 +279,9 @@
                 if (data.invoiceLink) {
                     tg.openInvoice(data.invoiceLink, (status) => {
                         if (status === 'paid') {
-                            alert("অভিনন্দন! পেমেন্ট সফল হয়েছে!");
+                            score += 500; // বুস্টার কিনলে ৫০০ কয়েন বোনাস
+                            updateUI();
+                            alert("অভিনন্দন! পেমেন্ট সফল হয়েছে এবং ৫০০ কয়েন বোনাস যুক্ত হয়েছে!");
                         } else {
                             alert("পেমেন্ট সম্পন্ন হয়নি।");
                         }
