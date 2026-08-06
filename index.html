@@ -6,7 +6,14 @@
     <title>CryptoTap X - Pro</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            -webkit-tap-highlight-color: transparent; 
+            -webkit-touch-callout: none;
+            user-select: none; 
+        }
         body {
             background: linear-gradient(135deg, #0f172a, #1e1b4b);
             color: #ffffff;
@@ -18,6 +25,7 @@
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
+            overflow: hidden;
         }
         .header {
             width: 100%;
@@ -31,7 +39,6 @@
         .score-container { margin: 5px 0; }
         #score { font-size: 45px; font-weight: bold; color: #f39c12; text-shadow: 0 0 20px rgba(243, 156, 18, 0.5); }
         
-        /* এনার্জি বার */
         .energy-box {
             width: 100%;
             max-width: 300px;
@@ -57,16 +64,16 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 10px auto;
+            margin: 15px auto;
             cursor: pointer;
             box-shadow: 0 10px 30px rgba(243, 156, 18, 0.4);
-            transition: transform 0.1s ease;
+            transition: transform 0.08s ease;
             font-size: 75px;
-            user-select: none;
+            outline: none;
+            border: none;
         }
-        .coin-box:active { transform: scale(0.92); }
+        .coin-box:active { transform: scale(0.90); }
 
-        /* ফিচারের গ্রিড বাটন */
         .menu-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -85,6 +92,7 @@
             border-radius: 10px;
             cursor: pointer;
             transition: 0.2s;
+            outline: none;
         }
         .btn-feature:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.2); }
         
@@ -101,18 +109,18 @@
             max-width: 350px;
             margin-top: 8px;
             box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+            outline: none;
         }
+        .btn-boost-full:active { transform: scale(0.97); }
     </style>
 </head>
 <body>
 
-    <!-- হেডার -->
     <div class="header">
         <div class="user-name" id="username">স্বাগতম, গেমার! 🚀</div>
         <div style="font-size: 11px; color: #aaa;">CryptoTap X - Pro</div>
     </div>
 
-    <!-- স্কোর ও কয়েন -->
     <div>
         <div class="score-container">
             <h2 id="score">0</h2>
@@ -122,7 +130,6 @@
             🪙
         </div>
 
-        <!-- এনার্জি স্ট্যাটাস -->
         <div style="font-size: 12px; color: #ccc; margin-top: 5px;">
             ⚡ এনার্জি: <span id="energyText">1000/1000</span>
         </div>
@@ -131,12 +138,11 @@
         </div>
     </div>
 
-    <!-- ফিচার বাটনসমূহ -->
     <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="menu-grid">
             <button class="btn-feature" onclick="upgradeTap()">🛠️ পাওয়ার আপ (+১)<br><span style="font-size:10px; color:#f39c12;" id="upgradeCost">৫০০ কয়েন</span></button>
             <button class="btn-feature" onclick="claimDaily()">🎁 ডেইলি বোনাস<br><span style="font-size:10px; color:#2ecc71;">প্রতিদিন ২০০ কয়েন</span></button>
-            <button class="btn-feature" onclick="claimPassive()">💰 মাইনিং కలెక్ట్<br><span style="font-size:10px; color:#3498db;">অটো আর্নিং</span></button>
+            <button class="btn-feature" onclick="claimPassive()">💰 মাইনিং কালেক্ট<br><span style="font-size:10px; color:#3498db;">অটো আর্নিং</span></button>
             <button class="btn-feature" onclick="inviteFriend()">👥 ইনভাইট ফ্রেন্ড<br><span style="font-size:10px; color:#e74c3c;">বোনাস পান</span></button>
         </div>
 
@@ -154,7 +160,6 @@
             document.getElementById('username').innerText = `স্বাগতম, ${userName}! 🚀`;
         } catch(e) {}
 
-        // গেমের ডাটা ও ভেরিয়েবল
         let score = parseInt(localStorage.getItem('taps')) || 0;
         let tapPower = parseInt(localStorage.getItem('tapPower')) || 1;
         let upgradeCost = parseInt(localStorage.getItem('upgradeCost')) || 500;
@@ -163,14 +168,11 @@
         let energy = parseInt(localStorage.getItem('energy')) || 1000;
         let lastTime = parseInt(localStorage.getItem('lastTime')) || Date.now();
 
-        // অফলাইন প্যাসিভ মাইনিং ও এনার্জি রিফিল হিসাব করা
         let now = Date.now();
         let secondsPassed = Math.floor((now - lastTime) / 1000);
         
-        // প্রতি সেকেন্ডে ২ এনার্জি রিফিল হয়
         energy = Math.min(maxEnergy, energy + (secondsPassed * 2));
         
-        // অফলাইন মাইনিং: প্রতি ঘন্টায় ১০ কয়েন করে জমা হবে
         let offlineCoins = Math.floor((secondsPassed / 3600) * 10);
         if (offlineCoins > 0) {
             score += offlineCoins;
@@ -179,7 +181,6 @@
 
         updateUI();
 
-        // UI আপডেট ফাংশন
         function updateUI() {
             document.getElementById('score').innerText = score;
             document.getElementById('energyText').innerText = `${energy}/${maxEnergy}`;
@@ -187,7 +188,6 @@
             document.getElementById('upgradeCost').innerText = `${upgradeCost} কয়েন`;
         }
 
-        // প্রতি সেকেন্ডে এনার্জি রিফিল ও টাইম সেভ
         setInterval(() => {
             if (energy < maxEnergy) {
                 energy = Math.min(maxEnergy, energy + 1);
@@ -198,12 +198,30 @@
             localStorage.setItem('taps', score);
         }, 1000);
 
-        // ট্যাপ ফাংশন
+        // সুন্দর সাউন্ড জেনারেটর ফাংশন
+        function playClickSound() {
+            try {
+                let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(450, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(900, audioCtx.currentTime + 0.08);
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.08);
+            } catch(e) {}
+        }
+
         function tapCoin(event) {
             if (energy > 0) {
                 score += tapPower;
                 energy -= 1;
                 updateUI();
+                playClickSound(); // ট্যাপ করলেই সাউন্ড বাজবে
                 localStorage.setItem('taps', score);
                 localStorage.setItem('energy', energy);
 
@@ -217,12 +235,11 @@
             }
         }
 
-        // ১. মাল্টিট্যাপ আপগ্রেড
         function upgradeTap() {
             if (score >= upgradeCost) {
                 score -= upgradeCost;
                 tapPower += 1;
-                upgradeCost = Math.floor(upgradeCost * 1.5); // দাম বাড়বে
+                upgradeCost = Math.floor(upgradeCost * 1.5);
                 localStorage.setItem('tapPower', tapPower);
                 localStorage.setItem('upgradeCost', upgradeCost);
                 updateUI();
@@ -232,7 +249,6 @@
             }
         }
 
-        // ২. ডেইলি বোনাস
         function claimDaily() {
             let lastClaim = localStorage.getItem('lastClaim') || 0;
             let today = new Date().toDateString();
@@ -246,12 +262,10 @@
             }
         }
 
-        // ৩. প্যাসিভ মাইনিং কালেক্ট
         function claimPassive() {
             alert("আপনার মাইনিং ব্যাকগ্রাউন্ডে অটোমেটিক চালু আছে এবং পয়েন্ট স্কোর এর সাথে যোগ হয়ে গেছে!");
         }
 
-        // ৪. রেফারেল সিস্টেম
         function inviteFriend() {
             let userId = "12345";
             try {
@@ -260,7 +274,7 @@
                 }
             } catch(e) {}
 
-            let botUsername = "mirazcoinbot"; // আপনার বটের ইউজারনেম
+            let botUsername = "mirazcoinbot";
             let inviteLink = `https://t.me/${botUsername}?start=ref_${userId}`;
             
             if (tg && tg.openTelegramLink) {
@@ -270,7 +284,6 @@
             }
         }
 
-        // ৫. Telegram Stars পেমেন্ট (আগের সিস্টেম)
         async function buyBoost() {
             try {
                 let res = await fetch('/api/buy');
@@ -279,7 +292,7 @@
                 if (data.invoiceLink) {
                     tg.openInvoice(data.invoiceLink, (status) => {
                         if (status === 'paid') {
-                            score += 500; // বুস্টার কিনলে ৫০০ কয়েন বোনাস
+                            score += 500;
                             updateUI();
                             alert("অভিনন্দন! পেমেন্ট সফল হয়েছে এবং ৫০০ কয়েন বোনাস যুক্ত হয়েছে!");
                         } else {
