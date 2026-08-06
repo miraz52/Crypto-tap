@@ -258,7 +258,7 @@
         <button class="btn-boost-full" onclick="buyBoost()">⭐ Buy Booster (Telegram Stars)</button>
     </div>
 
-    <!-- Task Modal with 2-Step Verification -->
+    <!-- Task Modal with Verified Timer System -->
     <div id="taskModal" class="modal">
         <div class="modal-content">
             <h3>📋 Task Center</h3>
@@ -389,7 +389,7 @@
             document.getElementById('taskModal').style.display = 'none';
         }
 
-        // Two-Step Task Verification Logic
+        // Fixed Telegram Link Opener & Timer Verification Logic
         function handleTask(taskId, reward, link) {
             let status = localStorage.getItem(taskId);
             let btn = document.getElementById(taskId + '_btn');
@@ -400,11 +400,32 @@
             }
 
             if (!status || status === 'unvisited') {
-                window.open(link, '_blank');
+                // Open link correctly inside Telegram Mini App
+                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+                    window.Telegram.WebApp.openLink(link);
+                } else {
+                    window.open(link, '_blank');
+                }
+
                 localStorage.setItem(taskId, 'visited');
-                btn.innerText = 'Claim';
-                btn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
-                alert("Please subscribe/follow the channel, then come back and click 'Claim' to get your reward!");
+                btn.innerText = 'Wait 5s...';
+                btn.disabled = true;
+                btn.style.background = '#64748b';
+
+                // 5 seconds timer before Claim button becomes active
+                let timeLeft = 5;
+                let timer = setInterval(() => {
+                    timeLeft--;
+                    if (timeLeft > 0) {
+                        btn.innerText = `Wait ${timeLeft}s...`;
+                    } else {
+                        clearInterval(timer);
+                        btn.innerText = 'Claim';
+                        btn.disabled = false;
+                        btn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+                    }
+                }, 1000);
+
             } else if (status === 'visited') {
                 score += reward;
                 localStorage.setItem(taskId, 'completed');
@@ -421,10 +442,7 @@
                 let status = localStorage.getItem(taskId);
                 let btn = document.getElementById(taskId + '_btn');
                 if (btn) {
-                    if (status === 'visited') {
-                        btn.innerText = 'Claim';
-                        btn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
-                    } else if (status === 'completed') {
+                    if (status === 'completed') {
                         btn.innerText = 'Done ✓';
                         btn.style.background = '#64748b';
                         btn.disabled = true;
@@ -434,9 +452,10 @@
         }
 
         function claimDaily() {
-            let lastClaim = localStorage.getItem('lastClaim') || 0;
+            let lastClaim = localStorage.invalidClaim || 0; // fallback handled safely below
+            let lastClaimDate = localStorage.getItem('lastClaim') || 0;
             let today = new Date().toDateString();
-            if (lastClaim === today) {
+            if (lastClaimDate === today) {
                 alert("You have already claimed today's daily bonus! Try again tomorrow.");
             } else {
                 score += 200;
