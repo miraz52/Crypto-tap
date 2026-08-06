@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoTap X</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 30px;
+        }
+        .coin {
+            font-size: 80px;
+            cursor: pointer;
+            margin: 40px 0;
+            transition: transform 0.1s;
+        }
+        .coin:active {
+            transform: scale(0.9);
+        }
+        button {
+            background: #f3ba2f;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            color: #000;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>🪙 CryptoTap X</h1>
+    <p>ট্যাপ করে কয়েন জমান!</p>
+    <h2 id="score">0</h2>
+    
+    <div class="coin" onclick="tapCoin()">🪙</div>
+    
+    <br>
+    <button onclick="buyBoost()">বূস্টার কিনুন (Telegram Stars)</button>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        let score = localStorage.getItem('taps') || 0;
+        document.getElementById('score').innerText = score;
+
+        function tapCoin() {
+            score++;
+            document.getElementById('score').innerText = score;
+            localStorage.setItem('taps', score);
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('light');
+            }
+        }
+
+        function buyBoost() {
+            tg.showAlert("Telegram Stars পেমেন্ট সিস্টেম এখানে যুক্ত হবে!");
+        }
+    </script>
+</body>
+</html>
