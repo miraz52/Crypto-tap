@@ -204,7 +204,7 @@
             font-weight: 500;
         }
         .btn-task-claim {
-            background: linear-gradient(135deg, #10b981, #047857);
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
             border: none;
             padding: 8px 14px;
             color: #fff;
@@ -212,7 +212,7 @@
             cursor: pointer;
             font-weight: 700;
             font-size: 12px;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
             white-space: nowrap;
         }
         .btn-task-claim:active { transform: scale(0.95); }
@@ -258,30 +258,30 @@
         <button class="btn-boost-full" onclick="buyBoost()">⭐ Buy Booster (Telegram Stars)</button>
     </div>
 
-    <!-- Task Modal (3500 Coins Reward & Instagram Removed) -->
+    <!-- Task Modal with 2-Step Verification -->
     <div id="taskModal" class="modal">
         <div class="modal-content">
             <h3>📋 Task Center</h3>
-            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 15px;">Complete tasks and claim 3500 coins each!</p>
+            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 15px;">Complete tasks to earn 3500 coins each!</p>
             
             <div class="task-item">
                 <span>📢 Join Telegram Channel<br><b style="color:#fbbf24;">+3500 Coins</b></span>
-                <button class="btn-task-claim" onclick="completeTask('task_tg', 3500, 'https://t.me/Cryptotapxofficial')">Start</button>
+                <button class="btn-task-claim" id="task_tg_btn" onclick="handleTask('task_tg', 3500, 'https://t.me/Cryptotapxofficial')">Start</button>
             </div>
 
             <div class="task-item">
                 <span>📺 Subscribe YouTube<br><b style="color:#fbbf24;">+3500 Coins</b></span>
-                <button class="btn-task-claim" onclick="completeTask('task_yt', 3500, 'https://www.youtube.com/@Cryptotap-X')">Start</button>
+                <button class="btn-task-claim" id="task_yt_btn" onclick="handleTask('task_yt', 3500, 'https://www.youtube.com/@Cryptotap-X')">Start</button>
             </div>
 
             <div class="task-item">
                 <span>🐦 Follow Twitter (X)<br><b style="color:#fbbf24;">+3500 Coins</b></span>
-                <button class="btn-task-claim" onclick="completeTask('task_tw', 3500, 'https://x.com/Cryptotapx')">Start</button>
+                <button class="btn-task-claim" id="task_tw_btn" onclick="handleTask('task_tw', 3500, 'https://x.com/Cryptotapx')">Start</button>
             </div>
 
             <div class="task-item">
                 <span>👥 Follow Facebook Page<br><b style="color:#fbbf24;">+3500 Coins</b></span>
-                <button class="btn-task-claim" onclick="completeTask('task_fb', 3500, 'https://facebook.com/Cryptotapx')">Start</button>
+                <button class="btn-task-claim" id="task_fb_btn" onclick="handleTask('task_fb', 3500, 'https://facebook.com/Cryptotapx')">Start</button>
             </div>
 
             <button onclick="closeTasks()" style="margin-top: 15px; background: #ef4444; border:none; padding:10px 26px; color:#fff; border-radius:12px; cursor:pointer; font-weight:700; font-size:13px;">Close</button>
@@ -312,6 +312,7 @@
         
         energy = Math.min(maxEnergy, energy + (secondsPassed * 2));
         updateUI();
+        checkTaskStatuses();
 
         function updateUI() {
             document.getElementById('score').innerText = score;
@@ -388,18 +389,48 @@
             document.getElementById('taskModal').style.display = 'none';
         }
 
-        function completeTask(taskId, reward, link) {
-            let completed = localStorage.getItem(taskId);
-            if (completed) {
+        // Two-Step Task Verification Logic
+        function handleTask(taskId, reward, link) {
+            let status = localStorage.getItem(taskId);
+            let btn = document.getElementById(taskId + '_btn');
+
+            if (status === 'completed') {
                 alert("You have already completed this task!");
                 return;
             }
-            
-            window.open(link, '_blank');
-            score += reward;
-            localStorage.setItem(taskId, 'true');
-            updateUI();
-            alert(`Congratulations! You completed the task and received ${reward} bonus coins! 🎉`);
+
+            if (!status || status === 'unvisited') {
+                window.open(link, '_blank');
+                localStorage.setItem(taskId, 'visited');
+                btn.innerText = 'Claim';
+                btn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+                alert("Please subscribe/follow the channel, then come back and click 'Claim' to get your reward!");
+            } else if (status === 'visited') {
+                score += reward;
+                localStorage.setItem(taskId, 'completed');
+                updateUI();
+                btn.innerText = 'Done ✓';
+                btn.style.background = '#64748b';
+                btn.disabled = true;
+                alert(`Congratulations! You received ${reward} bonus coins! 🎉`);
+            }
+        }
+
+        function checkTaskStatuses() {
+            ['task_tg', 'task_yt', 'task_tw', 'task_fb'].forEach(taskId => {
+                let status = localStorage.getItem(taskId);
+                let btn = document.getElementById(taskId + '_btn');
+                if (btn) {
+                    if (status === 'visited') {
+                        btn.innerText = 'Claim';
+                        btn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+                    } else if (status === 'completed') {
+                        btn.innerText = 'Done ✓';
+                        btn.style.background = '#64748b';
+                        btn.disabled = true;
+                    }
+                }
+            });
         }
 
         function claimDaily() {
