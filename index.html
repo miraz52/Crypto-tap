@@ -25,7 +25,7 @@
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            overflow: hidden;
+            overflow-x: hidden;
         }
         .header {
             width: 100%;
@@ -56,7 +56,6 @@
             transition: width 0.2s;
         }
 
-        /* প্রিমিয়াম 3D চকচকে গোল্ডেন কয়েন ডিজাইন */
         .coin-box {
             width: 170px;
             height: 170px;
@@ -116,6 +115,50 @@
             outline: none;
         }
         .btn-boost-full:active { transform: scale(0.97); }
+
+        /* প্রফেশনাল টাস্ক মোডাল ডিজাইন */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #1e1b4b;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 15px;
+            width: 92%;
+            max-width: 350px;
+            max-height: 85vh;
+            overflow-y: auto;
+            text-align: center;
+        }
+        .task-item {
+            background: rgba(255,255,255,0.08);
+            padding: 10px;
+            border-radius: 10px;
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            text-align: left;
+        }
+        .btn-task-claim {
+            background: #2ecc71;
+            border: none;
+            padding: 6px 10px;
+            color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 11px;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -130,7 +173,6 @@
             <h2 id="score">0</h2>
         </div>
         
-        <!-- প্রিমিয়াম 3D গোল্ডেন X কয়েন -->
         <div class="coin-box" onclick="tapCoin(event)">
             X
         </div>
@@ -146,12 +188,47 @@
     <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="menu-grid">
             <button class="btn-feature" onclick="upgradeTap()">🛠️ পাওয়ার আপ (+১)<br><span style="font-size:10px; color:#f39c12;" id="upgradeCost">৫০০ কয়েন</span></button>
-            <button class="btn-feature" onclick="claimDaily()">🎁 ডেইলি বোনাস<br><span style="font-size:10px; color:#2ecc71;">প্রতিদিন ২০০ কয়েন</span></button>
-            <button class="btn-feature" onclick="claimPassive()">💰 মাইনিং কালেক্ট<br><span style="font-size:10px; color:#3498db;">অটো আর্নিং</span></button>
+            <button class="btn-feature" onclick="openTasks()">📋 টাস্ক সেন্টার<br><span style="font-size:10px; color:#2ecc71;">ফ্রি কয়েন পান</span></button>
+            <button class="btn-feature" onclick="claimDaily()">🎁 ডেইলি বোনাস<br><span style="font-size:10px; color:#3498db;">প্রতিদিন ২০০ কয়েন</span></button>
             <button class="btn-feature" onclick="inviteFriend()">👥 ইনভাইট ফ্রেন্ড<br><span style="font-size:10px; color:#e74c3c;">বোনাস পান</span></button>
         </div>
 
         <button class="btn-boost-full" onclick="buyBoost()">⭐ বুস্টার কিনুন (Telegram Stars)</button>
+    </div>
+
+    <!-- টাস্ক পপআপ উইন্ডো (আপডেট করা সোশ্যাল লিংকসহ) -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <h3>📋 সোশ্যাল টাস্ক সেন্টার</h3>
+            <p style="font-size: 11px; color: #aaa; margin-bottom: 12px;">চ্যানেল ও পেজ ফলো করে রিওয়ার্ড নিন!</p>
+            
+            <div class="task-item">
+                <span>📢 টেলিগ্রাম চ্যানেলে জয়েন<br><b style="color:#f39c12;">+1000 কয়েন</b></span>
+                <button class="btn-task-claim" onclick="completeTask('task_tg', 1000, 'https://t.me/Cryptotapxofficial')">শুরু</button>
+            </div>
+
+            <div class="task-item">
+                <span>📺 ইউটিউব সাবস্ক্রাইব<br><b style="color:#f39c12;">+1000 কয়েন</b></span>
+                <button class="btn-task-claim" onclick="completeTask('task_yt', 1000, 'https://www.youtube.com/@Cryptotap-X')">শুরু</button>
+            </div>
+
+            <div class="task-item">
+                <span>🐦 টুইটার (X) ফলো<br><b style="color:#f39c12;">+500 কয়েন</b></span>
+                <button class="btn-task-claim" onclick="completeTask('task_tw', 500, 'https://x.com/Cryptotapx')">শুরু</button>
+            </div>
+
+            <div class="task-item">
+                <span>👥 ফেসবুক পেজ ফলো<br><b style="color:#f39c12;">+500 কয়েন</b></span>
+                <button class="btn-task-claim" onclick="completeTask('task_fb', 500, 'https://facebook.com/Cryptotapx')">শুরু</button>
+            </div>
+
+            <div class="task-item">
+                <span>📸 ইনস্টাগ্রাম ফলো<br><b style="color:#f39c12;">+500 কয়েন</b></span>
+                <button class="btn-task-claim" onclick="completeTask('task_ig', 500, 'https://instagram.com/your_handle')">শুরু</button>
+            </div>
+
+            <button onclick="closeTasks()" style="margin-top: 12px; background: #e74c3c; border:none; padding:8px 20px; color:#fff; border-radius:8px; cursor:pointer; font-weight:bold;">বন্ধ করুন</button>
+        </div>
     </div>
 
     <script>
@@ -177,13 +254,6 @@
         let secondsPassed = Math.floor((now - lastTime) / 1000);
         
         energy = Math.min(maxEnergy, energy + (secondsPassed * 2));
-        
-        let offlineCoins = Math.floor((secondsPassed / 3600) * 10);
-        if (offlineCoins > 0) {
-            score += offlineCoins;
-            alert(`অভিনন্দন! আপনি অফলাইনে থাকাকালীন মাইনিং থেকে ${offlineCoins} কয়েন পেয়েছেন! 🎉`);
-        }
-
         updateUI();
 
         function updateUI() {
@@ -253,6 +323,28 @@
             }
         }
 
+        function openTasks() {
+            document.getElementById('taskModal').style.display = 'flex';
+        }
+
+        function closeTasks() {
+            document.getElementById('taskModal').style.display = 'none';
+        }
+
+        function completeTask(taskId, reward, link) {
+            let completed = localStorage.getItem(taskId);
+            if (completed) {
+                alert("আপনি এই টাস্কটি ইতিমধ্যেই সম্পন্ন করেছেন!");
+                return;
+            }
+            
+            window.open(link, '_blank');
+            score += reward;
+            localStorage.setItem(taskId, 'true');
+            updateUI();
+            alert(`অভিনন্দন! আপনি টাস্ক সম্পন্ন করে ${reward} কয়েন বোনাস পেয়েছেন! 🎉`);
+        }
+
         function claimDaily() {
             let lastClaim = localStorage.getItem('lastClaim') || 0;
             let today = new Date().toDateString();
@@ -264,10 +356,6 @@
                 updateUI();
                 alert("অভিনন্দন! আপনি ডেইলি বোনাস হিসেবে ২০০ কয়েন পেয়েছেন! 🎁");
             }
-        }
-
-        function claimPassive() {
-            alert("আপনার মাইনিং ব্যাকগ্রাউন্ডে অটোমেটিক চালু আছে এবং পয়েন্ট স্কোর এর সাথে যোগ হয়ে গেছে!");
         }
 
         function inviteFriend() {
