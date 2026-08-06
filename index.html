@@ -12,6 +12,7 @@
         .user-name { font-size: 15px; font-weight: 700; color: #fbbf24; }
         #score { font-size: 50px; font-weight: 900; background: linear-gradient(180deg, #ffffff 15%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .coin-box { width: 180px; height: 180px; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle at 35% 35%, #fde047 0%, #ca8a04 55%, #78350f 100%); border: 5px solid rgba(255, 255, 255, 0.9); box-shadow: 0 0 50px rgba(234, 179, 8, 0.45); font-size: 80px; font-weight: 900; color: #ffffff; cursor: pointer; transition: 0.06s; }
+        .coin-box:active { transform: scale(0.91); }
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 360px; margin-top: 10px; }
         .btn-feature { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px; color: #fff; border-radius: 12px; font-size: 11px; font-weight: bold; cursor: pointer;}
         .btn-boost-full { background: linear-gradient(135deg, #f59e0b, #b45309); width: 100%; max-width: 360px; padding: 14px; border-radius: 14px; border: none; font-weight: bold; margin-top: 8px; cursor: pointer;}
@@ -31,7 +32,7 @@
     </div>
 
     <div class="menu-grid">
-        <button class="btn-feature" onclick="upgradeTap()">🛠️ Tap Power<br><span id="upgradeCost">500 Coins</span></button>
+        <button class="btn-feature" onclick="upgradeTap()">🛠️ Tap Power (+1)<br><span id="upgradeCost">500 Coins</span></button>
         <button class="btn-feature" onclick="openTasks()">📋 Task Center<br>3500 Rewards</button>
         <button class="btn-feature" onclick="claimDaily()">🎁 Daily Bonus<br>200 Coins</button>
         <button class="btn-feature" onclick="inviteFriend()">👥 Invite<br>Earn Bonus</button>
@@ -44,6 +45,8 @@
             <h3>📋 Task Center</h3>
             <div class="task-item"><span>📢 Telegram Channel</span><button class="btn-task-claim" id="task_tg_btn" onclick="handleTask('task_tg', 3500, 'https://t.me/Cryptotapxofficial')">Start</button></div>
             <div class="task-item"><span>📺 YouTube</span><button class="btn-task-claim" id="task_yt_btn" onclick="handleTask('task_yt', 3500, 'https://www.youtube.com/@Cryptotap-X')">Start</button></div>
+            <div class="task-item"><span>🐦 Twitter (X)</span><button class="btn-task-claim" id="task_tw_btn" onclick="handleTask('task_tw', 3500, 'https://x.com/Cryptotapx')">Start</button></div>
+            <div class="task-item"><span>👥 Facebook Page</span><button class="btn-task-claim" id="task_fb_btn" onclick="handleTask('task_fb', 3500, 'https://facebook.com/Cryptotapx')">Start</button></div>
             <button onclick="closeTasks()" style="background:#ef4444; border:none; padding:8px 20px; color:#fff; border-radius:8px; margin-top:10px;">Close</button>
         </div>
     </div>
@@ -53,7 +56,7 @@
         let userId = "guest";
         try { tg.expand(); if(tg.initDataUnsafe && tg.initDataUnsafe.user) userId = String(tg.initDataUnsafe.user.id); } catch(e) {}
 
-        const sKey = 's_' + userId, pKey = 'p_' + userId, cKey = 'c_' + userId, eKey = 'e_' + userId, tKey = 't_' + userId;
+        const sKey = 's_' + userId, pKey = 'p_' + userId, cKey = 'c_' + userId, eKey = 'e_' + userId;
         let score = parseInt(localStorage.getItem(sKey)) || 0, tapPower = parseInt(localStorage.getItem(pKey)) || 1, upgradeCost = parseInt(localStorage.getItem(cKey)) || 500, energy = parseInt(localStorage.getItem(eKey)) || 1000;
 
         function updateUI() {
@@ -72,16 +75,27 @@
         }
 
         function handleTask(tid, reward, link) {
-            let status = localStorage.getItem(tid + '_' + userId);
-            if(status === 'completed') return alert("Done!");
-            if(!status) { localStorage.setItem(tid + '_' + userId, 'visited'); window.open(link, '_blank'); document.getElementById(tid + '_btn').innerText = 'Claim'; }
-            else { score += reward; localStorage.setItem(tid + '_' + userId, 'completed'); localStorage.setItem(sKey, score); updateUI(); alert("Reward added!"); }
+            let userTid = tid + '_' + userId;
+            let status = localStorage.getItem(userTid);
+            let btn = document.getElementById(tid + '_btn');
+            
+            if(!status) { localStorage.setItem(userTid, 'visited'); window.open(link, '_blank'); btn.innerText = 'Claim'; }
+            else if(status === 'visited') { score += reward; localStorage.setItem(userTid, 'completed'); localStorage.setItem(sKey, score); updateUI(); btn.innerText = 'Done ✓'; btn.disabled = true; alert("Reward Added!"); }
         }
+
+        // Restore task buttons on load
+        ['task_tg', 'task_yt', 'task_tw', 'task_fb'].forEach(tid => {
+            let status = localStorage.getItem(tid + '_' + userId);
+            let btn = document.getElementById(tid + '_btn');
+            if(status === 'visited') btn.innerText = 'Claim';
+            if(status === 'completed') { btn.innerText = 'Done ✓'; btn.disabled = true; }
+        });
 
         function openTasks() { document.getElementById('taskModal').style.display = 'flex'; }
         function closeTasks() { document.getElementById('taskModal').style.display = 'none'; }
         function claimDaily() { score += 200; updateUI(); localStorage.setItem(sKey, score); alert("200 Bonus!"); }
         function inviteFriend() { alert("Share your ref link: https://t.me/miraztap_bot?startapp=ref_" + userId); }
+        function buyBoost() { alert("Coming Soon!"); }
         updateUI();
     </script>
 </body>
