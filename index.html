@@ -115,20 +115,23 @@
     <div id="customModal">
         <div class="modal-content">
             <h3 style="color: #f39c12; margin-top: 0; margin-bottom: 10px;">CryptoTap X</h3>
-            <p id="modalText" style="font-size: 15px; margin-bottom: 20px; color: #ddd;">Telegram Stars পেমেন্ট সিস্টেম এখানে যুক্ত হবে!</p>
+            <p id="modalText" style="font-size: 15px; margin-bottom: 20px; color: #ddd;">Telegram Stars পেমেন্ট সিস্টেম খুব শীঘ্রই আসছে!</p>
             <button onclick="closeModal()" style="background: linear-gradient(135deg, #f39c12, #e67e22); border: none; padding: 10px 25px; color: #000; font-weight: bold; border-radius: 10px; cursor: pointer;">বন্ধ করুন</button>
         </div>
     </div>
 
     <script>
         let tg = window.Telegram.WebApp;
-        tg.expand();
+        try {
+            tg.expand();
+        } catch(e) {}
 
-        // টেলিগ্রাম ইউজারের আসল নাম শো করা
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            const user = tg.initDataUnsafe.user;
-            document.getElementById('username').innerText = `স্বাগতম, ${user.first_name || 'Gamer'}! 🚀`;
+        // সেফ ইউজার নেম ফেচ সিস্টেম (ব্রাউজারে খুললে 'গেমার' দেখাবে, টেলিগ্রামে খুললে আসল নাম দেখাবে)
+        let userName = "গেমার";
+        if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.first_name) {
+            userName = tg.initDataUnsafe.user.first_name;
         }
+        document.getElementById('username').innerText = `স্বাগতম, ${userName}! 🚀`;
 
         // লোকাল স্টোরেজ থেকে স্কোর লোড করা
         let score = parseInt(localStorage.getItem('taps')) || 0;
@@ -140,10 +143,11 @@
             document.getElementById('score').innerText = score;
             localStorage.setItem('taps', score);
             
-            // ফোন কাপানোর ভাইব্রেশন ইফেক্ট (Haptic)
-            if (tg.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred('light');
-            }
+            try {
+                if (tg && tg.HapticFeedback) {
+                    tg.HapticFeedback.impactOccurred('light');
+                }
+            } catch(e) {}
         }
 
         // বুস্টার ক্লিক করলে প্রিমিয়াম পপআপ আসবে
