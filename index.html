@@ -440,6 +440,12 @@
                 alert("Not enough coins!");
             }
         }
+        const botLevelKey = 'botLevel_' + userId;
+        const botTimeKey = 'botExpiry_' + userId;
+
+        let botLevel = parseInt(localStorage.getItem(botLevelKey)) || 0;
+        let botExpiry = parseInt(localStorage.getItem(botTimeKey)) || 0;
+        let botCost = 5000 * Math.pow(2, botLevel); // প্রতি লেভেলে দাম দ্বিগুণ হতে থাকবে
 
         function upgradeEnergy() {
             if (score >= energyUpgradeCost) {
