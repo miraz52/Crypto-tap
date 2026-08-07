@@ -526,12 +526,10 @@
         }
     </script>
     <script type="module">
-  // Import Firebase SDKs
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
-  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // Your Firebase configuration (Provided by you)
+  // Your Firebase configuration
   const firebaseConfig = {
     apiKey: "AIzaSyCYnHVLaIfDXR3-_AgY-O2L4IEgl8lEtc8",
     authDomain: "crypto-tap-x.firebaseapp.com",
@@ -544,12 +542,31 @@
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
   const db = getFirestore(app);
-
-  // Expose db globally for your game logic
   window.db = db;
-  console.log("Database Connected Successfully!");
+
+  // টেলিগ্রাম থেকে ইউজারের তথ্য নেওয়া
+  let tg = window.Telegram?.WebApp;
+  let tgUser = tg?.initDataUnsafe?.user;
+  
+  // যদি টেলিগ্রাম থেকে ওপেন করে তবে আসল আইডি পাবে, নাহলে টেস্ট ইউজার
+  let userId = tgUser ? tgUser.id.toString() : "guest_user_01";
+  let userName = tgUser ? tgUser.first_name : "Guest";
+
+  // ফায়ারবেসে কয়েন সেভ করার গ্লোবাল ফাংশন
+  window.saveToFirebase = async function(currentCoins) {
+    try {
+      const userRef = doc(db, "users", userId);
+      await setDoc(userRef, {
+        name: userName,
+        score: currentCoins,
+        last_updated: new Date()
+      }, { merge: true }); // merge: true দিলে আগের ডেটা মুছে যাবে না, আপডেট হবে
+      console.log("Firebase-এ কয়েন সেভ হয়েছে!");
+    } catch (error) {
+      console.error("Firebase Error: ", error);
+    }
+  };
 </script>
 
 </body>
