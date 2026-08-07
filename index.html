@@ -267,13 +267,13 @@
 
     <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="menu-grid">
-            <button class="btn-feature" onclick="upgradeEnergy()">🔋 Energy Limit (+500)<br><span style="font-size:11px; color:#17a2b8;" id="energyUpgradeCost">1000 Coins</span></button>
-            <button class="btn-feature" onclick="upgradeTap()">🛠️ Tap Power (+1)<br><span style="font-size:11px; color:#fbbf24;" id="upgradeCost">500 Coins</span></button>
+            <button class="btn-feature" onclick="upgradeEnergy()">🔋 Energy Limit<br><span style="font-size:11px; color:#17a2b8;" id="energyUpgradeCost">1000 Coins</span></button>
+            <button class="btn-feature" onclick="upgradeTap()">🛠️ Tap Power<br><span style="font-size:11px; color:#fbbf24;" id="upgradeCost">500 Coins</span></button>
             <button class="btn-feature" onclick="openTasks()">📋 Task Center<br><span style="font-size:11px; color:#34d399;">+3500 Rewards</span></button>
             <button class="btn-feature" onclick="claimDaily()">🎁 Daily Bonus<br><span style="font-size:11px; color:#60a5fa;">Daily 200 Coins</span></button>
+            <button class="btn-feature" onclick="upgradeAutoBot()" style="grid-column: span 2; background: linear-gradient(135deg, #10b981, #047857);">🤖 Auto-Tap Bot (Lvl <span id="botLevelText">0</span>)<br><span style="font-size:11px; color:#fde047;" id="botCost">5000 Coins</span></button>
             <button class="btn-feature" onclick="inviteFriend()" style="grid-column: span 2;">👥 Invite Friends<br><span style="font-size:11px; color:#f87171;">Earn Bonus</span></button>
         </div>
-<button class="btn-feature" onclick="upgradeAutoBot()" style="grid-column: span 2; background: linear-gradient(135deg, #10b981, #047857);">🤖 Auto-Tap Bot (Level <span id="botLevelText">0</span>)<br><span style="font-size:11px; color:#fde047;" id="botCost">5000 Coins</span></button>
 
         <button class="btn-boost-full" onclick="buyBoost()">⭐ Buy Booster (Telegram Stars)</button>
         <button onclick="openWithdrawModal()" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; max-width: 360px;">💸 Withdraw</button>
@@ -350,6 +350,8 @@
         const claimKey = 'lastClaim_' + userId;
         const maxEnergyKey = 'maxEnergy_' + userId;
         const energyCostKey = 'energyCost_' + userId;
+        const botLevelKey = 'botLevel_' + userId;
+        const botTimeKey = 'botExpiry_' + userId;
 
         let score = parseInt(localStorage.getItem(scoreKey)) || 0;
         let tapPower = parseInt(localStorage.getItem(powerKey)) || 1;
@@ -358,20 +360,28 @@
         let maxEnergy = parseInt(localStorage.getItem(maxEnergyKey)) || 1000;
         let energy = parseInt(localStorage.getItem(energyKey)) || maxEnergy;
         let energyUpgradeCost = parseInt(localStorage.getItem(energyCostKey)) || 1000;
-        let lastTime = parseInt(localStorage.getItem(timeKey)) || Date.now();
 
+        let botLevel = parseInt(localStorage.getItem(botLevelKey)) || 0;
+        let botExpiry = parseInt(localStorage.getItem(botTimeKey)) || 0;
+        let botCost = 5000 * Math.pow(2, botLevel);
+
+        let lastTime = parseInt(localStorage.getItem(timeKey)) || Date.now();
         let now = Date.now();
         let secondsPassed = Math.floor((now - lastTime) / 1000);
+
+        // এনার্জি এবং অটো-বট অফলাইন আর্নিং হিসাব
         energy = Math.min(maxEnergy, energy + (secondsPassed * 2));
-        // লেভেল ভিত্তিক অটো-বট অফলাইন আর্নিং চেক
-        if (botLevel > 0 && Date.now() < botExpiry) {
-            let offlineSeconds = Math.floor((Date.now() - lastTime) / 1000);
-            let coinsPerSec = botLevel; // লেভেল ১ এ প্রতি সেকেন্ডে ১ কয়েন, লেভেলে ২ এ প্রতি সেকেন্ডে ২ কয়েন এভাবে বাড়বে
-            let botEarnings = offlineSeconds * coinsPerSec;
+
+        if (botLevel > 0 && now < botExpiry) {
+            let offlineSeconds = Math.floor((now - lastTime) / 1000);
+            let botEarnings = offlineSeconds * botLevel; // প্রতি লেভেলে প্রতি সেকেন্ডে ১ কয়েন করে বাড়বে
             if (botEarnings > 0) {
                 score += botEarnings;
                 alert(`🤖 Level ${botLevel} Auto-Bot farmed ${botEarnings} coins while you were away!`);
             }
+        } else if (now >= botExpiry && botLevel > 0) {
+            botLevel = 0;
+            localStorage.setItem(botLevelKey, '0');
         }
 
         updateUI();
@@ -387,6 +397,14 @@
             
             if(document.getElementById('energyUpgradeCost')) {
                 document.getElementById('energyUpgradeCost').innerText = `${energyUpgradeCost} Coins`;
+            }
+
+            if(document.getElementById('botLevelText')) {
+                document.getElementById('botLevelText').innerText = botLevel;
+            }
+            if(document.getElementById('botCost')) {
+                botCost = 5000 * Math.pow(2, botLevel);
+                document.getElementById('botCost').innerText = botLevel === 0 ? "5000 Coins" : `${botCost} Coins (Upgrade)`;
             }
         }
 
@@ -435,24 +453,6 @@
                 alert("Energy is empty! Please wait for it to refill.");
             }
         }
-        function upgradeAutoBot() {
-            botCost = 5000 * Math.pow(2, botLevel);
-            if (score >= botCost) {
-                score -= botCost;
-                botLevel += 1;
-                // প্রতিবার কিনলে ২৪ ঘণ্টা সময় বাড়বে
-                botExpiry = Date.now() + (24 * 60 * 60 * 1000);
-
-                localStorage.setItem(botLevelKey, botLevel);
-                localStorage.setItem(botTimeKey, botExpiry);
-                localStorage.setItem(scoreKey, score);
-
-                updateUI();
-                alert(`Success! Auto-Bot upgraded to Level ${botLevel}! 🤖🚀`);
-            } else {
-                alert(`Not enough coins! You need ${botCost} Coins.`);
-            }
-        }
 
         function upgradeTap() {
             if (score >= upgradeCost) {
@@ -468,12 +468,6 @@
                 alert("Not enough coins!");
             }
         }
-        const botLevelKey = 'botLevel_' + userId;
-        const botTimeKey = 'botExpiry_' + userId;
-
-        let botLevel = parseInt(localStorage.getItem(botLevelKey)) || 0;
-        let botExpiry = parseInt(localStorage.getItem(botTimeKey)) || 0;
-        let botCost = 5000 * Math.pow(2, botLevel); // প্রতি লেভেলে দাম দ্বিগুণ হতে থাকবে
 
         function upgradeEnergy() {
             if (score >= energyUpgradeCost) {
@@ -493,13 +487,24 @@
                 alert("Not enough coins to upgrade energy!");
             }
         }
-            if(document.getElementById('botLevelText')) {
-                document.getElementById('botLevelText').innerText = botLevel;
+
+        function upgradeAutoBot() {
+            botCost = 5000 * Math.pow(2, botLevel);
+            if (score >= botCost) {
+                score -= botCost;
+                botLevel += 1;
+                botExpiry = Date.now() + (24 * 60 * 60 * 1000); // ২৪ ঘণ্টার মেয়াদ
+
+                localStorage.setItem(botLevelKey, botLevel);
+                localStorage.setItem(botTimeKey, botExpiry);
+                localStorage.setItem(scoreKey, score);
+
+                updateUI();
+                alert(`Success! Auto-Bot upgraded to Level ${botLevel}! 🤖🚀`);
+            } else {
+                alert(`Not enough coins! You need ${botCost} Coins.`);
             }
-            if(document.getElementById('botCost')) {
-                botCost = 5000 * Math.pow(2, botLevel);
-                document.getElementById('botCost').innerText = botLevel === 0 ? "5000 Coins" : `${botCost} Coins (Upgrade)`;
-            }
+        }
 
         function openTasks() {
             document.getElementById('taskModal').style.display = 'flex';
@@ -711,6 +716,3 @@
     </script>
 </body>
 </html>
-
-
-  
