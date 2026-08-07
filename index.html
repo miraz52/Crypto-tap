@@ -608,17 +608,6 @@
       alert("Please enter your account number!");
       return;
     }
-
-      async function submitWithdraw() {
-    let method = document.getElementById('paymentMethod').value;
-    let number = document.getElementById('accountNumber').value;
-    let withdrawAmount = 10000; 
-
-    if (!number) {
-      alert("Please enter your account number!");
-      return;
-    }
-
     if (score < withdrawAmount) {
       alert("You need at least 10,000 coins to withdraw!");
       return;
