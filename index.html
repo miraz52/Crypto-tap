@@ -625,7 +625,7 @@
       await setDoc(withdrawRef, {
         userId: userId,
         userName: userName,
-        coins: withdrawAmount,
+        coins: 10000,
         method: method,
         account: number,
         status: "Pending",
@@ -635,7 +635,7 @@
       // ৩. গেমের "নিজ ফান্ড" এ কয়েন যোগ করা
       const treasuryRef = doc(db, "game_stats", "treasury");
       await setDoc(treasuryRef, {
-        totalCollected: increment(withdrawAmount)
+        totalCollected: increment(10000)
       }, { merge: true });
 
       // আপডেট করা মেসেজ
