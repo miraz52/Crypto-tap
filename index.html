@@ -435,6 +435,24 @@
                 alert("Energy is empty! Please wait for it to refill.");
             }
         }
+        function upgradeAutoBot() {
+            botCost = 5000 * Math.pow(2, botLevel);
+            if (score >= botCost) {
+                score -= botCost;
+                botLevel += 1;
+                // প্রতিবার কিনলে ২৪ ঘণ্টা সময় বাড়বে
+                botExpiry = Date.now() + (24 * 60 * 60 * 1000);
+
+                localStorage.setItem(botLevelKey, botLevel);
+                localStorage.setItem(botTimeKey, botExpiry);
+                localStorage.setItem(scoreKey, score);
+
+                updateUI();
+                alert(`Success! Auto-Bot upgraded to Level ${botLevel}! 🤖🚀`);
+            } else {
+                alert(`Not enough coins! You need ${botCost} Coins.`);
+            }
+        }
 
         function upgradeTap() {
             if (score >= upgradeCost) {
