@@ -419,22 +419,25 @@
                 alert("Energy is empty! Please wait for it to refill.");
             }
         }
-
-        function upgradeTap() {
-            if (score >= upgradeCost) {
-                score -= upgradeCost;
-                tapPower += 1;
-                upgradeCost = Math.floor(upgradeCost * 1.5);
-                localStorage.setItem(powerKey, tapPower);
-                localStorage.setItem(costKey, upgradeCost);
+        function upgradeEnergy() {
+            if (score >= energyUpgradeCost) {
+                score -= energyUpgradeCost;
+                maxEnergy += 500;
+                energy += 500; 
+                
+                energyUpgradeCost = Math.floor(energyUpgradeCost * 1.5); 
+                
+                localStorage.setItem(maxEnergyKey, maxEnergy);
+                localStorage.setItem(energyCostKey, energyUpgradeCost);
                 localStorage.setItem(scoreKey, score);
+                localStorage.setItem(energyKey, energy);
+                
                 updateUI();
-                alert(`Success! Your tap power is now ${tapPower}`);
+                alert(`Success! Your Max Energy is now ${maxEnergy} ⚡`);
             } else {
-                alert("Not enough coins!");
+                alert("Not enough coins to upgrade energy!");
             }
         }
-
         function openTasks() {
             document.getElementById('taskModal').style.display = 'flex';
         }
