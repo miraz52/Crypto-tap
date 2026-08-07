@@ -164,7 +164,7 @@
             transition: all 0.2s ease;
             outline: none;
             box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
+        } 
         .btn-feature:active { transform: scale(0.96); background: rgba(30, 41, 59, 0.8); }
         
         /* Full Boost Button */
@@ -275,6 +275,8 @@
 
     <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="menu-grid">
+           <button class="btn-feature" onclick="upgradeEnergy()">🔋 Energy Limit (+500)<br><span style="font-size:11px; color:#17a2b8;" id="energyUpgradeCost">1000 Coins</span></button>
+
             <button class="btn-feature" onclick="upgradeTap()">🛠️ Tap Power (+1)<br><span style="font-size:11px; color:#fbbf24;" id="upgradeCost">500 Coins</span></button>
             <button class="btn-feature" onclick="openTasks()">📋 Task Center<br><span style="font-size:11px; color:#34d399;">+3500 Rewards</span></button>
             <button class="btn-feature" onclick="claimDaily()">🎁 Daily Bonus<br><span style="font-size:11px; color:#60a5fa;">Daily 200 Coins</span></button>
