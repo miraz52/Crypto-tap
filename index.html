@@ -486,7 +486,7 @@
                 score += 200;
                 localStorage.setItem(claimKey, today);
                 localStorage.setItem(scoreKey, score);
-                updateUI();
+                updateUI();window.saveToFirebase(score);
                 alert("Congratulations! You received 200 coins as a daily bonus! 🎁");
             }
         }
@@ -511,7 +511,7 @@
                         if (status === 'paid') {
                             score += 500;
                             localStorage.setItem(scoreKey, score);
-                            updateUI();
+                            updateUI();window.saveToFirebase(score);
                             alert("Payment successful and 500 bonus coins added!");
                         } else {
                             alert("Payment not completed.");
