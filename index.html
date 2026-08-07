@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CryptoTap X - Elite Web3</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         * { 
             box-sizing: border-box; 
@@ -257,8 +258,8 @@
 
         <button class="btn-boost-full" onclick="buyBoost()">⭐ Buy Booster (Telegram Stars)</button>
 <button onclick="openWithdrawModal()" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;">💸 Withdraw</button>
-<button id="tonConnectButton" onclick="toggleTonWallet()" style="background: #0088cc; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;">💎 Connect Wallet</button>
-<p id="walletAddress" style="font-size: 12px; color: #aaa; margin-top: 5px;"></p>
+<div id="ton-connect" style="margin-top: 10px;"></div>
+
 
 
     </div>
