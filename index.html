@@ -18,7 +18,6 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // উইথড্র এবং ডাটাবেজ ঠিকমতো কাজ করার জন্য এই বাইন্ডিংগুলো অত্যন্ত জরুরি
   window.db = db;
   window.doc = doc;
   window.setDoc = setDoc;
@@ -30,7 +29,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CryptoTap X - Elite Web3</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         * { 
             box-sizing: border-box; 
@@ -54,7 +53,6 @@
             overflow-x: hidden;
         }
 
-        /* Elite Header */
         .header {
             width: 100%;
             max-width: 400px;
@@ -68,7 +66,6 @@
         }
         .user-name { font-size: 15px; font-weight: 700; color: #fbbf24; letter-spacing: 0.5px; }
         
-        /* Score Display */
         .score-container { margin: 10px 0; }
         #score { 
             font-size: 50px; 
@@ -80,7 +77,6 @@
             letter-spacing: 1px;
         }
 
-        /* Energy Section */
         .energy-wrapper {
             width: 100%;
             max-width: 320px;
@@ -112,7 +108,6 @@
             box-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
         }
 
-        /* Ultra Professional 3D Coin */
         .coin-wrapper {
             position: relative;
             margin: 15px auto;
@@ -142,7 +137,6 @@
             box-shadow: 0 0 30px rgba(234, 179, 8, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
-        /* Game Menu Grid */
         .menu-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -164,10 +158,9 @@
             transition: all 0.2s ease;
             outline: none;
             box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        } 
+        }
         .btn-feature:active { transform: scale(0.96); background: rgba(30, 41, 59, 0.8); }
         
-        /* Full Boost Button */
         .btn-boost-full {
             background: linear-gradient(135deg, #f59e0b, #b45309);
             border: none;
@@ -186,7 +179,6 @@
         }
         .btn-boost-full:active { transform: scale(0.97); }
 
-        /* Professional Modal */
         .modal {
             display: none;
             position: fixed;
@@ -275,23 +267,19 @@
 
     <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="menu-grid">
-           <button class="btn-feature" onclick="upgradeEnergy()">🔋 Energy Limit (+500)<br><span style="font-size:11px; color:#17a2b8;" id="energyUpgradeCost">1000 Coins</span></button>
-
+            <button class="btn-feature" onclick="upgradeEnergy()">🔋 Energy Limit (+500)<br><span style="font-size:11px; color:#17a2b8;" id="energyUpgradeCost">1000 Coins</span></button>
             <button class="btn-feature" onclick="upgradeTap()">🛠️ Tap Power (+1)<br><span style="font-size:11px; color:#fbbf24;" id="upgradeCost">500 Coins</span></button>
             <button class="btn-feature" onclick="openTasks()">📋 Task Center<br><span style="font-size:11px; color:#34d399;">+3500 Rewards</span></button>
             <button class="btn-feature" onclick="claimDaily()">🎁 Daily Bonus<br><span style="font-size:11px; color:#60a5fa;">Daily 200 Coins</span></button>
-            <button class="btn-feature" onclick="inviteFriend()">👥 Invite Friends<br><span style="font-size:11px; color:#f87171;">Earn Bonus</span></button>
+            <button class="btn-feature" onclick="inviteFriend()" style="grid-column: span 2;">👥 Invite Friends<br><span style="font-size:11px; color:#f87171;">Earn Bonus</span></button>
         </div>
 
         <button class="btn-boost-full" onclick="buyBoost()">⭐ Buy Booster (Telegram Stars)</button>
-<button onclick="openWithdrawModal()" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;">💸 Withdraw</button>
-<div id="ton-connect" style="margin-top: 10px;"></div>
-
-
-
+        <button onclick="openWithdrawModal()" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; max-width: 360px;">💸 Withdraw</button>
+        <div id="ton-connect" style="margin-top: 10px;"></div>
     </div>
 
-    <!-- Task Modal with Unique User Isolation -->
+    <!-- Task Modal -->
     <div id="taskModal" class="modal">
         <div class="modal-content">
             <h3>📋 Task Center</h3>
@@ -317,30 +305,48 @@
                 <button class="btn-task-claim" id="task_fb_btn" onclick="handleTask('task_fb', 3500, 'https://facebook.com/Cryptotapx')">Start</button>
             </div>
 
-            <button onclick="closeTasks()" style="margin-top: 15px; background: #ef4444; border:none; padding:10px 26px; color:#fff; border-radius:12px; cursor:pointer; font-weight:700; font-size:13px;">Close</button>
+            <button onclick="closeTasks()" style="margin-top: 15px; background: #ef4444; border:none; padding:10px 26px; color:#fff; border-radius:12px; cursor:pointer; font-weight:700; font-size:13px; width:100%;">Close</button>
         </div>
+    </div>
+
+    <!-- Withdraw Modal -->
+    <div id="withdrawModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center; padding: 15px;">
+      <div style="background:#1f1f1f; padding:20px; border-radius:12px; width:90%; max-width:400px; color:white; text-align:center;">
+        <h3>Withdraw Earnings</h3>
+        <p>Minimum withdraw: 10,000 Coins = 100 BDT</p>
+        <select id="paymentMethod" style="width:100%; padding:10px; margin:10px 0; background:#333; color:white; border-radius:5px;">
+          <option value="Bkash">Bkash</option>
+          <option value="Nagad">Nagad</option>
+          <option value="Rocket">Rocket</option>
+          <option value="Crypto_TON">Crypto Wallet (TON)</option>
+        </select>
+        <input type="text" id="accountNumber" placeholder="Enter your number or wallet address" style="width:100%; padding:10px; margin:10px 0; background:#333; color:white; border:1px solid #555; border-radius:5px;">
+        <button onclick="submitWithdraw()" style="background:#ffc107; color:black; padding:10px; width:100%; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Submit Request</button>
+        <br><br>
+        <button onclick="closeWithdrawModal()" style="background:#dc3545; color:white; padding:8px 15px; border:none; border-radius:5px; cursor:pointer; width:100%;">Close</button>
+      </div>
     </div>
 
     <script>
         let tg = window.Telegram.WebApp;
         let userId = "guest_user";
+        let userName = "Gamer";
         
         try {
             tg.expand();
             if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
                 userId = String(tg.initDataUnsafe.user.id);
-                let userName = tg.initDataUnsafe.user.first_name || "Gamer";
+                userName = tg.initDataUnsafe.user.first_name || "Gamer";
                 document.getElementById('username').innerText = `Welcome, ${userName}! 🚀`;
             }
-                // Unique storage keys per user ID
+        } catch(e) {}
+
         const scoreKey = 'taps_' + userId;
         const powerKey = 'tapPower_' + userId;
         const costKey = 'upgradeCost_' + userId;
         const energyKey = 'energy_' + userId;
         const timeKey = 'lastTime_' + userId;
         const claimKey = 'lastClaim_' + userId;
-        
-        // নতুন এনার্জি আপগ্রেড কি (Keys)
         const maxEnergyKey = 'maxEnergy_' + userId;
         const energyCostKey = 'energyCost_' + userId;
 
@@ -348,19 +354,18 @@
         let tapPower = parseInt(localStorage.getItem(powerKey)) || 1;
         let upgradeCost = parseInt(localStorage.getItem(costKey)) || 500;
         
-        // নতুন এনার্জি ভেরিয়েবল
         let maxEnergy = parseInt(localStorage.getItem(maxEnergyKey)) || 1000;
         let energy = parseInt(localStorage.getItem(energyKey)) || maxEnergy;
         let energyUpgradeCost = parseInt(localStorage.getItem(energyCostKey)) || 1000;
-        
         let lastTime = parseInt(localStorage.getItem(timeKey)) || Date.now();
 
         let now = Date.now();
         let secondsPassed = Math.floor((now - lastTime) / 1000);
-        
         energy = Math.min(maxEnergy, energy + (secondsPassed * 2));
+
         updateUI();
         checkTaskStatuses();
+
         function updateUI() {
             let scoreEl = document.getElementById('score');
             if (scoreEl) scoreEl.innerText = score;
@@ -419,12 +424,27 @@
                 alert("Energy is empty! Please wait for it to refill.");
             }
         }
+
+        function upgradeTap() {
+            if (score >= upgradeCost) {
+                score -= upgradeCost;
+                tapPower += 1;
+                upgradeCost = Math.floor(upgradeCost * 1.5);
+                localStorage.setItem(powerKey, tapPower);
+                localStorage.setItem(costKey, upgradeCost);
+                localStorage.setItem(scoreKey, score);
+                updateUI();
+                alert(`Success! Your tap power is now ${tapPower}`);
+            } else {
+                alert("Not enough coins!");
+            }
+        }
+
         function upgradeEnergy() {
             if (score >= energyUpgradeCost) {
                 score -= energyUpgradeCost;
                 maxEnergy += 500;
                 energy += 500; 
-                
                 energyUpgradeCost = Math.floor(energyUpgradeCost * 1.5); 
                 
                 localStorage.setItem(maxEnergyKey, maxEnergy);
@@ -438,6 +458,7 @@
                 alert("Not enough coins to upgrade energy!");
             }
         }
+
         function openTasks() {
             document.getElementById('taskModal').style.display = 'flex';
         }
@@ -446,7 +467,6 @@
             document.getElementById('taskModal').style.display = 'none';
         }
 
-        // Unique User Task Handler
         function handleTask(taskId, reward, link) {
             const userTaskKey = taskId + '_' + userId;
             let status = localStorage.getItem(userTaskKey);
@@ -532,14 +552,14 @@
                 score += 200;
                 localStorage.setItem(claimKey, today);
                 localStorage.setItem(scoreKey, score);
-                updateUI();window.saveToFirebase(score);
+                updateUI();
+                if(window.saveToFirebase) window.saveToFirebase(score);
                 alert("Congratulations! You received 200 coins as a daily bonus! 🎁");
             }
         }
 
         function inviteFriend() {
             let inviteLink = `https://t.me/miraztap_bot/cryptotap?startapp=ref_${userId}`;
-            
             if (tg && tg.openTelegramLink) {
                 tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent("🔥 Awesome game! Tap to earn crypto coins now:")}`);
             } else {
@@ -551,13 +571,13 @@
             try {
                 let res = await fetch('/api/buy');
                 let data = await res.json();
-
                 if (data.invoiceLink) {
                     tg.openInvoice(data.invoiceLink, (status) => {
                         if (status === 'paid') {
                             score += 500;
                             localStorage.setItem(scoreKey, score);
-                            updateUI();window.saveToFirebase(score);
+                            updateUI();
+                            if(window.saveToFirebase) window.saveToFirebase(score);
                             alert("Payment successful and 500 bonus coins added!");
                         } else {
                             alert("Payment not completed.");
@@ -570,142 +590,85 @@
                 alert("Server connection failed!");
             }
         }
-    </script>
-    <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // Your Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyCYnHVLaIfDXR3-_AgY-O2L4IEgl8lEtc8",
-    authDomain: "crypto-tap-x.firebaseapp.com",
-    projectId: "crypto-tap-x",
-    storageBucket: "crypto-tap-x.firebasestorage.app",
-    messagingSenderId: "690156129036",
-    appId: "1:690156129036:web:198aadab760a0de1b39729",
-    measurementId: "G-8ZQGJ8DFDG"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  window.db = db;
-
-  // টেলিগ্রাম থেকে ইউজারের তথ্য নেওয়া
-  let tg = window.Telegram?.WebApp;
-  let tgUser = tg?.initDataUnsafe?.user;
-  
-  // যদি টেলিগ্রাম থেকে ওপেন করে তবে আসল আইডি পাবে, নাহলে টেস্ট ইউজার
-  let userId = tgUser ? tgUser.id.toString() : "guest_user_01";
-  let userName = tgUser ? tgUser.first_name : "Guest";
-
-  // ফায়ারবেসে কয়েন সেভ করার গ্লোবাল ফাংশন
-  window.saveToFirebase = async function(currentCoins) {
-    try {
-      const userRef = doc(db, "users", userId);
-      await setDoc(userRef, {
-        name: userName,
-        score: currentCoins,
-        last_updated: new Date()
-      }, { merge: true }); // merge: true দিলে আগের ডেটা মুছে যাবে না, আপডেট হবে
-      console.log("Firebase-এ কয়েন সেভ হয়েছে!");
-    } catch (error) {
-      console.error("Firebase Error: ", error);
-    }
-  };
-    </script>
-<!-- Withdraw Modal HTML -->
-<div id="withdrawModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
-  <div style="background:#1f1f1f; padding:20px; border-radius:12px; width:90%; max-width:400px; color:white; text-align:center;">
-    <h3>Withdraw Earnings</h3>
-    <p>Minimum withdraw: 10,000 Coins = 100 BDT</p>
-    <select id="paymentMethod" style="width:100%; padding:10px; margin:10px 0; background:#333; color:white; border-radius:5px;">
-      <option value="Bkash">Bkash</option>
-      <option value="Nagad">Nagad</option>
-      <option value="Rocket">Rocket</option>
-      <option value="Crypto_TON">Crypto Wallet (TON)</option> <!-- নতুন ক্রিপ্টো অপশন -->
-    </select>
-    <input type="text" id="accountNumber" placeholder="Enter your number or wallet address" style="width:100%; padding:10px; margin:10px 0; background:#333; color:white; border:1px solid #555; border-radius:5px;">
-    <button onclick="submitWithdraw()" style="background:#ffc107; color:black; padding:10px; width:100%; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Submit Request</button>
-    <br><br>
-    <button onclick="closeWithdrawModal()" style="background:#dc3545; color:white; padding:8px 15px; border:none; border-radius:5px; cursor:pointer;">Close</button>
-  </div>
-</div>
-
-<script>
-    function openWithdrawModal() {
-        document.getElementById('withdrawModal').style.display = 'flex';
-    }
-
-    function closeWithdrawModal() {
-        document.getElementById('withdrawModal').style.display = 'none';
-    }
-
-    async function submitWithdraw() {
-        try {
-            const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
-            const currentUserId = tgUser?.id ? tgUser.id.toString() : "anonymous_user";
-            const currentUserName = tgUser?.username || tgUser?.first_name || "Telegram User";
-
-            let method = document.getElementById('paymentMethod').value;
-            let number = document.getElementById('accountNumber').value;
-
-            if (!number) {
-                alert("Please enter your account number or wallet address!");
-                return;
-            }
-
-            if (score < 10000) {
-                alert("You need at least 10,000 coins to withdraw!");
-                return;
-            }
-
-            // ১. ইউজারের ব্যালেন্স থেকে ১০,০০০ কয়েন মাইনাস করা
-            const userRef = window.doc(window.db, "users", currentUserId);
-            await window.updateDoc(userRef, {
-                score: window.increment(-10000),
-                last_updated: new Date()
-            });
-
-            // ২. উইথড্র রিকোয়েস্ট জমা দেওয়া
-            const withdrawRef = window.doc(window.db, "withdraw_requests", currentUserId + "_" + Date.now());
-            await window.setDoc(withdrawRef, {
-                userId: currentUserId,
-                userName: currentUserName,
-                coins: 10000,
-                method: method,
-                account: number,
-                status: "Pending",
-                time: new Date().toISOString()
-            });
-
-            // ৩. গেমের ট্রেজারি বা ফান্ডে কয়েন যোগ করা
-            const treasuryRef = window.doc(window.db, "game_stats", "treasury");
-            await window.setDoc(treasuryRef, {
-                totalCollected: window.increment(10000)
-            }, { merge: true });
-
-            // সফল মেসেজ
-            alert("Request submitted successfully! Your withdrawal is pending.");
-
-            // স্ক্রিন স্কোর আপডেট
-            score -= 10000;
-            document.getElementById('score').innerText = score; // 'scoreText' এর বদলে 'score' হবে
-            localStorage.setItem(scoreKey, score); // লোকাল স্টোরেজ আপডেট
-            closeWithdrawModal();
-
-        } catch (error) {
-            console.error("Firebase Error: ", error);
-            alert("Failed to submit request: " + error.message);
+        function openWithdrawModal() {
+            document.getElementById('withdrawModal').style.display = 'flex';
         }
-    }
 
-    // Ton Connect UI
-    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-        manifestUrl: 'https://raw.githubusercontent.com/ton-connect/demo-dapp-with-react-ui/master/public/tonconnect-manifest.json',
-        buttonRootId: 'ton-connect'
-    });
-</script>
+        function closeWithdrawModal() {
+            document.getElementById('withdrawModal').style.display = 'none';
+        }
+
+        async function submitWithdraw() {
+            try {
+                let method = document.getElementById('paymentMethod').value;
+                let number = document.getElementById('accountNumber').value;
+
+                if (!number) {
+                    alert("Please enter your account number or wallet address!");
+                    return;
+                }
+
+                if (score < 10000) {
+                    alert("You need at least 10,000 coins to withdraw!");
+                    return;
+                }
+
+                const userRef = window.doc(window.db, "users", userId);
+                await window.updateDoc(userRef, {
+                    score: window.increment(-10000),
+                    last_updated: new Date()
+                });
+
+                const withdrawRef = window.doc(window.db, "withdraw_requests", userId + "_" + Date.now());
+                await window.setDoc(withdrawRef, {
+                    userId: userId,
+                    userName: userName,
+                    coins: 10000,
+                    method: method,
+                    account: number,
+                    status: "Pending",
+                    time: new Date().toISOString()
+                });
+
+                const treasuryRef = window.doc(window.db, "game_stats", "treasury");
+                await window.setDoc(treasuryRef, {
+                    totalCollected: window.increment(10000)
+                }, { merge: true });
+
+                alert("Request submitted successfully! Your withdrawal is pending.");
+
+                score -= 10000;
+                document.getElementById('score').innerText = score;
+                localStorage.setItem(scoreKey, score);
+                closeWithdrawModal();
+
+            } catch (error) {
+                console.error("Firebase Error: ", error);
+                alert("Failed to submit request: " + error.message);
+            }
+        }
+
+        window.saveToFirebase = async function(currentCoins) {
+            try {
+                const userRef = window.doc(window.db, "users", userId);
+                await window.setDoc(userRef, {
+                    name: userName,
+                    score: currentCoins,
+                    last_updated: new Date()
+                }, { merge: true });
+            } catch (error) {
+                console.error("Firebase Error: ", error);
+            }
+        };
+
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://raw.githubusercontent.com/ton-connect/demo-dapp-with-react-ui/master/public/tonconnect-manifest.json',
+            buttonRootId: 'ton-connect'
+        });
+    </script>
 </body>
 </html>
 
+
+  
