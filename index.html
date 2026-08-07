@@ -632,45 +632,64 @@
       alert("Failed to submit request.");
     }
   }
-</script>
-<!-- TON Connect JavaScript -->
-<script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
 <script>
-  const connector = new TON_CONNECT_SDK.TonConnect({
-    manifestUrl: 'https://raw.githubusercontent.com/ton-connect/sdk/main/packages/shared/mock/tonconnect-manifest.json'
-  });
+  function openWithdrawModal() {
+    document.getElementById('withdrawModal').style.display = 'flex';
+  }
+  
+  function closeWithdrawModal() {
+    document.getElementById('withdrawModal').style.display = 'none';
+  }
 
-  async function toggleTonWallet() {
+  async function submitWithdraw() {
+    let method = document.getElementById('paymentMethod').value;
+    let number = document.getElementById('accountNumber').value;
+
+    if (!number) {
+      alert("Please enter your account number!");
+      return;
+    }
+
+    if (score < 10000) {
+      alert("You need at least 10,000 coins to withdraw!");
+      return;
+    }
+
     try {
-      if (connector.connected) {
-        await connector.disconnect();
-        document.getElementById('tonConnectButton').innerText = "💎 Connect Wallet";
-        document.getElementById('walletAddress').innerText = "";
-        alert("Wallet disconnected!");
-      } else {
-        const walletsList = await connector.getWallets();
-        const universalLink = connector.connect(walletsList[0]);
-        if (window.Telegram?.WebApp) {
-          window.Telegram.WebApp.openTelegramLink(universalLink);
-        } else {
-          window.open(universalLink, '_blank');
-        }
-      }
+      const withdrawRef = doc(db, "withdraw_requests", userId + "_" + Date.now());
+      await setDoc(withdrawRef, {
+        userId: userId,
+        userName: userName,
+        coins: score,
+        method: method,
+        account: number,
+        status: "Pending",
+        time: new Date()
+      });
+
+      alert("Withdraw request submitted successfully!");
+      closeWithdrawModal();
     } catch (error) {
-      console.error("TON Connect Error: ", error);
-      alert("Failed to connect wallet.");
+      console.error("Error: ", error);
+      alert("Failed to submit request.");
     }
   }
 
-  connector.onStatusChange(wallet => {
-    if (wallet) {
-      const rawAddress = wallet.account.address;
-      const shortAddress = rawAddress.slice(0, 4) + '...' + rawAddress.slice(-4);
-      document.getElementById('tonConnectButton').innerText = "✅ " + shortAddress;
-      document.getElementById('walletAddress').innerText = rawAddress;
+  // সহজ এবং কার্যকরী টন ওয়ালেট কানেক্ট (Tonkeeper Direct Link)
+  function toggleTonWallet() {
+    // ইউজারের টনকিপার ওয়ালেট বা টোন স্পেস ওপেন করার ইউনিভার্সাল লিংক
+    let tonkeeperUrl = "https://app.tonkeeper.com/transfer?to=UQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXXX&amount=0";
+    
+    if (window.Telegram?.WebApp) {
+      window.Telegram.WebApp.openTelegramLink("https://t.me/tonkeeper?start=attach");
+    } else {
+      window.open(tonkeeperUrl, '_blank');
     }
-  });
+    
+    document.getElementById('tonConnectButton').innerText = "✅ Wallet Opened";
+  }
 </script>
+
 
 </body>
 </html>
