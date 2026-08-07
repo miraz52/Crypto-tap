@@ -361,12 +361,14 @@
         energy = Math.min(maxEnergy, energy + (secondsPassed * 2));
         updateUI();
         checkTaskStatuses();
-
         function updateUI() {
-            document.getElementById('score').innerText = score;
+            let scoreEl = document.getElementById('score');
+            if (scoreEl) scoreEl.innerText = score;
+
             document.getElementById('energyText').innerText = `${energy}/${maxEnergy}`;
             document.getElementById('energyBar').style.width = (energy / maxEnergy) * 100 + '%';
             document.getElementById('upgradeCost').innerText = `${upgradeCost} Coins`;
+            
             if(document.getElementById('energyUpgradeCost')) {
                 document.getElementById('energyUpgradeCost').innerText = `${energyUpgradeCost} Coins`;
             }
