@@ -632,20 +632,22 @@
       alert("Failed to submit request.");
     }
   }
-
-  // সহজ এবং কার্যকরী টন ওয়ালেট কানেক্ট (Tonkeeper Direct Link)
   function toggleTonWallet() {
-    // ইউজারের টনকিপার ওয়ালেট বা টোন স্পেস ওপেন করার ইউনিভার্সাল লিংক
-    let tonkeeperUrl = "https://app.tonkeeper.com/transfer?to=UQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAXXX&amount=0";
+    // সরাসরি টনকিপার ওপেন করার লিংক
+    let walletUrl = "https://t.me/tonkeeper?start=attach";
     
     if (window.Telegram?.WebApp) {
-      window.Telegram.WebApp.openTelegramLink("https://t.me/tonkeeper?start=attach");
+      window.Telegram.WebApp.openTelegramLink(walletUrl);
     } else {
-      window.open(tonkeeperUrl, '_blank');
+      window.open("https://app.tonkeeper.com/", "_blank");
     }
     
-    document.getElementById('tonConnectButton').innerText = "✅ Wallet Opened";
+    // ইউজারকে কনফার্ম করার জন্য মেসেজ দেখানো
+    alert("Redirecting to Tonkeeper Wallet...");
+    document.getElementById('tonConnectButton').innerText = "✅ Wallet Connected";
   }
+
+  
 </script>
 
 
