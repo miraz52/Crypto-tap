@@ -598,7 +598,7 @@
       console.error("Firebase Error: ", error);
     }
   };
-</script>
+    </script>
 <!-- Withdraw Modal HTML -->
 <div id="withdrawModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
   <div style="background:#1f1f1f; padding:20px; border-radius:12px; width:90%; max-width:400px; color:white; text-align:center;">
@@ -608,8 +608,9 @@
       <option value="Bkash">Bkash</option>
       <option value="Nagad">Nagad</option>
       <option value="Rocket">Rocket</option>
+      <option value="Crypto_TON">Crypto Wallet (TON)</option> <!-- নতুন ক্রিপ্টো অপশন -->
     </select>
-    <input type="text" id="accountNumber" placeholder="Enter your number" style="width:100%; padding:10px; margin:10px 0; background:#333; color:white; border:1px solid #555; border-radius:5px;">
+    <input type="text" id="accountNumber" placeholder="Enter your number or wallet address" style="width:100%; padding:10px; margin:10px 0; background:#333; color:white; border:1px solid #555; border-radius:5px;">
     <button onclick="submitWithdraw()" style="background:#ffc107; color:black; padding:10px; width:100%; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Submit Request</button>
     <br><br>
     <button onclick="closeWithdrawModal()" style="background:#dc3545; color:white; padding:8px 15px; border:none; border-radius:5px; cursor:pointer;">Close</button>
@@ -628,14 +629,14 @@
     async function submitWithdraw() {
         try {
             const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
-            const userId = tgUser?.id ? tgUser.id.toString() : "anonymous_user";
-            const userName = tgUser?.username || tgUser?.first_name || "Telegram User";
+            const currentUserId = tgUser?.id ? tgUser.id.toString() : "anonymous_user";
+            const currentUserName = tgUser?.username || tgUser?.first_name || "Telegram User";
 
             let method = document.getElementById('paymentMethod').value;
             let number = document.getElementById('accountNumber').value;
 
             if (!number) {
-                alert("Please enter your account number!");
+                alert("Please enter your account number or wallet address!");
                 return;
             }
 
@@ -645,17 +646,17 @@
             }
 
             // ১. ইউজারের ব্যালেন্স থেকে ১০,০০০ কয়েন মাইনাস করা
-            const userRef = window.doc(window.db, "users", userId);
+            const userRef = window.doc(window.db, "users", currentUserId);
             await window.updateDoc(userRef, {
                 score: window.increment(-10000),
                 last_updated: new Date()
             });
 
-            // ২. উইথড্র রিকোয়েস্ট জমা দেওয়া (বিকাশ, নগদ, রকেট সহ)
-            const withdrawRef = window.doc(window.db, "withdraw_requests", userId + "_" + Date.now());
+            // ২. উইথড্র রিকোয়েস্ট জমা দেওয়া
+            const withdrawRef = window.doc(window.db, "withdraw_requests", currentUserId + "_" + Date.now());
             await window.setDoc(withdrawRef, {
-                userId: userId,
-                userName: userName,
+                userId: currentUserId,
+                userName: currentUserName,
                 coins: 10000,
                 method: method,
                 account: number,
@@ -674,7 +675,8 @@
 
             // স্ক্রিন স্কোর আপডেট
             score -= 10000;
-            document.getElementById('scoreText').innerText = score;
+            document.getElementById('score').innerText = score; // 'scoreText' এর বদলে 'score' হবে
+            localStorage.setItem(scoreKey, score); // লোকাল স্টোরেজ আপডেট
             closeWithdrawModal();
 
         } catch (error) {
@@ -683,26 +685,12 @@
         }
     }
 
-    // Ton Connect UI (আপনার আগের কোডের অংশ)
+    // Ton Connect UI
     const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
         manifestUrl: 'https://raw.githubusercontent.com/ton-connect/demo-dapp-with-react-ui/master/public/tonconnect-manifest.json',
         buttonRootId: 'ton-connect'
     });
 </script>
-
-        closeWithdrawModal();
-
-    } catch (error) {
-        console.error("Firebase Error: ", error);
-        alert("Failed to submit request: " + error.message);
-    }
-}
-
-
-  const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-    manifestUrl: 'https://raw.githubusercontent.com/ton-connect/demo-dapp-with-react-ui/master/public/tonconnect-manifest.json',
-    buttonRootId: 'ton-connect'
-  });
-</script>
 </body>
 </html>
+
