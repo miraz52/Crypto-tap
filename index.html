@@ -257,6 +257,8 @@
 
         <button class="btn-boost-full" onclick="buyBoost()">⭐ Buy Booster (Telegram Stars)</button>
 <button onclick="openWithdrawModal()" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;">💸 Withdraw</button>
+<button id="tonConnectButton" onclick="toggleTonWallet()" style="background: #0088cc; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;">💎 Connect Wallet</button>
+<p id="walletAddress" style="font-size: 12px; color: #aaa; margin-top: 5px;"></p>
 
 
     </div>
@@ -630,6 +632,44 @@
       alert("Failed to submit request.");
     }
   }
+</script>
+<!-- TON Connect JavaScript -->
+<script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect-sdk.min.js"></script>
+<script>
+  const connector = new TON_CONNECT_SDK.TonConnect({
+    manifestUrl: 'https://raw.githubusercontent.com/ton-connect/sdk/main/packages/shared/mock/tonconnect-manifest.json'
+  });
+
+  async function toggleTonWallet() {
+    try {
+      if (connector.connected) {
+        await connector.disconnect();
+        document.getElementById('tonConnectButton').innerText = "💎 Connect Wallet";
+        document.getElementById('walletAddress').innerText = "";
+        alert("Wallet disconnected!");
+      } else {
+        const walletsList = await connector.getWallets();
+        const universalLink = connector.connect(walletsList[0]);
+        if (window.Telegram?.WebApp) {
+          window.Telegram.WebApp.openTelegramLink(universalLink);
+        } else {
+          window.open(universalLink, '_blank');
+        }
+      }
+    } catch (error) {
+      console.error("TON Connect Error: ", error);
+      alert("Failed to connect wallet.");
+    }
+  }
+
+  connector.onStatusChange(wallet => {
+    if (wallet) {
+      const rawAddress = wallet.account.address;
+      const shortAddress = rawAddress.slice(0, 4) + '...' + rawAddress.slice(-4);
+      document.getElementById('tonConnectButton').innerText = "✅ " + shortAddress;
+      document.getElementById('walletAddress').innerText = rawAddress;
+    }
+  });
 </script>
 
 </body>
