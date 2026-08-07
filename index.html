@@ -256,6 +256,9 @@
         </div>
 
         <button class="btn-boost-full" onclick="buyBoost()">⭐ Buy Booster (Telegram Stars)</button>
+<button onclick="openWithdrawModal()" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;">💸 Withdraw</button>
+
+
     </div>
 
     <!-- Task Modal with Unique User Isolation -->
@@ -567,6 +570,66 @@
       console.error("Firebase Error: ", error);
     }
   };
+</script>
+<!-- Withdraw Modal HTML -->
+<div id="withdrawModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
+  <div style="background:#1f1f1f; padding:20px; border-radius:12px; width:90%; max-width:400px; color:white; text-align:center;">
+    <h3>Withdraw Earnings</h3>
+    <p>Minimum withdraw: 10,000 Coins = 100 BDT</p>
+    <select id="paymentMethod" style="width:100%; padding:10px; margin:10px 0; background:#333; color:white; border-radius:5px;">
+      <option value="Bkash">Bkash</option>
+      <option value="Nagad">Nagad</option>
+      <option value="Rocket">Rocket</option>
+    </select>
+    <input type="text" id="accountNumber" placeholder="Enter your number" style="width:100%; padding:10px; margin:10px 0; background:#333; color:white; border:1px solid #555; border-radius:5px;">
+    <button onclick="submitWithdraw()" style="background:#ffc107; color:black; padding:10px; width:100%; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Submit Request</button>
+    <br><br>
+    <button onclick="closeWithdrawModal()" style="background:#dc3545; color:white; padding:8px 15px; border:none; border-radius:5px; cursor:pointer;">Close</button>
+  </div>
+</div>
+
+<script>
+  function openWithdrawModal() {
+    document.getElementById('withdrawModal').style.display = 'flex';
+  }
+  
+  function closeWithdrawModal() {
+    document.getElementById('withdrawModal').style.display = 'none';
+  }
+
+  async function submitWithdraw() {
+    let method = document.getElementById('paymentMethod').value;
+    let number = document.getElementById('accountNumber').value;
+
+    if (!number) {
+      alert("Please enter your account number!");
+      return;
+    }
+
+    if (score < 10000) {
+      alert("You need at least 10,000 coins to withdraw!");
+      return;
+    }
+
+    try {
+      const withdrawRef = doc(db, "withdraw_requests", userId + "_" + Date.now());
+      await setDoc(withdrawRef, {
+        userId: userId,
+        userName: userName,
+        coins: score,
+        method: method,
+        account: number,
+        status: "Pending",
+        time: new Date()
+      });
+
+      alert("Withdraw request submitted successfully!");
+      closeWithdrawModal();
+    } catch (error) {
+      console.error("Error: ", error);
+      alert("Failed to submit request.");
+    }
+  }
 </script>
 
 </body>
