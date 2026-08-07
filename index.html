@@ -465,6 +465,13 @@
                 alert("Not enough coins to upgrade energy!");
             }
         }
+            if(document.getElementById('botLevelText')) {
+                document.getElementById('botLevelText').innerText = botLevel;
+            }
+            if(document.getElementById('botCost')) {
+                botCost = 5000 * Math.pow(2, botLevel);
+                document.getElementById('botCost').innerText = botLevel === 0 ? "5000 Coins" : `${botCost} Coins (Upgrade)`;
+            }
 
         function openTasks() {
             document.getElementById('taskModal').style.display = 'flex';
