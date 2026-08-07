@@ -357,11 +357,13 @@
         updateUI();
         checkTaskStatuses();
 
-        function updateUI() {
+                function updateUI() {
             document.getElementById('score').innerText = score;
             document.getElementById('energyText').innerText = `${energy}/${maxEnergy}`;
             document.getElementById('energyBar').style.width = (energy / maxEnergy) * 100 + '%';
             document.getElementById('upgradeCost').innerText = `${upgradeCost} Coins`;
+            if(document.getElementById('energyUpgradeCost')) {
+                document.getElementById('energyUpgradeCost').innerText = `${energyUpgradeCost} Coins
         }
 
         setInterval(() => {
