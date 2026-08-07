@@ -363,6 +363,16 @@
         let now = Date.now();
         let secondsPassed = Math.floor((now - lastTime) / 1000);
         energy = Math.min(maxEnergy, energy + (secondsPassed * 2));
+        // লেভেল ভিত্তিক অটো-বট অফলাইন আর্নিং চেক
+        if (botLevel > 0 && Date.now() < botExpiry) {
+            let offlineSeconds = Math.floor((Date.now() - lastTime) / 1000);
+            let coinsPerSec = botLevel; // লেভেল ১ এ প্রতি সেকেন্ডে ১ কয়েন, লেভেলে ২ এ প্রতি সেকেন্ডে ২ কয়েন এভাবে বাড়বে
+            let botEarnings = offlineSeconds * coinsPerSec;
+            if (botEarnings > 0) {
+                score += botEarnings;
+                alert(`🤖 Level ${botLevel} Auto-Bot farmed ${botEarnings} coins while you were away!`);
+            }
+        }
 
         updateUI();
         checkTaskStatuses();
