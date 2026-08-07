@@ -332,22 +332,27 @@
                 let userName = tg.initDataUnsafe.user.first_name || "Gamer";
                 document.getElementById('username').innerText = `Welcome, ${userName}! 🚀`;
             }
-        } catch(e) {}
-
-        // Unique storage keys per user ID
+                // Unique storage keys per user ID
         const scoreKey = 'taps_' + userId;
         const powerKey = 'tapPower_' + userId;
         const costKey = 'upgradeCost_' + userId;
         const energyKey = 'energy_' + userId;
         const timeKey = 'lastTime_' + userId;
         const claimKey = 'lastClaim_' + userId;
+        
+        // নতুন এনার্জি আপগ্রেড কি (Keys)
+        const maxEnergyKey = 'maxEnergy_' + userId;
+        const energyCostKey = 'energyCost_' + userId;
 
         let score = parseInt(localStorage.getItem(scoreKey)) || 0;
         let tapPower = parseInt(localStorage.getItem(powerKey)) || 1;
         let upgradeCost = parseInt(localStorage.getItem(costKey)) || 500;
         
-        let maxEnergy = 1000;
-        let energy = parseInt(localStorage.getItem(energyKey)) || 1000;
+        // নতুন এনার্জি ভেরিয়েবল
+        let maxEnergy = parseInt(localStorage.getItem(maxEnergyKey)) || 1000;
+        let energy = parseInt(localStorage.getItem(energyKey)) || maxEnergy;
+        let energyUpgradeCost = parseInt(localStorage.getItem(energyCostKey)) || 1000;
+        
         let lastTime = parseInt(localStorage.getItem(timeKey)) || Date.now();
 
         let now = Date.now();
@@ -357,13 +362,14 @@
         updateUI();
         checkTaskStatuses();
 
-                function updateUI() {
+        function updateUI() {
             document.getElementById('score').innerText = score;
             document.getElementById('energyText').innerText = `${energy}/${maxEnergy}`;
             document.getElementById('energyBar').style.width = (energy / maxEnergy) * 100 + '%';
             document.getElementById('upgradeCost').innerText = `${upgradeCost} Coins`;
             if(document.getElementById('energyUpgradeCost')) {
-                document.getElementById('energyUpgradeCost').innerText = `${energyUpgradeCost} Coins
+                document.getElementById('energyUpgradeCost').innerText = `${energyUpgradeCost} Coins`;
+            }
         }
 
         setInterval(() => {
