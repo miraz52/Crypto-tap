@@ -617,74 +617,79 @@
 </div>
 
 <script>
-  function openWithdrawModal() {
-    document.getElementById('withdrawModal').style.display = 'flex';
-  }
-  
-  function closeWithdrawModal() {
-    document.getElementById('withdrawModal').style.display = 'none';
-  }
-
-  async function submitWithdraw() {
-    try {
-        const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
-        const userId = tgUser?.id ? tgUser.id.toString() : "anonymous_user";
-        const userName = tgUser?.username || tgUser?.first_name || "Telegram User";
-
-        let method = document.getElementById('paymentMethod').value;
-        let number = document.getElementById('accountNumber').value;
-
-        if (!number) {
-            alert("Please enter your account number!");
-            return;
-        }
-
-        if (score < 10000) {
-            alert("You need at least 10,000 coins to withdraw!");
-            return;
-        }
-
-        // ১. ইউজারের ব্যালেন্স থেকে ১০,০০০ কয়েন মাইনাস করা
-        const userRef = window.doc(window.db, "users", userId);
-        await window.updateDoc(userRef, {
-            score: window.increment(-10000),
-            last_updated: new Date()
-        });
-
-        // ২. উইথড্র রিকোয়েস্ট জমা দেওয়া (বিকাশ, নগদ, রকেট সহ)
-        const withdrawRef = window.doc(window.db, "withdraw_requests", userId + "_" + Date.now());
-        await window.setDoc(withdrawRef, {
-            userId: userId,
-            userName: userName,
-            coins: 10000,
-            method: method,
-            account: number,
-            status: "Pending",
-            time: new Date().toISOString()
-        });
-
-        // ৩. গেমের ট্রেজারি বা ফান্ডে কয়েন যোগ করা
-        const treasuryRef = window.doc(window.db, "game_stats", "treasury");
-        await window.setDoc(treasuryRef, {
-            totalCollected: window.increment(10000)
-        }, { merge: true });
-
-        // সফল মেসেজ
-        alert("Request submitted successfully! Your withdrawal is pending.");
-
-        // স্ক্রিন স্কোর আপডেট
-        score -= 10000;
-        document.getElementById('scoreText').innerText = score;
-        closeWithdrawModal();
-
-    } catch (error) {
-        console.error("Firebase Error: ", error);
-        alert("Failed to submit request: " + error.message);
+    function openWithdrawModal() {
+        document.getElementById('withdrawModal').style.display = 'flex';
     }
-}
 
-        score -= 10000;
-        document.getElementById('scoreText').innerText = score;
+    function closeWithdrawModal() {
+        document.getElementById('withdrawModal').style.display = 'none';
+    }
+
+    async function submitWithdraw() {
+        try {
+            const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
+            const userId = tgUser?.id ? tgUser.id.toString() : "anonymous_user";
+            const userName = tgUser?.username || tgUser?.first_name || "Telegram User";
+
+            let method = document.getElementById('paymentMethod').value;
+            let number = document.getElementById('accountNumber').value;
+
+            if (!number) {
+                alert("Please enter your account number!");
+                return;
+            }
+
+            if (score < 10000) {
+                alert("You need at least 10,000 coins to withdraw!");
+                return;
+            }
+
+            // ১. ইউজারের ব্যালেন্স থেকে ১০,০০০ কয়েন মাইনাস করা
+            const userRef = window.doc(window.db, "users", userId);
+            await window.updateDoc(userRef, {
+                score: window.increment(-10000),
+                last_updated: new Date()
+            });
+
+            // ২. উইথড্র রিকোয়েস্ট জমা দেওয়া (বিকাশ, নগদ, রকেট সহ)
+            const withdrawRef = window.doc(window.db, "withdraw_requests", userId + "_" + Date.now());
+            await window.setDoc(withdrawRef, {
+                userId: userId,
+                userName: userName,
+                coins: 10000,
+                method: method,
+                account: number,
+                status: "Pending",
+                time: new Date().toISOString()
+            });
+
+            // ৩. গেমের ট্রেজারি বা ফান্ডে কয়েন যোগ করা
+            const treasuryRef = window.doc(window.db, "game_stats", "treasury");
+            await window.setDoc(treasuryRef, {
+                totalCollected: window.increment(10000)
+            }, { merge: true });
+
+            // সফল মেসেজ
+            alert("Request submitted successfully! Your withdrawal is pending.");
+
+            // স্ক্রিন স্কোর আপডেট
+            score -= 10000;
+            document.getElementById('scoreText').innerText = score;
+            closeWithdrawModal();
+
+        } catch (error) {
+            console.error("Firebase Error: ", error);
+            alert("Failed to submit request: " + error.message);
+        }
+    }
+
+    // Ton Connect UI (আপনার আগের কোডের অংশ)
+    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://raw.githubusercontent.com/ton-connect/demo-dapp-with-react-ui/master/public/tonconnect-manifest.json',
+        buttonRootId: 'ton-connect'
+    });
+</script>
+
         closeWithdrawModal();
 
     } catch (error) {
