@@ -3,7 +3,7 @@
 <head>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, updateDoc, increment, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCYnHVLaIfDXR3-_AgY-O2L4IEgl8lEtc8",
@@ -23,6 +23,11 @@
         window.setDoc = setDoc;
         window.updateDoc = updateDoc;
         window.increment = increment;
+        window.collection = collection;
+        window.getDocs = getDocs;
+        window.query = query;
+        window.orderBy = orderBy;
+        window.limit = limit;
     </script>
 
     <meta charset="UTF-8">
@@ -86,7 +91,7 @@
         .energy-box { width: 100%; background: rgba(0, 0, 0, 0.5); border-radius: 20px; overflow: hidden; height: 9px; border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); }
         #energyBar { height: 100%; background: linear-gradient(90deg, #d97706, #facc15); width: 100%; border-radius: 20px; transition: width 0.15s ease-out; box-shadow: 0 0 10px rgba(250, 204, 21, 0.5); }
 
-        /* Realistic 3D Big 'X' Gold Coin (Centered & Perfect Layout) */
+        /* Realistic 3D Big 'X' Gold Coin */
         .coin-wrapper { position: relative; margin: 8px auto; }
         .coin-box {
             width: 165px;
@@ -147,7 +152,7 @@
         }
         .btn-boost-full:active { transform: scale(0.97); }
 
-        /* $XTAP WALLET Button */
+        /* $XTAP WALLET & Leaderboard Buttons */
         .btn-wallet-custom {
             background: linear-gradient(135deg, #10b981, #047857);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -163,6 +168,22 @@
             box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
         }
         .btn-wallet-custom:active { transform: scale(0.97); }
+
+        .btn-leaderboard {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 11px 18px;
+            color: white;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 5px;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+        }
+        .btn-leaderboard:active { transform: scale(0.97); }
 
         /* Modals */
         .modal {
@@ -216,17 +237,40 @@
             white-space: nowrap;
         }
 
-        /* $XTAP WALLET Dashboard Modal */
+        /* $XTAP WALLET & Leaderboard Modal Styles */
         .wallet-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #020617; z-index: 2000; padding: 20px; overflow-y: auto; text-align: left; }
         .wallet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .wallet-card-big { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 22px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.08); text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
         .tge-banner { background: linear-gradient(135deg, #d97706, #ca8a04); padding: 12px; border-radius: 14px; text-align: center; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(202, 138, 4, 0.3); }
         .countdown-box { display: flex; justify-content: center; gap: 6px; margin-top: 8px; }
         .time-block { background: rgba(0, 0, 0, 0.4); padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; color: #fff; min-width: 40px; text-align: center; }
-        .history-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
+        .history-item, .rank-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; align-items: center; }
+
+        /* Offline Warning Screen Overlay */
+        #offlineOverlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #020617;
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Offline Alert Screen -->
+    <div id="offlineOverlay">
+        <div style="max-width: 320px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); padding: 25px; border-radius: 20px; backdrop-filter: blur(16px);">
+            <div style="font-size: 50px; margin-bottom: 10px;">📡</div>
+            <h3 style="color: #ef4444; font-size: 20px; margin-bottom: 10px; font-weight: 800;">No Internet Connection</h3>
+            <p style="color: #94a3b8; font-size: 13px; line-height: 1.5; margin-bottom: 20px;">CryptoTap X requires an active internet connection to play and sync your rewards. Please reconnect.</p>
+            <button onclick="checkConnection()" style="background: var(--accent); color: #000; border: none; padding: 12px 24px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%;">Retry Connection</button>
+        </div>
+    </div>
 
     <div class="header" style="position: relative;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
@@ -273,6 +317,7 @@
         </div>
 
         <button class="btn-boost-full" onclick="buyBoost()">⭐ Buy Booster (Telegram Stars)</button>
+        <button class="btn-leaderboard" onclick="openLeaderboard()">🏆 Top Leaderboard</button>
         <button class="btn-wallet-custom" onclick="openNativeWallet()">💼 $XTAP WALLET</button>
         <div id="ton-connect" style="margin-top: 5px;"></div>
     </div>
@@ -304,6 +349,18 @@
             </div>
 
             <button onclick="closeTasks()" style="margin-top: 12px; background: #ef4444; border:none; padding:8px 20px; color:#fff; border-radius:10px; cursor:pointer; font-weight:700; font-size:12px; width:100%;">Close</button>
+        </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div id="leaderboardModal" class="modal">
+        <div class="modal-content">
+            <h3>🏆 Elite Leaderboard</h3>
+            <p style="font-size: 11px; color: #94a3b8; margin-bottom: 12px;">Top $XTAP earners worldwide</p>
+            <div id="leaderboard-list" style="max-height: 250px; overflow-y: auto;">
+                <div style="font-size: 12px; color: #64748b; padding: 15px;">Loading leaderboard...</div>
+            </div>
+            <button onclick="closeLeaderboard()" style="margin-top: 15px; background: #334155; border:none; padding:10px; color:#fff; border-radius:10px; width:100%; font-weight:bold; cursor:pointer;">Close</button>
         </div>
     </div>
 
@@ -350,6 +407,20 @@
     </div>
 
     <script>
+        // Internet Connection Status Check
+        function checkConnection() {
+            if (!navigator.onLine) {
+                document.getElementById('offlineOverlay').style.display = 'flex';
+                return false;
+            } else {
+                document.getElementById('offlineOverlay').style.display = 'none';
+                return true;
+            }
+        }
+
+        window.addEventListener('online', () => document.getElementById('offlineOverlay').style.display = 'none');
+        window.addEventListener('offline', () => document.getElementById('offlineOverlay').style.display = 'flex');
+
         let tg = window.Telegram.WebApp;
         let userId = "guest_user";
         let userName = "Gamer";
@@ -373,7 +444,7 @@
         const energyCostKey = 'energyCost_' + userId;
         const botLevelKey = 'botLevel_' + userId;
         const botTimeKey = 'botExpiry_' + userId;
-        const historyKey = 'history_' + userId; // User specific activity key
+        const historyKey = 'history_' + userId;
 
         let score = parseInt(localStorage.getItem(scoreKey)) || 0;
         let tapPower = parseInt(localStorage.getItem(powerKey)) || 1;
@@ -391,14 +462,22 @@
         let now = Date.now();
         let secondsPassed = Math.floor((now - lastTime) / 1000);
 
-        energy = Math.min(maxEnergy, energy + (secondsPassed * 2));
+        // Run initial check on load
+        checkConnection();
 
+        // Energy refill only while online/active logic
+        if (navigator.onLine) {
+            energy = Math.min(maxEnergy, energy + (secondsPassed * 2));
+        }
+
+        // Offline earnings: ONLY enabled if botLevel > 0 and bot is not expired
+        // Rate: Level 1 = 1000 coins per hour, Level 2 = 2000 coins per hour, etc.
         if (botLevel > 0 && now < botExpiry) {
-            let offlineSeconds = Math.floor((now - lastTime) / 1000);
-            let botEarnings = offlineSeconds * botLevel;
-            if (botEarnings > 0) {
+            let offlineHours = (now - lastTime) / (1000 * 60 * 60);
+            let botEarnings = Math.floor(offlineHours * botLevel * 1000);
+            if (botEarnings > 0 && navigator.onLine) {
                 score += botEarnings;
-                addActivity(`Auto-Bot farmed coins`, `+${botEarnings}`, '#10b981');
+                addActivity(`Auto-Bot offline farming`, `+${botEarnings}`, '#10b981');
                 alert(`🤖 Level ${botLevel} Auto-Bot farmed ${botEarnings} $XTAP while you were away!`);
             }
         } else if (now >= botExpiry && botLevel > 0) {
@@ -432,6 +511,8 @@
         }
 
         setInterval(() => {
+            if (!navigator.onLine) return; // Stop everything if offline
+
             if (energy < maxEnergy) {
                 energy = Math.min(maxEnergy, energy + 1);
                 updateUI();
@@ -441,11 +522,10 @@
             localStorage.setItem(scoreKey, score);
         }, 1000);
 
-        // User Specific Activity Logger
         function addActivity(title, amount, color) {
             let history = JSON.parse(localStorage.getItem(historyKey)) || [];
             history.unshift({ title, amount, color, time: new Date().toLocaleTimeString() });
-            if (history.length > 10) history.pop(); // Keep last 10 records
+            if (history.length > 10) history.pop();
             localStorage.setItem(historyKey, JSON.stringify(history));
         }
 
@@ -464,7 +544,40 @@
             `).join('');
         }
 
-        // TGE Countdown Timer (Target: December 11, 2030)
+        async function openLeaderboard() {
+            if (!checkConnection()) return;
+            document.getElementById('leaderboardModal').style.display = 'flex';
+            const list = document.getElementById('leaderboard-list');
+            list.innerHTML = `<div style="font-size: 12px; color: #64748b; padding: 15px;">Loading top players...</div>`;
+            
+            try {
+                const q = window.query(window.collection(window.db, "users"), window.orderBy("score", "desc"), window.limit(10));
+                const querySnapshot = await window.getDocs(q);
+                let rankHtml = "";
+                let rank = 1;
+                
+                querySnapshot.forEach((doc) => {
+                    let data = doc.data();
+                    let medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+                    rankHtml += `
+                        <div class="rank-item">
+                            <span style="font-weight:bold; color:var(--accent);">${medal} ${data.name || 'Gamer'}</span>
+                            <span style="color:#34d399; font-weight:bold;">${Number(data.score || 0).toLocaleString()} $XTAP</span>
+                        </div>
+                    `;
+                    rank++;
+                });
+
+                list.innerHTML = rankHtml || `<div style="font-size: 12px; color: #64748b; padding: 15px;">No leaderboard data available yet.</div>`;
+            } catch (e) {
+                list.innerHTML = `<div style="font-size: 12px; color: #ef4444; padding: 15px;">Failed to load leaderboard!</div>`;
+            }
+        }
+
+        function closeLeaderboard() {
+            document.getElementById('leaderboardModal').style.display = 'none';
+        }
+
         function startTgeCountdown() {
             const targetDate = new Date("December 11, 2030 00:00:00").getTime();
             setInterval(() => {
@@ -503,6 +616,8 @@
         }
 
         function tapCoin(event) {
+            if (!checkConnection()) return; // Prevent tapping offline
+
             if (energy > 0) {
                 score += tapPower;
                 energy -= 1;
@@ -510,6 +625,7 @@
                 playClickSound();
                 localStorage.setItem(scoreKey, score);
                 localStorage.setItem(energyKey, energy);
+                if(window.saveToFirebase) window.saveToFirebase(score);
 
                 try {
                     if (tg && tg.HapticFeedback) {
@@ -522,6 +638,7 @@
         }
 
         function upgradeTap() {
+            if (!checkConnection()) return;
             if (score >= upgradeCost) {
                 score -= upgradeCost;
                 let spent = upgradeCost;
@@ -532,6 +649,7 @@
                 localStorage.setItem(scoreKey, score);
                 addActivity('Tap Power Upgrade', `-${spent}`, '#ef4444');
                 updateUI();
+                if(window.saveToFirebase) window.saveToFirebase(score);
                 alert(`Success! Your tap power is now ${tapPower}`);
             } else {
                 alert("Not enough coins!");
@@ -539,6 +657,7 @@
         }
 
         function upgradeEnergy() {
+            if (!checkConnection()) return;
             if (score >= energyUpgradeCost) {
                 score -= energyUpgradeCost;
                 let spent = energyUpgradeCost;
@@ -552,6 +671,7 @@
                 localStorage.setItem(energyKey, energy);
                 addActivity('Energy Limit Upgrade', `-${spent}`, '#ef4444');
                 updateUI();
+                if(window.saveToFirebase) window.saveToFirebase(score);
                 alert(`Success! Your Max Energy is now ${maxEnergy} ⚡`);
             } else {
                 alert("Not enough coins to upgrade energy!");
@@ -559,6 +679,7 @@
         }
 
         function upgradeAutoBot() {
+            if (!checkConnection()) return;
             botCost = 5000 * Math.pow(2, botLevel);
             if (score >= botCost) {
                 score -= botCost;
@@ -571,16 +692,21 @@
                 localStorage.setItem(scoreKey, score);
                 addActivity('Auto-Tap Bot Upgrade', `-${spent}`, '#ef4444');
                 updateUI();
+                if(window.saveToFirebase) window.saveToFirebase(score);
                 alert(`Success! Auto-Bot upgraded to Level ${botLevel}! 🤖🚀`);
             } else {
                 alert(`Not enough coins! You need ${botCost} Coins.`);
             }
         }
 
-        function openTasks() { document.getElementById('taskModal').style.display = 'flex'; }
+        function openTasks() { 
+            if (!checkConnection()) return;
+            document.getElementById('taskModal').style.display = 'flex'; 
+        }
         function closeTasks() { document.getElementById('taskModal').style.display = 'none'; }
 
         function handleTask(taskId, reward, link) {
+            if (!checkConnection()) return;
             const userTaskKey = taskId + '_' + userId;
             let status = localStorage.getItem(userTaskKey);
             let btn = document.getElementById(taskId + '_btn');
@@ -629,6 +755,7 @@
                 localStorage.setItem(scoreKey, score);
                 addActivity('Task Reward Claimed', `+${reward}`, '#10b981');
                 updateUI();
+                if(window.saveToFirebase) window.saveToFirebase(score);
                 btn.innerText = 'Done ✓';
                 btn.style.background = '#64748b';
                 btn.disabled = true;
@@ -656,6 +783,7 @@
         }
 
         function claimDaily() {
+            if (!checkConnection()) return;
             let lastClaimDate = localStorage.getItem(claimKey) || 0;
             let today = new Date().toDateString();
             if (lastClaimDate === today) {
@@ -672,6 +800,7 @@
         }
 
         function inviteFriend() {
+            if (!checkConnection()) return;
             let inviteLink = `https://t.me/miraztap_bot/cryptotap?startapp=ref_${userId}`;
             if (tg && tg.openTelegramLink) {
                 tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent("🔥 Awesome Web3 game! Tap to earn $XTAP token now:")}`);
@@ -681,6 +810,7 @@
         }
 
         async function buyBoost() {
+            if (!checkConnection()) return;
             try {
                 let res = await fetch('/api/buy');
                 let data = await res.json();
@@ -707,6 +837,7 @@
 
         // $XTAP WALLET Controls
         function openNativeWallet() {
+            if (!checkConnection()) return;
             document.getElementById('nativeWallet').style.display = 'block';
             document.getElementById('wallet-balance').innerText = score.toLocaleString() + " $XTAP";
             loadUserActivity();
@@ -717,6 +848,7 @@
         function closeWithdrawModal() { document.getElementById('withdrawModal').style.display = 'none'; }
 
         window.saveToFirebase = async function(currentCoins) {
+            if (!navigator.onLine) return;
             try {
                 const userRef = window.doc(window.db, "users", userId);
                 await window.setDoc(userRef, { name: userName, score: currentCoins, last_updated: new Date() }, { merge: true });
