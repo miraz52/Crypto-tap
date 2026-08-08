@@ -234,6 +234,12 @@
             white-space: nowrap;
         }
         .btn-task-claim:active { transform: scale(0.95); }
+
+        /* Native Wallet Dashboard Styles */
+        .wallet-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 2000; padding: 20px; overflow-y: auto; text-align: left; }
+        .wallet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .wallet-card-big { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 25px; border-radius: 20px; border: 1px solid #334155; text-align: center; }
+        .history-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #1e293b; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -286,7 +292,8 @@
         </div>
 
         <button class="btn-boost-full" onclick="buyBoost()">⭐ Buy Booster (Telegram Stars)</button>
-        <button onclick="openWithdrawModal()" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; max-width: 360px;">💸 Withdraw</button>
+        <!-- Withdraw বাটনটি চেঞ্জ করে My Wallet করা হয়েছে -->
+        <button onclick="openNativeWallet()" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; max-width: 360px;">💼 My Wallet</button>
         <div id="ton-connect" style="margin-top: 10px;"></div>
     </div>
 
@@ -320,8 +327,27 @@
         </div>
     </div>
 
+    <!-- Native Wallet Dashboard -->
+    <div id="nativeWallet" class="wallet-modal">
+        <div class="wallet-header">
+            <h2 style="color: #fbbf24;">$XTAP Wallet</h2>
+            <button onclick="closeWallet()" style="background:none; border:none; color:white; font-size:24px; cursor:pointer;">✕</button>
+        </div>
+        
+        <div class="wallet-card-big">
+            <div style="color: #94a3b8; font-size: 14px;">Total $XTAP Balance</div>
+            <div id="wallet-balance" style="font-size: 32px; font-weight: bold; margin: 10px 0;">0</div>
+            <button onclick="openWithdrawModal()" style="background:#28a745; border:none; color:white; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer;">Withdraw</button>
+        </div>
+
+        <h3 style="margin-top: 30px; margin-bottom: 10px; color: #fbbf24;">Recent Activity</h3>
+        <div id="transaction-list">
+            <!-- ট্রানজেকশন এখানে আসবে -->
+        </div>
+    </div>
+
     <!-- Withdraw Modal -->
-    <div id="withdrawModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center; padding: 15px;">
+    <div id="withdrawModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2500; justify-content:center; align-items:center; padding: 15px;">
       <div style="background:#1f1f1f; padding:20px; border-radius:12px; width:90%; max-width:400px; color:white; text-align:center;">
         <h3>Withdraw Earnings</h3>
         <p>Minimum withdraw: 10,000 Coins = 100 BDT</p>
@@ -648,6 +674,22 @@
             }
         }
 
+        // Native Wallet Controls
+        function openNativeWallet() {
+            document.getElementById('nativeWallet').style.display = 'block';
+            document.getElementById('wallet-balance').innerText = score.toLocaleString() + " $XTAP";
+            const list = document.getElementById('transaction-list');
+            list.innerHTML = `
+                <div class="history-item"><span>Energy Upgrade</span><span style="color:#ef4444;">-7593</span></div>
+                <div class="history-item"><span>Tap Power Upgrade</span><span style="color:#ef4444;">-5692</span></div>
+                <div class="history-item"><span>Daily Bonus</span><span style="color:#10b981;">+200</span></div>
+            `;
+        }
+
+        function closeWallet() {
+            document.getElementById('nativeWallet').style.display = 'none';
+        }
+
         function openWithdrawModal() {
             document.getElementById('withdrawModal').style.display = 'flex';
         }
@@ -726,3 +768,4 @@
     </script>
 </body>
 </html>
+ 
