@@ -54,7 +54,7 @@
             overflow-x: hidden;
         }
 
-        /* Premium Glass Header */
+        /* Ultra Premium Glass Header */
         .header {
             width: 100%;
             max-width: 380px;
@@ -68,10 +68,10 @@
         }
         .user-name { font-size: 14px; font-weight: 700; color: var(--accent); letter-spacing: 0.5px; }
         
-        /* Sleek Score */
-        .score-container { margin: 6px 0; }
+        /* Sleek Score Position */
+        .score-container { margin: 4px 0; }
         #score { 
-            font-size: 48px; 
+            font-size: 46px; 
             font-weight: 900; 
             background: linear-gradient(180deg, #ffffff 10%, var(--accent) 100%);
             -webkit-background-clip: text;
@@ -81,16 +81,16 @@
         }
 
         /* Energy Bar */
-        .energy-wrapper { width: 100%; max-width: 300px; margin: 6px auto; }
-        .energy-info { display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; margin-bottom: 4px; font-weight: 600; }
-        .energy-box { width: 100%; background: rgba(0, 0, 0, 0.5); border-radius: 20px; overflow: hidden; height: 10px; border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); }
+        .energy-wrapper { width: 100%; max-width: 300px; margin: 4px auto; }
+        .energy-info { display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; margin-bottom: 3px; font-weight: 600; }
+        .energy-box { width: 100%; background: rgba(0, 0, 0, 0.5); border-radius: 20px; overflow: hidden; height: 9px; border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); }
         #energyBar { height: 100%; background: linear-gradient(90deg, #d97706, #facc15); width: 100%; border-radius: 20px; transition: width 0.15s ease-out; box-shadow: 0 0 10px rgba(250, 204, 21, 0.5); }
 
-        /* Realistic 3D Big 'X' Gold Coin */
-        .coin-wrapper { position: relative; margin: 10px auto; }
+        /* Realistic 3D Big 'X' Gold Coin (Centered & Perfect Layout) */
+        .coin-wrapper { position: relative; margin: 8px auto; }
         .coin-box {
-            width: 175px;
-            height: 175px;
+            width: 165px;
+            height: 165px;
             background: radial-gradient(circle at 35% 35%, #fffbeb 0%, #fde047 35%, #ca8a04 70%, #78350f 100%);
             border-radius: 50%;
             display: flex;
@@ -103,7 +103,7 @@
             box-shadow: 0 0 45px rgba(234, 179, 8, 0.4), 
                         inset 0 0 25px rgba(255, 255, 255, 0.8),
                         0 12px 30px rgba(0, 0, 0, 0.6);
-            font-size: 90px;
+            font-size: 85px;
             font-weight: 900;
             color: #ffffff;
             text-shadow: 0 5px 15px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.6);
@@ -113,14 +113,14 @@
             box-shadow: 0 0 25px rgba(234, 179, 8, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.6);
         }
 
-        /* Modern Positioned Menu Grid */
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; max-width: 360px; margin-top: 6px; }
+        /* Perfectly Balanced Menu Grid Layout */
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; max-width: 360px; margin-top: 4px; }
         .btn-feature {
             background: rgba(255, 255, 255, 0.04);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 10px 8px;
+            padding: 9px 8px;
             color: #fff;
             font-size: 12px;
             font-weight: 600;
@@ -134,30 +134,30 @@
         .btn-boost-full {
             background: linear-gradient(135deg, #f59e0b, #b45309);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 12px;
+            padding: 11px;
             color: #fff;
             font-weight: 800;
-            font-size: 14px;
+            font-size: 13px;
             border-radius: 14px;
             cursor: pointer;
             width: 100%;
             max-width: 360px;
-            margin-top: 6px;
+            margin-top: 5px;
             box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
         }
         .btn-boost-full:active { transform: scale(0.97); }
 
-        /* Wallet Button */
+        /* $XTAP WALLET Button */
         .btn-wallet-custom {
             background: linear-gradient(135deg, #10b981, #047857);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 12px 18px;
+            padding: 11px 18px;
             color: white;
             border-radius: 14px;
             font-weight: 800;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
-            margin-top: 6px;
+            margin-top: 5px;
             width: 100%;
             max-width: 360px;
             box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
@@ -216,7 +216,7 @@
             white-space: nowrap;
         }
 
-        /* Native Wallet Modal Styles with TGE & Countdown Timer */
+        /* $XTAP WALLET Dashboard Modal */
         .wallet-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #020617; z-index: 2000; padding: 20px; overflow-y: auto; text-align: left; }
         .wallet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .wallet-card-big { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 22px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.08); text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
@@ -273,8 +273,8 @@
         </div>
 
         <button class="btn-boost-full" onclick="buyBoost()">⭐ Buy Booster (Telegram Stars)</button>
-        <button class="btn-wallet-custom" onclick="openNativeWallet()">💼 My Web3 Wallet ($XTAP)</button>
-        <div id="ton-connect" style="margin-top: 6px;"></div>
+        <button class="btn-wallet-custom" onclick="openNativeWallet()">💼 $XTAP WALLET</button>
+        <div id="ton-connect" style="margin-top: 5px;"></div>
     </div>
 
     <!-- Task Modal -->
@@ -307,10 +307,10 @@
         </div>
     </div>
 
-    <!-- Native Wallet Dashboard Modal with TGE & Countdown Timer (Target: Dec 11, 2030) -->
+    <!-- $XTAP WALLET Dashboard Modal with TGE & Countdown Timer (Target: Dec 11, 2030) -->
     <div id="nativeWallet" class="wallet-modal">
         <div class="wallet-header">
-            <h2 style="color: var(--accent);">💼 $XTAP Web3 Asset</h2>
+            <h2 style="color: var(--accent);">💼 $XTAP WALLET</h2>
             <button onclick="closeWallet()" style="background:none; border:none; color:white; font-size:22px; cursor:pointer;">✕</button>
         </div>
 
@@ -331,29 +331,21 @@
             <button onclick="openWithdrawModal()" style="background:#10b981; border:none; color:white; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; width:100%;">💸 Request Withdrawal</button>
         </div>
 
-        <h3 style="margin-top: 20px; margin-bottom: 8px; color: var(--accent);">Recent Activity</h3>
+        <h3 style="margin-top: 20px; margin-bottom: 8px; color: var(--accent);">Your Activity History</h3>
         <div id="transaction-list">
-            <div class="history-item"><span>Energy Upgrade</span><span style="color:#ef4444;">-7593</span></div>
-            <div class="history-item"><span>Tap Power Upgrade</span><span style="color:#ef4444;">-5692</span></div>
-            <div class="history-item"><span>Daily Bonus Claim</span><span style="color:#10b981;">+200</span></div>
+            <!-- Dynamically populated user specific activity -->
         </div>
         <button onclick="closeWallet()" style="margin-top: 20px; background: #334155; border:none; padding:10px; color:#fff; border-radius:10px; width:100%; font-weight:bold; cursor:pointer;">Back to Game</button>
     </div>
 
-    <!-- Withdraw Modal -->
+    <!-- Locked Withdrawal Warning Modal -->
     <div id="withdrawModal" class="modal" style="z-index: 2500;">
       <div class="modal-content">
-        <h3>Withdraw Earnings</h3>
-        <p style="font-size: 11px; color: #94a3b8; margin-bottom: 8px;">Minimum withdraw: 10,000 Coins = 100 BDT</p>
-        <select id="paymentMethod" style="width:100%; padding:10px; margin:8px 0; background:#0f172a; color:white; border:1px solid rgba(255,255,255,0.1); border-radius:8px;">
-          <option value="Bkash">Bkash</option>
-          <option value="Nagad">Nagad</option>
-          <option value="Rocket">Rocket</option>
-          <option value="Crypto_TON">Crypto Wallet (TON)</option>
-        </select>
-        <input type="text" id="accountNumber" placeholder="Enter your number or wallet address" style="width:100%; padding:10px; margin:8px 0; background:#0f172a; color:white; border:1px solid rgba(255,255,255,0.1); border-radius:8px;">
-        <button onclick="submitWithdraw()" style="background:var(--accent); color:#000; padding:10px; width:100%; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Submit Request</button>
-        <button onclick="closeWithdrawModal()" style="background:#ef4444; color:white; padding:10px; width:100%; border:none; border-radius:8px; margin-top:8px; cursor:pointer; font-weight:bold;">Close</button>
+        <h3 style="color: #f59e0b;">⚠️ Withdrawal Locked</h3>
+        <p style="font-size: 13px; color: #cbd5e1; margin: 15px 0; line-height: 1.5;">
+            Withdrawals are currently locked for security and ecosystem stability! You will be able to withdraw and claim your real $XTAP tokens directly to your TON wallet after the official TGE and Airdrop on <b>December 11, 2030</b>. Keep tapping and earning! 🚀
+        </p>
+        <button onclick="closeWithdrawModal()" style="background:var(--accent); color:#000; padding:10px; width:100%; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">Got it</button>
       </div>
     </div>
 
@@ -381,6 +373,7 @@
         const energyCostKey = 'energyCost_' + userId;
         const botLevelKey = 'botLevel_' + userId;
         const botTimeKey = 'botExpiry_' + userId;
+        const historyKey = 'history_' + userId; // User specific activity key
 
         let score = parseInt(localStorage.getItem(scoreKey)) || 0;
         let tapPower = parseInt(localStorage.getItem(powerKey)) || 1;
@@ -405,6 +398,7 @@
             let botEarnings = offlineSeconds * botLevel;
             if (botEarnings > 0) {
                 score += botEarnings;
+                addActivity(`Auto-Bot farmed coins`, `+${botEarnings}`, '#10b981');
                 alert(`🤖 Level ${botLevel} Auto-Bot farmed ${botEarnings} $XTAP while you were away!`);
             }
         } else if (now >= botExpiry && botLevel > 0) {
@@ -446,6 +440,29 @@
             localStorage.setItem(timeKey, Date.now());
             localStorage.setItem(scoreKey, score);
         }, 1000);
+
+        // User Specific Activity Logger
+        function addActivity(title, amount, color) {
+            let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+            history.unshift({ title, amount, color, time: new Date().toLocaleTimeString() });
+            if (history.length > 10) history.pop(); // Keep last 10 records
+            localStorage.setItem(historyKey, JSON.stringify(history));
+        }
+
+        function loadUserActivity() {
+            const list = document.getElementById('transaction-list');
+            let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+            if (history.length === 0) {
+                list.innerHTML = `<div style="font-size:12px; color:#64748b; text-align:center; padding:10px;">No recent activity found.</div>`;
+                return;
+            }
+            list.innerHTML = history.map(item => `
+                <div class="history-item">
+                    <span>${item.title} <small style="color:#64748b; font-size:10px;">(${item.time})</small></span>
+                    <span style="color:${item.color}; font-weight:bold;">${item.amount}</span>
+                </div>
+            `).join('');
+        }
 
         // TGE Countdown Timer (Target: December 11, 2030)
         function startTgeCountdown() {
@@ -507,11 +524,13 @@
         function upgradeTap() {
             if (score >= upgradeCost) {
                 score -= upgradeCost;
+                let spent = upgradeCost;
                 tapPower += 1;
                 upgradeCost = Math.floor(upgradeCost * 1.5);
                 localStorage.setItem(powerKey, tapPower);
                 localStorage.setItem(costKey, upgradeCost);
                 localStorage.setItem(scoreKey, score);
+                addActivity('Tap Power Upgrade', `-${spent}`, '#ef4444');
                 updateUI();
                 alert(`Success! Your tap power is now ${tapPower}`);
             } else {
@@ -522,6 +541,7 @@
         function upgradeEnergy() {
             if (score >= energyUpgradeCost) {
                 score -= energyUpgradeCost;
+                let spent = energyUpgradeCost;
                 maxEnergy += 500;
                 energy += 500; 
                 energyUpgradeCost = Math.floor(energyUpgradeCost * 1.5); 
@@ -530,7 +550,7 @@
                 localStorage.setItem(energyCostKey, energyUpgradeCost);
                 localStorage.setItem(scoreKey, score);
                 localStorage.setItem(energyKey, energy);
-                
+                addActivity('Energy Limit Upgrade', `-${spent}`, '#ef4444');
                 updateUI();
                 alert(`Success! Your Max Energy is now ${maxEnergy} ⚡`);
             } else {
@@ -542,13 +562,14 @@
             botCost = 5000 * Math.pow(2, botLevel);
             if (score >= botCost) {
                 score -= botCost;
+                let spent = botCost;
                 botLevel += 1;
                 botExpiry = Date.now() + (24 * 60 * 60 * 1000);
 
                 localStorage.setItem(botLevelKey, botLevel);
                 localStorage.setItem(botTimeKey, botExpiry);
                 localStorage.setItem(scoreKey, score);
-
+                addActivity('Auto-Tap Bot Upgrade', `-${spent}`, '#ef4444');
                 updateUI();
                 alert(`Success! Auto-Bot upgraded to Level ${botLevel}! 🤖🚀`);
             } else {
@@ -606,6 +627,7 @@
                 score += reward;
                 localStorage.setItem(userTaskKey, 'completed');
                 localStorage.setItem(scoreKey, score);
+                addActivity('Task Reward Claimed', `+${reward}`, '#10b981');
                 updateUI();
                 btn.innerText = 'Done ✓';
                 btn.style.background = '#64748b';
@@ -642,6 +664,7 @@
                 score += 200;
                 localStorage.setItem(claimKey, today);
                 localStorage.setItem(scoreKey, score);
+                addActivity('Daily Bonus Claimed', `+200`, '#10b981');
                 updateUI();
                 if(window.saveToFirebase) window.saveToFirebase(score);
                 alert("Congratulations! You received 200 $XTAP daily bonus! 🎁");
@@ -666,6 +689,7 @@
                         if (status === 'paid') {
                             score += 500;
                             localStorage.setItem(scoreKey, score);
+                            addActivity('Booster Purchased', `+500`, '#10b981');
                             updateUI();
                             if(window.saveToFirebase) window.saveToFirebase(score);
                             alert("Payment successful and 500 $XTAP added!");
@@ -681,42 +705,16 @@
             }
         }
 
-        // Native Wallet Controls
+        // $XTAP WALLET Controls
         function openNativeWallet() {
             document.getElementById('nativeWallet').style.display = 'block';
             document.getElementById('wallet-balance').innerText = score.toLocaleString() + " $XTAP";
+            loadUserActivity();
         }
 
         function closeWallet() { document.getElementById('nativeWallet').style.display = 'none'; }
         function openWithdrawModal() { document.getElementById('withdrawModal').style.display = 'flex'; }
         function closeWithdrawModal() { document.getElementById('withdrawModal').style.display = 'none'; }
-
-        async function submitWithdraw() {
-            try {
-                let method = document.getElementById('paymentMethod').value;
-                let number = document.getElementById('accountNumber').value;
-
-                if (!number) { alert("Please enter your account number or wallet address!"); return; }
-                if (score < 10000) { alert("You need at least 10,000 $XTAP to withdraw!"); return; }
-
-                const userRef = window.doc(window.db, "users", userId);
-                await window.updateDoc(userRef, { score: window.increment(-10000), last_updated: new Date() });
-
-                const withdrawRef = window.doc(window.db, "withdraw_requests", userId + "_" + Date.now());
-                await window.setDoc(withdrawRef, {
-                    userId: userId, userName: userName, coins: 10000, method: method, account: number, status: "Pending", time: new Date().toISOString()
-                });
-
-                alert("Request submitted successfully! Airdrop allocation is pending.");
-                score -= 10000;
-                document.getElementById('score').innerText = score;
-                localStorage.setItem(scoreKey, score);
-                closeWithdrawModal();
-                closeWallet();
-            } catch (error) {
-                alert("Failed to submit request: " + error.message);
-            }
-        }
 
         window.saveToFirebase = async function(currentCoins) {
             try {
