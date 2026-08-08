@@ -290,9 +290,9 @@
             <h2 id="score">0</h2>
         </div>
         
-        <!-- Realistic 3D Coin with Big 'X' -->
+        <!-- Realistic 3D Coin with Big 'X' and Anti-Bot Pointer Event Handler -->
         <div class="coin-wrapper">
-            <div class="coin-box" onclick="tapCoin(event)">X</div>
+            <div class="coin-box" id="tapCoinBox">X</div>
         </div>
 
         <div class="energy-wrapper">
@@ -462,16 +462,12 @@
         let now = Date.now();
         let secondsPassed = Math.floor((now - lastTime) / 1000);
 
-        // Run initial check on load
         checkConnection();
 
-        // Energy refill only while online/active logic
         if (navigator.onLine) {
             energy = Math.min(maxEnergy, energy + (secondsPassed * 2));
         }
 
-        // Offline earnings: ONLY enabled if botLevel > 0 and bot is not expired
-        // Rate: Level 1 = 1000 coins per hour, Level 2 = 2000 coins per hour, etc.
         if (botLevel > 0 && now < botExpiry) {
             let offlineHours = (now - lastTime) / (1000 * 60 * 60);
             let botEarnings = Math.floor(offlineHours * botLevel * 1000);
@@ -511,7 +507,7 @@
         }
 
         setInterval(() => {
-            if (!navigator.onLine) return; // Stop everything if offline
+            if (!navigator.onLine) return;
 
             if (energy < maxEnergy) {
                 energy = Math.min(maxEnergy, energy + 1);
@@ -615,8 +611,16 @@
             } catch(e) {}
         }
 
-        function tapCoin(event) {
-            if (!checkConnection()) return; // Prevent tapping offline
+        // Anti-Bot & Human Touch Verification Logic
+        const tapCoinBox = document.getElementById('tapCoinBox');
+        
+        tapCoinBox.addEventListener('pointerdown', function(event) {
+            // Check if it's a simulated click (Auto-clicker or script) or invalid pointer type
+            if (!event.isTrusted || (event.pointerType && event.pointerType !== 'touch' && event.pointerType !== 'mouse')) {
+                return;
+            }
+
+            if (!checkConnection()) return;
 
             if (energy > 0) {
                 score += tapPower;
@@ -635,7 +639,7 @@
             } else {
                 alert("Energy is empty! Please wait for it to refill.");
             }
-        }
+        });
 
         function upgradeTap() {
             if (!checkConnection()) return;
