@@ -2,28 +2,28 @@
 <html lang="en">
 <head>
     <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, doc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCYnHVLaIfDXR3-_AgY-O2L4IEgl8lEtc8",
-    authDomain: "crypto-tap-x.firebaseapp.com",
-    projectId: "crypto-tap-x",
-    storageBucket: "crypto-tap-x.firebasestorage.app",
-    messagingSenderId: "690156129036",
-    appId: "1:690156129036:web:198aadab760a0de1b39729",
-    measurementId: "G-8ZQGJ8DFDG"
-  };
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYnHVLaIfDXR3-_AgY-O2L4IEgl8lEtc8",
+            authDomain: "crypto-tap-x.firebaseapp.com",
+            projectId: "crypto-tap-x",
+            storageBucket: "crypto-tap-x.firebasestorage.app",
+            messagingSenderId: "690156129036",
+            appId: "1:690156129036:web:198aadab760a0de1b39729",
+            measurementId: "G-8ZQGJ8DFDG"
+        };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-  window.db = db;
-  window.doc = doc;
-  window.setDoc = setDoc;
-  window.updateDoc = updateDoc;
-  window.increment = increment;
-</script>
+        window.db = db;
+        window.doc = doc;
+        window.setDoc = setDoc;
+        window.updateDoc = updateDoc;
+        window.increment = increment;
+    </script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -31,6 +31,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
+        :root { --accent: #facc15; --bg: #020617; }
         * { 
             box-sizing: border-box; 
             margin: 0; 
@@ -40,8 +41,8 @@
             user-select: none; 
         }
         body {
-            background: radial-gradient(circle at center, #0f172a 0%, #030712 100%);
-            color: #ffffff;
+            background: radial-gradient(circle at 50% -20%, #1e293b, #020617);
+            color: #f8fafc;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             text-align: center;
             padding: 12px;
@@ -53,69 +54,44 @@
             overflow-x: hidden;
         }
 
+        /* Premium Glass Header */
         .header {
             width: 100%;
             max-width: 400px;
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 215, 0, 0.15);
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             padding: 12px 18px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
-        .user-name { font-size: 15px; font-weight: 700; color: #fbbf24; letter-spacing: 0.5px; }
+        .user-name { font-size: 15px; font-weight: 700; color: var(--accent); letter-spacing: 0.5px; }
         
+        /* Sleek Score */
         .score-container { margin: 10px 0; }
         #score { 
-            font-size: 50px; 
+            font-size: 52px; 
             font-weight: 900; 
-            background: linear-gradient(180deg, #ffffff 15%, #fbbf24 100%);
+            background: linear-gradient(180deg, #ffffff 15%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 40px rgba(251, 191, 36, 0.4);
+            filter: drop-shadow(0 0 25px rgba(250, 204, 21, 0.3));
             letter-spacing: 1px;
         }
 
-        .energy-wrapper {
-            width: 100%;
-            max-width: 320px;
-            margin: 8px auto;
-        }
-        .energy-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: #94a3b8;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-        .energy-box {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 20px;
-            overflow: hidden;
-            height: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
-        }
-        #energyBar {
-            height: 100%;
-            background: linear-gradient(90deg, #d97706, #fbbf24);
-            width: 100%;
-            border-radius: 20px;
-            transition: width 0.15s ease-out;
-            box-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
-        }
+        /* Energy Bar */
+        .energy-wrapper { width: 100%; max-width: 320px; margin: 8px auto; }
+        .energy-info { display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-bottom: 5px; font-weight: 600; }
+        .energy-box { width: 100%; background: rgba(0, 0, 0, 0.4); border-radius: 20px; overflow: hidden; height: 12px; border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
+        #energyBar { height: 100%; background: linear-gradient(90deg, #d97706, #facc15); width: 100%; border-radius: 20px; transition: width 0.15s ease-out; box-shadow: 0 0 12px rgba(250, 204, 21, 0.5); }
 
-        .coin-wrapper {
-            position: relative;
-            margin: 15px auto;
-        }
+        /* 3D Gold Real Token Icon */
+        .coin-wrapper { position: relative; margin: 15px auto; }
         .coin-box {
-            width: 180px;
-            height: 180px;
-            background: radial-gradient(circle at 35% 35%, #fde047 0%, #ca8a04 55%, #78350f 100%);
+            width: 190px;
+            height: 190px;
+            background: radial-gradient(circle at 35% 35%, #fef08a 0%, #ca8a04 55%, #78350f 100%);
             border-radius: 50%;
             display: flex;
             justify-content: center;
@@ -123,76 +99,85 @@
             cursor: pointer;
             transition: transform 0.06s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             outline: none;
-            border: 5px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 0 50px rgba(234, 179, 8, 0.45), 
-                        inset 0 0 30px rgba(255, 255, 255, 0.7),
+            border: 4px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 50px rgba(234, 179, 8, 0.35), 
+                        inset 0 0 25px rgba(255, 255, 255, 0.7),
                         0 15px 35px rgba(0, 0, 0, 0.6);
-            font-size: 80px;
+            font-size: 70px;
             font-weight: 900;
             color: #ffffff;
-            text-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
         .coin-box:active { 
-            transform: scale(0.91); 
+            transform: scale(0.92); 
             box-shadow: 0 0 30px rgba(234, 179, 8, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
-        .menu-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            width: 100%;
-            max-width: 360px;
-            margin-top: 10px;
-        }
+        /* Glassmorphism Buttons Grid */
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 360px; margin-top: 10px; }
         .btn-feature {
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(255, 255, 255, 0.04);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             padding: 12px 10px;
             color: #fff;
             font-size: 13px;
             font-weight: 600;
-            border-radius: 14px;
+            border-radius: 16px;
             cursor: pointer;
             transition: all 0.2s ease;
-            outline: none;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-        .btn-feature:active { transform: scale(0.96); background: rgba(30, 41, 59, 0.8); }
+        .btn-feature:active { transform: scale(0.96); background: rgba(255, 255, 255, 0.08); }
         
         .btn-boost-full {
             background: linear-gradient(135deg, #f59e0b, #b45309);
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 14px;
-            color: #030712;
+            color: #fff;
             font-weight: 800;
             font-size: 15px;
-            border-radius: 14px;
+            border-radius: 16px;
             cursor: pointer;
             width: 100%;
             max-width: 360px;
             margin-top: 10px;
-            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
-            outline: none;
-            transition: transform 0.1s;
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
         }
         .btn-boost-full:active { transform: scale(0.97); }
 
+        /* Wallet Button */
+        .btn-wallet-custom {
+            background: linear-gradient(135deg, #10b981, #047857);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 20px;
+            color: white;
+            border-radius: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }
+        .btn-wallet-custom:active { transform: scale(0.97); }
+
+        /* Modals */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(3, 7, 18, 0.88);
-            backdrop-filter: blur(10px);
+            background: rgba(2, 6, 23, 0.88);
+            backdrop-filter: blur(12px);
             justify-content: center;
             align-items: center;
             z-index: 1000;
             padding: 15px;
         }
         .modal-content {
-            background: linear-gradient(145deg, #0f172a, #090d16);
-            border: 1px solid rgba(255, 215, 0, 0.2);
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 22px;
             border-radius: 20px;
             width: 100%;
@@ -202,15 +187,11 @@
             text-align: center;
             box-shadow: 0 25px 50px rgba(0,0,0,0.8);
         }
-        .modal-content h3 {
-            font-size: 20px;
-            color: #fbbf24;
-            margin-bottom: 6px;
-            font-weight: 800;
-        }
+        .modal-content h3 { font-size: 20px; color: var(--accent); margin-bottom: 6px; font-weight: 800; }
+        
         .task-item {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             padding: 12px 14px;
             border-radius: 14px;
             margin: 10px 0;
@@ -233,19 +214,20 @@
             box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
             white-space: nowrap;
         }
-        .btn-task-claim:active { transform: scale(0.95); }
 
-        /* Native Wallet Dashboard Styles */
-        .wallet-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 2000; padding: 20px; overflow-y: auto; text-align: left; }
-        .wallet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .wallet-card-big { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 25px; border-radius: 20px; border: 1px solid #334155; text-align: center; }
-        .history-item { display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #1e293b; font-size: 14px; }
+        /* Native Wallet Modal Styles with TGE & Countdown Timer */
+        .wallet-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #020617; z-index: 2000; padding: 20px; overflow-y: auto; text-align: left; }
+        .wallet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .wallet-card-big { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+        .tge-banner { background: linear-gradient(135deg, #d97706, #ca8a04); padding: 15px; border-radius: 16px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(202, 138, 4, 0.3); }
+        .countdown-box { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+        .time-block { background: rgba(0, 0, 0, 0.4); padding: 6px 10px; border-radius: 8px; font-size: 13px; font-weight: bold; color: #fff; min-width: 45px; text-align: center; }
+        .history-item { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; }
     </style>
 </head>
 <body>
 
-        <div class="header" style="position: relative;">
-        <!-- উপরে বাম ও ডান সাইডে চ্যানেল ও সাপোর্ট বাটন -->
+    <div class="header" style="position: relative;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
             <a href="https://t.me/Cryptotapxofficial" target="_blank" style="background: #0088cc; color: white; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; text-decoration: none; box-shadow: 0 2px 8px rgba(0,136,204,0.4);">
                 📢 Join Channel
@@ -258,16 +240,14 @@
         <div style="font-size: 11px; color: #64748b; margin-top: 2px; letter-spacing: 1px;">CRYPTOTAP X • ELITE</div>
     </div>
 
-
     <div>
         <div class="score-container">
             <h2 id="score">0</h2>
         </div>
         
+        <!-- Real Token 3D Coin -->
         <div class="coin-wrapper">
-            <div class="coin-box" onclick="tapCoin(event)">
-                X
-            </div>
+            <div class="coin-box" onclick="tapCoin(event)">$XTAP</div>
         </div>
 
         <div class="energy-wrapper">
@@ -283,17 +263,16 @@
 
     <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="menu-grid">
-            <button class="btn-feature" onclick="upgradeEnergy()">🔋 Energy Limit<br><span style="font-size:11px; color:#17a2b8;" id="energyUpgradeCost">1000 Coins</span></button>
-            <button class="btn-feature" onclick="upgradeTap()">🛠️ Tap Power<br><span style="font-size:11px; color:#fbbf24;" id="upgradeCost">500 Coins</span></button>
+            <button class="btn-feature" onclick="upgradeEnergy()">🔋 Energy Limit<br><span style="font-size:11px; color:#38bdf8;" id="energyUpgradeCost">1000 Coins</span></button>
+            <button class="btn-feature" onclick="upgradeTap()">🛠️ Tap Power<br><span style="font-size:11px; color:var(--accent);" id="upgradeCost">500 Coins</span></button>
             <button class="btn-feature" onclick="openTasks()">📋 Task Center<br><span style="font-size:11px; color:#34d399;">+3500 Rewards</span></button>
             <button class="btn-feature" onclick="claimDaily()">🎁 Daily Bonus<br><span style="font-size:11px; color:#60a5fa;">Daily 200 Coins</span></button>
-            <button class="btn-feature" onclick="upgradeAutoBot()" style="grid-column: span 2; background: linear-gradient(135deg, #10b981, #047857);">🤖 Auto-Tap Bot (Lvl <span id="botLevelText">0</span>)<br><span style="font-size:11px; color:#fde047;" id="botCost">5000 Coins</span></button>
+            <button class="btn-feature" onclick="upgradeAutoBot()" style="grid-column: span 2; background: linear-gradient(135deg, #059669, #047857);">🤖 Auto-Tap Bot (Lvl <span id="botLevelText">0</span>)<br><span style="font-size:11px; color:#fde047;" id="botCost">5000 Coins</span></button>
             <button class="btn-feature" onclick="inviteFriend()" style="grid-column: span 2;">👥 Invite Friends<br><span style="font-size:11px; color:#f87171;">Earn Bonus</span></button>
         </div>
 
         <button class="btn-boost-full" onclick="buyBoost()">⭐ Buy Booster (Telegram Stars)</button>
-        <!-- Withdraw বাটনটি চেঞ্জ করে My Wallet করা হয়েছে -->
-        <button onclick="openNativeWallet()" style="background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; max-width: 360px;">💼 My Wallet</button>
+        <button class="btn-wallet-custom" onclick="openNativeWallet()">💼 My Web3 Wallet ($XTAP)</button>
         <div id="ton-connect" style="margin-top: 10px;"></div>
     </div>
 
@@ -304,22 +283,22 @@
             <p style="font-size: 12px; color: #94a3b8; margin-bottom: 15px;">Complete tasks to earn 3500 coins each!</p>
             
             <div class="task-item">
-                <span>📢 Join Telegram Channel<br><b style="color:#fbbf24;">+3500 Coins</b></span>
+                <span>📢 Join Telegram Channel<br><b style="color:var(--accent);">+3500 Coins</b></span>
                 <button class="btn-task-claim" id="task_tg_btn" onclick="handleTask('task_tg', 3500, 'https://t.me/Cryptotapxofficial')">Start</button>
             </div>
 
             <div class="task-item">
-                <span>📺 Subscribe YouTube<br><b style="color:#fbbf24;">+3500 Coins</b></span>
+                <span>📺 Subscribe YouTube<br><b style="color:var(--accent);">+3500 Coins</b></span>
                 <button class="btn-task-claim" id="task_yt_btn" onclick="handleTask('task_yt', 3500, 'https://www.youtube.com/@Cryptotap-X')">Start</button>
             </div>
 
             <div class="task-item">
-                <span>🐦 Follow Twitter (X)<br><b style="color:#fbbf24;">+3500 Coins</b></span>
+                <span>🐦 Follow Twitter (X)<br><b style="color:var(--accent);">+3500 Coins</b></span>
                 <button class="btn-task-claim" id="task_tw_btn" onclick="handleTask('task_tw', 3500, 'https://x.com/Cryptotapx')">Start</button>
             </div>
 
             <div class="task-item">
-                <span>👥 Follow Facebook Page<br><b style="color:#fbbf24;">+3500 Coins</b></span>
+                <span>👥 Follow Facebook Page<br><b style="color:var(--accent);">+3500 Coins</b></span>
                 <button class="btn-task-claim" id="task_fb_btn" onclick="handleTask('task_fb', 3500, 'https://facebook.com/Cryptotapx')">Start</button>
             </div>
 
@@ -327,40 +306,54 @@
         </div>
     </div>
 
-    <!-- Native Wallet Dashboard -->
+    <!-- Native Wallet Dashboard Modal with TGE & Countdown Timer -->
     <div id="nativeWallet" class="wallet-modal">
         <div class="wallet-header">
-            <h2 style="color: #fbbf24;">$XTAP Wallet</h2>
+            <h2 style="color: var(--accent);">💼 $XTAP Web3 Asset</h2>
             <button onclick="closeWallet()" style="background:none; border:none; color:white; font-size:24px; cursor:pointer;">✕</button>
+        </div>
+
+        <!-- TGE & Airdrop Countdown Banner (Target: December 30, 2030) -->
+        <div class="tge-banner">
+            <h4 style="color: #020617; font-weight: 900; font-size: 15px; margin-bottom: 4px;">🚀 TGE & Airdrop Countdown</h4>
+            <p style="color: #0f172a; font-size: 11px; font-weight: 700; margin-bottom: 6px;">Token Generation Event on Dec 30, 2030</p>
+            <div class="countdown-box">
+                <div><span id="days" class="time-block">00</span><br><span style="font-size:9px; color:#020617; font-weight:bold;">Days</span></div>
+                <div><span id="hours" class="time-block">00</span><br><span style="font-size:9px; color:#020617; font-weight:bold;">Hours</span></div>
+                <div><span id="minutes" class="time-block">00</span><br><span style="font-size:9px; color:#020617; font-weight:bold;">Mins</span></div>
+                <div><span id="seconds" class="time-block">00</span><br><span style="font-size:9px; color:#020617; font-weight:bold;">Secs</span></div>
+            </div>
         </div>
         
         <div class="wallet-card-big">
             <div style="color: #94a3b8; font-size: 14px;">Total $XTAP Balance</div>
-            <div id="wallet-balance" style="font-size: 32px; font-weight: bold; margin: 10px 0;">0</div>
-            <button onclick="openWithdrawModal()" style="background:#28a745; border:none; color:white; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer;">Withdraw</button>
+            <div id="wallet-balance" style="font-size: 38px; font-weight: bold; color: var(--accent); margin: 10px 0;">0</div>
+            <button onclick="openWithdrawModal()" style="background:#10b981; border:none; color:white; padding:12px 24px; border-radius:12px; font-weight:bold; cursor:pointer; width:100%;">💸 Request Withdrawal</button>
         </div>
 
-        <h3 style="margin-top: 30px; margin-bottom: 10px; color: #fbbf24;">Recent Activity</h3>
+        <h3 style="margin-top: 25px; margin-bottom: 10px; color: var(--accent);">Recent Activity</h3>
         <div id="transaction-list">
-            <!-- ট্রানজেকশন এখানে আসবে -->
+            <div class="history-item"><span>Energy Upgrade</span><span style="color:#ef4444;">-7593</span></div>
+            <div class="history-item"><span>Tap Power Upgrade</span><span style="color:#ef4444;">-5692</span></div>
+            <div class="history-item"><span>Daily Bonus Claim</span><span style="color:#10b981;">+200</span></div>
         </div>
+        <button onclick="closeWallet()" style="margin-top: 25px; background: #334155; border:none; padding:12px; color:#fff; border-radius:12px; width:100%; font-weight:bold; cursor:pointer;">Back to Game</button>
     </div>
 
     <!-- Withdraw Modal -->
-    <div id="withdrawModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2500; justify-content:center; align-items:center; padding: 15px;">
-      <div style="background:#1f1f1f; padding:20px; border-radius:12px; width:90%; max-width:400px; color:white; text-align:center;">
+    <div id="withdrawModal" class="modal" style="z-index: 2500;">
+      <div class="modal-content">
         <h3>Withdraw Earnings</h3>
-        <p>Minimum withdraw: 10,000 Coins = 100 BDT</p>
-        <select id="paymentMethod" style="width:100%; padding:10px; margin:10px 0; background:#333; color:white; border-radius:5px;">
+        <p style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;">Minimum withdraw: 10,000 Coins = 100 BDT</p>
+        <select id="paymentMethod" style="width:100%; padding:12px; margin:10px 0; background:#0f172a; color:white; border:1px solid rgba(255,255,255,0.1); border-radius:10px;">
           <option value="Bkash">Bkash</option>
           <option value="Nagad">Nagad</option>
           <option value="Rocket">Rocket</option>
           <option value="Crypto_TON">Crypto Wallet (TON)</option>
         </select>
-        <input type="text" id="accountNumber" placeholder="Enter your number or wallet address" style="width:100%; padding:10px; margin:10px 0; background:#333; color:white; border:1px solid #555; border-radius:5px;">
-        <button onclick="submitWithdraw()" style="background:#ffc107; color:black; padding:10px; width:100%; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Submit Request</button>
-        <br><br>
-        <button onclick="closeWithdrawModal()" style="background:#dc3545; color:white; padding:8px 15px; border:none; border-radius:5px; cursor:pointer; width:100%;">Close</button>
+        <input type="text" id="accountNumber" placeholder="Enter your number or wallet address" style="width:100%; padding:12px; margin:10px 0; background:#0f172a; color:white; border:1px solid rgba(255,255,255,0.1); border-radius:10px;">
+        <button onclick="submitWithdraw()" style="background:var(--accent); color:#000; padding:12px; width:100%; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">Submit Request</button>
+        <button onclick="closeWithdrawModal()" style="background:#ef4444; color:white; padding:12px; width:100%; border:none; border-radius:10px; margin-top:10px; cursor:pointer; font-weight:bold;">Close</button>
       </div>
     </div>
 
@@ -405,15 +398,14 @@
         let now = Date.now();
         let secondsPassed = Math.floor((now - lastTime) / 1000);
 
-        // এনার্জি এবং অটো-বট অফলাইন আর্নিং হিসাব
         energy = Math.min(maxEnergy, energy + (secondsPassed * 2));
 
         if (botLevel > 0 && now < botExpiry) {
             let offlineSeconds = Math.floor((now - lastTime) / 1000);
-            let botEarnings = offlineSeconds * botLevel; // প্রতি লেভেলে প্রতি সেকেন্ডে ১ কয়েন করে বাড়বে
+            let botEarnings = offlineSeconds * botLevel;
             if (botEarnings > 0) {
                 score += botEarnings;
-                alert(`🤖 Level ${botLevel} Auto-Bot farmed ${botEarnings} coins while you were away!`);
+                alert(`🤖 Level ${botLevel} Auto-Bot farmed ${botEarnings} $XTAP while you were away!`);
             }
         } else if (now >= botExpiry && botLevel > 0) {
             botLevel = 0;
@@ -422,6 +414,7 @@
 
         updateUI();
         checkTaskStatuses();
+        startTgeCountdown();
 
         function updateUI() {
             let scoreEl = document.getElementById('score');
@@ -453,6 +446,27 @@
             localStorage.setItem(timeKey, Date.now());
             localStorage.setItem(scoreKey, score);
         }, 1000);
+
+        // TGE Countdown Timer (Target: December 30, 2030)
+        function startTgeCountdown() {
+            const targetDate = new Date("December 30, 2030 00:00:00").getTime();
+            setInterval(() => {
+                const nowTime = new Date().getTime();
+                const timeLeft = targetDate - nowTime;
+
+                if (timeLeft > 0) {
+                    const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                    document.getElementById('days').innerText = String(days).padStart(2, '0');
+                    document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+                    document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
+                    document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+                }
+            }, 1000);
+        }
 
         function playClickSound() {
             try {
@@ -529,7 +543,7 @@
             if (score >= botCost) {
                 score -= botCost;
                 botLevel += 1;
-                botExpiry = Date.now() + (24 * 60 * 60 * 1000); // ২৪ ঘণ্টার মেয়াদ
+                botExpiry = Date.now() + (24 * 60 * 60 * 1000);
 
                 localStorage.setItem(botLevelKey, botLevel);
                 localStorage.setItem(botTimeKey, botExpiry);
@@ -542,13 +556,8 @@
             }
         }
 
-        function openTasks() {
-            document.getElementById('taskModal').style.display = 'flex';
-        }
-
-        function closeTasks() {
-            document.getElementById('taskModal').style.display = 'none';
-        }
+        function openTasks() { document.getElementById('taskModal').style.display = 'flex'; }
+        function closeTasks() { document.getElementById('taskModal').style.display = 'none'; }
 
         function handleTask(taskId, reward, link) {
             const userTaskKey = taskId + '_' + userId;
@@ -573,9 +582,7 @@
                     } else {
                         window.open(link, '_blank');
                     }
-                } catch(e) {
-                    window.open(link, '_blank');
-                }
+                } catch(e) { window.open(link, '_blank'); }
 
                 localStorage.setItem(userTaskKey, 'visited');
                 btn.innerText = 'Wait 5s...';
@@ -603,7 +610,7 @@
                 btn.innerText = 'Done ✓';
                 btn.style.background = '#64748b';
                 btn.disabled = true;
-                alert(`Congratulations! You received ${reward} bonus coins! 🎉`);
+                alert(`Congratulations! You received ${reward} $XTAP bonus! 🎉`);
             }
         }
 
@@ -637,14 +644,14 @@
                 localStorage.setItem(scoreKey, score);
                 updateUI();
                 if(window.saveToFirebase) window.saveToFirebase(score);
-                alert("Congratulations! You received 200 coins as a daily bonus! 🎁");
+                alert("Congratulations! You received 200 $XTAP daily bonus! 🎁");
             }
         }
 
         function inviteFriend() {
             let inviteLink = `https://t.me/miraztap_bot/cryptotap?startapp=ref_${userId}`;
             if (tg && tg.openTelegramLink) {
-                tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent("🔥 Awesome game! Tap to earn crypto coins now:")}`);
+                tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(inviteLink)}&text=${encodeURIComponent("🔥 Awesome Web3 game! Tap to earn $XTAP token now:")}`);
             } else {
                 prompt("Copy your invite link:", inviteLink);
             }
@@ -661,7 +668,7 @@
                             localStorage.setItem(scoreKey, score);
                             updateUI();
                             if(window.saveToFirebase) window.saveToFirebase(score);
-                            alert("Payment successful and 500 bonus coins added!");
+                            alert("Payment successful and 500 $XTAP added!");
                         } else {
                             alert("Payment not completed.");
                         }
@@ -678,72 +685,35 @@
         function openNativeWallet() {
             document.getElementById('nativeWallet').style.display = 'block';
             document.getElementById('wallet-balance').innerText = score.toLocaleString() + " $XTAP";
-            const list = document.getElementById('transaction-list');
-            list.innerHTML = `
-                <div class="history-item"><span>Energy Upgrade</span><span style="color:#ef4444;">-7593</span></div>
-                <div class="history-item"><span>Tap Power Upgrade</span><span style="color:#ef4444;">-5692</span></div>
-                <div class="history-item"><span>Daily Bonus</span><span style="color:#10b981;">+200</span></div>
-            `;
         }
 
-        function closeWallet() {
-            document.getElementById('nativeWallet').style.display = 'none';
-        }
-
-        function openWithdrawModal() {
-            document.getElementById('withdrawModal').style.display = 'flex';
-        }
-
-        function closeWithdrawModal() {
-            document.getElementById('withdrawModal').style.display = 'none';
-        }
+        function closeWallet() { document.getElementById('nativeWallet').style.display = 'none'; }
+        function openWithdrawModal() { document.getElementById('withdrawModal').style.display = 'flex'; }
+        function closeWithdrawModal() { document.getElementById('withdrawModal').style.display = 'none'; }
 
         async function submitWithdraw() {
             try {
                 let method = document.getElementById('paymentMethod').value;
                 let number = document.getElementById('accountNumber').value;
 
-                if (!number) {
-                    alert("Please enter your account number or wallet address!");
-                    return;
-                }
-
-                if (score < 10000) {
-                    alert("You need at least 10,000 coins to withdraw!");
-                    return;
-                }
+                if (!number) { alert("Please enter your account number or wallet address!"); return; }
+                if (score < 10000) { alert("You need at least 10,000 $XTAP to withdraw!"); return; }
 
                 const userRef = window.doc(window.db, "users", userId);
-                await window.updateDoc(userRef, {
-                    score: window.increment(-10000),
-                    last_updated: new Date()
-                });
+                await window.updateDoc(userRef, { score: window.increment(-10000), last_updated: new Date() });
 
                 const withdrawRef = window.doc(window.db, "withdraw_requests", userId + "_" + Date.now());
                 await window.setDoc(withdrawRef, {
-                    userId: userId,
-                    userName: userName,
-                    coins: 10000,
-                    method: method,
-                    account: number,
-                    status: "Pending",
-                    time: new Date().toISOString()
+                    userId: userId, userName: userName, coins: 10000, method: method, account: number, status: "Pending", time: new Date().toISOString()
                 });
 
-                const treasuryRef = window.doc(window.db, "game_stats", "treasury");
-                await window.setDoc(treasuryRef, {
-                    totalCollected: window.increment(10000)
-                }, { merge: true });
-
-                alert("Request submitted successfully! Your withdrawal is pending.");
-
+                alert("Request submitted successfully! Airdrop allocation is pending.");
                 score -= 10000;
                 document.getElementById('score').innerText = score;
                 localStorage.setItem(scoreKey, score);
                 closeWithdrawModal();
-
+                closeWallet();
             } catch (error) {
-                console.error("Firebase Error: ", error);
                 alert("Failed to submit request: " + error.message);
             }
         }
@@ -751,14 +721,8 @@
         window.saveToFirebase = async function(currentCoins) {
             try {
                 const userRef = window.doc(window.db, "users", userId);
-                await window.setDoc(userRef, {
-                    name: userName,
-                    score: currentCoins,
-                    last_updated: new Date()
-                }, { merge: true });
-            } catch (error) {
-                console.error("Firebase Error: ", error);
-            }
+                await window.setDoc(userRef, { name: userName, score: currentCoins, last_updated: new Date() }, { merge: true });
+            } catch (error) {}
         };
 
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
@@ -768,4 +732,4 @@
     </script>
 </body>
 </html>
- 
+   
