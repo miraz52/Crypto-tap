@@ -21,45 +21,37 @@
         window.db = db;
         window.doc = doc;
         window.setDoc = setDoc;
+        window.updateDoc = updateDoc;
+        window.increment = increment;
+        window.collection = collection;
         window.getDocs = getDocs;
         window.query = query;
         window.orderBy = orderBy;
         window.limit = limit;
-        window.collection = collection;
     </script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CryptoTap X - Ultimate Pro Web3</title>
+    <title>CryptoTap X - Pro Web3</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-    
     <style>
-        /* ==========================================
-           GLOBAL VARIABLES & BASIC SETUP
-           ========================================== */
         :root { 
             --accent: #facc15; 
             --bg-dark: #070b19; 
-            --panel-bg: rgba(17, 24, 39, 0.85); 
+            --panel-bg: #111827; 
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --btn-blue: #3b82f6;
         }
         * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            -webkit-tap-highlight-color: transparent; 
-            user-select: none; 
+            box-sizing: border-box; margin: 0; padding: 0; 
+            -webkit-tap-highlight-color: transparent; user-select: none; 
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
 
-        /* Premium Illustrated Background */
         body {
-            background: 
-                radial-gradient(circle at 50% 20%, rgba(250, 204, 21, 0.15) 0%, transparent 50%),
-                linear-gradient(180deg, #0f172a 0%, #1e1b4b 40%, #31105c 80%, #000000 100%);
+            background: radial-gradient(circle at top, #1e3a8a 0%, var(--bg-dark) 60%);
             color: var(--text-main);
             overflow: hidden; 
             height: 100vh;
@@ -67,484 +59,160 @@
         }
 
         #app-container {
-            height: calc(100vh - 75px);
+            height: calc(100vh - 70px); 
             overflow-y: auto;
             position: relative;
-            padding-bottom: 20px;
         }
 
-        /* ==========================================
-           TOP HEADER & USER PROFILE
-           ========================================== */
-        .top-header {
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            padding: 15px 20px;
-        }
-        
-        .user-profile { 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            background: rgba(255,255,255,0.08); 
-            padding: 5px 15px 5px 5px; 
-            border-radius: 30px; 
-            backdrop-filter: blur(10px); 
-            border: 1px solid rgba(255,255,255,0.1); 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        .avatar { 
-            width: 38px; 
-            height: 38px; 
-            background: linear-gradient(135deg, #f59e0b, #ea580c); 
-            border-radius: 50%; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            font-size: 16px; 
-            font-weight: bold; 
-            box-shadow: 0 2px 10px rgba(234, 88, 12, 0.5); 
-            border: 2px solid #fff;
-        }
-        
-        .premium-wallet-btn {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 800;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-            transition: transform 0.2s;
-        }
-        .premium-wallet-btn:active { transform: scale(0.95); }
-
-        /* ==========================================
-           TGE COUNTDOWN BANNER (PREMIUM)
-           ========================================== */
-        .tge-premium-banner {
-            background: linear-gradient(135deg, rgba(217, 119, 6, 0.9), rgba(202, 138, 4, 0.9));
-            margin: 0 20px 15px 20px;
-            padding: 15px;
-            border-radius: 16px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 8px 20px rgba(217, 119, 6, 0.4);
-            backdrop-filter: blur(10px);
-        }
-        .tge-title { color: #020617; font-weight: 900; font-size: 16px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;}
-        .tge-clock-container { display: flex; justify-content: center; gap: 10px; }
-        .tge-box {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 8px 12px;
-            border-radius: 10px;
-            color: #fff;
-            min-width: 50px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .tge-num { font-size: 18px; font-weight: 900; display: block; }
-        .tge-label { font-size: 9px; font-weight: bold; color: var(--accent); text-transform: uppercase; }
-
-        /* ==========================================
-           HUGE BALANCE & REAL COIN LOGO
-           ========================================== */
-        .huge-balance-container { 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            gap: 12px; 
-            margin-top: 2vh; 
-        }
-        .xtap-logo-small {
-            width: 50px; 
-            height: 50px;
-            background: radial-gradient(circle at 35% 35%, #fffbeb 0%, #fde047 35%, #ca8a04 70%, #78350f 100%);
-            border-radius: 50%; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
-            font-weight: 900; 
-            font-size: 26px; 
-            color: #fff;
-            border: 3px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 0 20px rgba(234, 179, 8, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.8);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            animation: floatLogo 3s infinite ease-in-out;
-        }
-        @keyframes floatLogo { 
-            0% { transform: translateY(0px); } 
-            50% { transform: translateY(-6px); } 
-            100% { transform: translateY(0px); } 
-        }
-        .huge-balance-container h1 { 
-            font-size: 52px; 
-            font-weight: 900; 
-            filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.4)); 
-            margin: 0; 
-            line-height: 1;
-        }
-
-        /* ==========================================
-           MAIN 3D TAP COIN
-           ========================================== */
-        .coin-wrapper { 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            margin-top: 4vh; 
-        }
-        .coin-box {
-            width: 300px; 
-            height: 300px;
-            background: radial-gradient(circle at 35% 35%, #fffbeb 0%, #fde047 35%, #ca8a04 70%, #78350f 100%);
-            border-radius: 50%; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
-            cursor: pointer; 
-            transition: transform 0.05s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 12px solid rgba(255, 255, 255, 0.85);
-            box-shadow: 0 0 80px rgba(234, 179, 8, 0.5), inset 0 0 50px rgba(255, 255, 255, 0.9), 0 30px 60px rgba(0, 0, 0, 0.7);
-            font-size: 150px; 
-            font-weight: 900; 
-            color: #ffffff;
-            text-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 35px rgba(255, 215, 0, 0.8);
-            -webkit-tap-highlight-color: transparent;
-        }
-        .coin-box:active { 
-            transform: scale(0.92); 
-            box-shadow: 0 0 50px rgba(234, 179, 8, 0.4), inset 0 0 25px rgba(255, 255, 255, 0.7); 
-        }
-
-        /* Flying Coin Animation Feature */
-        .fly-coin { 
-            position: fixed; 
-            font-size: 32px; 
-            font-weight: 900; 
-            color: var(--accent); 
-            text-shadow: 0 2px 5px rgba(0,0,0,0.8); 
-            pointer-events: none; 
-            z-index: 9999; 
-            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s; 
-            opacity: 1; 
-        }
-
-        /* ==========================================
-           BOTTOM CONTROLS (ENERGY & BOOSTS)
-           ========================================== */
-        .home-controls { 
-            position: absolute; 
-            bottom: 25px; 
-            left: 20px; 
-            right: 20px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: flex-end; 
-        }
-        .energy-pill { 
-            background: rgba(0,0,0,0.7); 
-            padding: 10px 18px; 
-            border-radius: 25px; 
-            border: 1px solid rgba(255,255,255,0.15); 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            font-weight: bold; 
-            font-size: 14px; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5); 
-            backdrop-filter: blur(10px); 
-        }
-        .energy-bar-mini { 
-            width: 110px; 
-            height: 8px; 
-            background: rgba(255,255,255,0.2); 
-            border-radius: 10px; 
-            overflow: hidden; 
-            margin-top: 5px; 
-        }
-        .energy-fill { 
-            height: 100%; 
-            background: linear-gradient(90deg, #f59e0b, #facc15); 
-            width: 100%; 
-            transition: width 0.2s ease-out; 
-        }
-        .boost-pill { 
-            background: linear-gradient(135deg, #8b5cf6, #6d28d9); 
-            padding: 12px 20px; 
-            border-radius: 25px; 
-            color: #fff; 
-            font-size: 14px; 
-            font-weight: 900; 
-            border: 1px solid rgba(255,255,255,0.2); 
-            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4); 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            cursor: pointer; 
-            transition: transform 0.2s;
-        }
-        .boost-pill:active { transform: scale(0.95); }
-
-        /* ==========================================
-           BOTTOM NAVIGATION BAR
-           ========================================== */
+        /* Bottom Navigation Bar */
         .bottom-nav {
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 75px;
-            background: rgba(15, 23, 42, 0.98); 
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255,255,255,0.08); 
-            display: flex; 
-            justify-content: space-around; 
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            height: 70px;
+            background: #0f172a;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-around;
             align-items: center;
-            z-index: 1000; 
+            z-index: 1000;
             padding-bottom: env(safe-area-inset-bottom);
         }
-        .nav-item { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            color: #64748b; 
-            font-size: 11px; 
-            font-weight: 800; 
-            cursor: pointer; 
-            width: 25%; 
-            transition: 0.3s; 
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--text-muted); font-size: 11px; font-weight: 600; cursor: pointer;
+            width: 25%; transition: 0.3s;
         }
         .nav-item.active { color: #fff; }
-        .nav-icon { 
-            font-size: 26px; 
-            margin-bottom: 4px; 
-            transition: transform 0.2s; 
-            filter: grayscale(100%); 
-            opacity: 0.6;
-        }
-        .nav-item.active .nav-icon { 
-            transform: translateY(-4px); 
-            filter: grayscale(0%); 
-            opacity: 1;
-        }
+        .nav-icon { font-size: 22px; margin-bottom: 4px; transition: transform 0.2s; }
+        .nav-item.active .nav-icon { transform: translateY(-3px); }
 
-        /* ==========================================
-           GENERAL VIEWS & ANIMATIONS
-           ========================================== */
-        .view-section { 
-            display: none; 
-            padding: 15px 20px; 
-            min-height: 100%; 
-            animation: fadeIn 0.3s; 
-        }
+        .view-section { display: none; padding: 15px; min-height: 100%; animation: fadeIn 0.3s; }
         .view-section.active { display: block; }
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(15px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ==========================================
-           NEW EARN (TASKS) DESIGN - CRYPTO QUEST
-           ========================================== */
-        .quest-card {
-            background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 18px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        /* HOME VIEW */
+        .home-header {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.05); padding: 10px 15px; border-radius: 16px;
+            backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05);
         }
-        .quest-icon {
-            width: 50px;
-            height: 50px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 26px;
-            margin-right: 15px;
-        }
-        .quest-info { flex-grow: 1; }
-        .quest-title { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 5px; }
-        .quest-reward { font-size: 13px; font-weight: 900; color: var(--accent); display: flex; align-items: center; gap: 5px;}
-        .quest-btn {
-            background: var(--btn-blue);
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 12px;
-            font-weight: 900;
-            font-size: 13px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-            transition: 0.2s;
-        }
-        .quest-btn:active { transform: scale(0.95); }
-        .quest-btn:disabled { background: #475569; box-shadow: none; cursor: not-allowed; }
-
-        /* ==========================================
-           BOOSTS, LEADERBOARD, FRENS, WALLET
-           ========================================== */
-        .generic-list { 
-            background: var(--panel-bg); 
-            border-radius: 20px; 
-            padding: 10px; 
-            border: 1px solid rgba(255,255,255,0.05); 
-            margin-bottom: 20px; 
-            backdrop-filter: blur(10px);
-        }
-        .rank-item, .history-item, .boost-item { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 16px; 
-            border-bottom: 1px solid rgba(255,255,255,0.05); 
-        }
-        .rank-item:last-child, .history-item:last-child, .boost-item:last-child { border-bottom: none; }
-
-        /* Referral System */
-        .copy-box { 
-            background: rgba(0,0,0,0.6); 
-            padding: 15px 20px; 
-            border-radius: 15px; 
-            border: 1px solid rgba(255,255,255,0.15); 
-            margin: 25px 0; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
-        .copy-box input { 
-            background: none; 
-            border: none; 
-            color: #cbd5e1; 
-            font-size: 14px; 
-            width: 70%; 
-            outline: none; 
-        }
-        .copy-box button { 
-            background: var(--accent); 
-            color: #000; 
-            border: none; 
-            padding: 10px 18px; 
-            border-radius: 10px; 
-            font-weight: 900; 
-            font-size: 13px; 
-            cursor: pointer; 
-        }
+        .user-profile { display: flex; align-items: center; gap: 10px; }
+        .avatar { width: 35px; height: 35px; background: #3b82f6; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 18px; font-weight: bold; }
         
-        /* Social Media Icons */
-        .social-grid { display: flex; justify-content: center; gap: 20px; margin-top: 25px; }
-        .social-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; color: #fff; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s;}
-        .social-btn:active { transform: scale(0.9); }
-        .social-icon { 
-            width: 55px; height: 55px; border-radius: 50%; 
-            display: flex; justify-content: center; align-items: center; 
-            font-size: 28px; box-shadow: 0 6px 15px rgba(0,0,0,0.4); 
-        }
+        .huge-balance { text-align: center; margin-top: 5vh; }
+        .huge-balance span { color: var(--accent); font-size: 35px; margin-right: 5px; }
+        .huge-balance h1 { font-size: 48px; font-weight: 900; filter: drop-shadow(0 0 20px rgba(250, 204, 21, 0.4)); display: inline-flex; align-items: center; gap: 8px;}
 
-        /* Leaderboard Tabs */
-        .lb-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
-        .lb-tab { 
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
-            color: #94a3b8; padding: 12px 20px; border-radius: 12px; 
-            font-size: 14px; font-weight: bold; cursor: pointer; width: 45%; text-align: center;
+        .coin-wrapper { display: flex; justify-content: center; align-items: center; margin-top: 3vh; }
+        .coin-box {
+            width: 250px; height: 250px;
+            background: radial-gradient(circle at 35% 35%, #fffbeb 0%, #fde047 35%, #ca8a04 70%, #78350f 100%);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            cursor: pointer; transition: transform 0.05s;
+            border: 8px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 0 60px rgba(234, 179, 8, 0.5), inset 0 0 35px rgba(255, 255, 255, 0.9), 0 20px 45px rgba(0, 0, 0, 0.8);
+            font-size: 130px; font-weight: 900; color: #ffffff;
+            text-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.8);
         }
+        .coin-box:active { transform: scale(0.95); box-shadow: 0 0 40px rgba(234, 179, 8, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.7); }
+
+        .home-controls { position: absolute; bottom: 20px; left: 15px; right: 15px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .energy-pill { background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 13px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .energy-bar-mini { width: 100px; height: 6px; background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden; margin-top: 4px; }
+        .energy-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #facc15); width: 100%; transition: 0.2s; }
+
+        .action-pills { display: flex; gap: 10px; }
+        .action-pill { background: linear-gradient(135deg, #3b82f6, #1d4ed8); padding: 10px 15px; border-radius: 20px; color: #fff; font-size: 13px; font-weight: bold; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 5px 15px rgba(59,130,246,0.4); display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        .action-pill:active { transform: scale(0.95); }
+
+        /* BOOSTS VIEW */
+        .page-title { text-align: center; margin: 20px 0; font-size: 16px; color: var(--text-muted); }
+        .boost-balance { text-align: center; font-size: 40px; font-weight: 900; margin-bottom: 30px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .section-title { font-size: 14px; font-weight: bold; margin-bottom: 10px; color: #fff; }
+        .free-boosts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .free-boost-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
+        .free-boost-card:active { transform: scale(0.96); background: rgba(255,255,255,0.1); }
+        
+        .upgrades-list { background: rgba(255,255,255,0.03); border-radius: 20px; padding: 10px; border: 1px solid rgba(255,255,255,0.05); }
+        .upgrade-item { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.2s; }
+        .upgrade-item:last-child { border-bottom: none; }
+        .upgrade-item:active { background: rgba(255,255,255,0.05); border-radius: 12px; }
+        .upgrade-icon { width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 24px; margin-right: 15px; }
+        .upgrade-info { flex-grow: 1; text-align: left; }
+        .upgrade-name { font-size: 15px; font-weight: bold; color: #fff; margin-bottom: 4px; }
+        .upgrade-cost { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+        .upgrade-arrow { color: var(--text-muted); font-size: 16px; }
+
+        /* LISTS (Tasks, Leaders, Wallet) */
+        .generic-list { background: rgba(255,255,255,0.03); border-radius: 20px; padding: 10px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px;}
+        .task-item, .rank-item, .history-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .task-item:last-child, .rank-item:last-child, .history-item:last-child { border-bottom: none; }
+        .btn-claim { background: var(--btn-blue); border: none; padding: 8px 16px; color: #fff; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; }
+
+        /* Wallet specifics & TGE */
+        .wallet-card-big { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); margin-bottom: 20px;}
+        .tge-banner { background: linear-gradient(135deg, #d97706, #ca8a04); padding: 15px; border-radius: 16px; text-align: center; margin-bottom: 20px; }
+
+        /* Invite Specifics */
+        .copy-box { background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin: 20px 0; display: flex; justify-content: space-between; align-items: center; }
+        .copy-box input { background: none; border: none; color: var(--text-muted); font-size: 13px; width: 75%; outline: none; }
+        .copy-box button { background: var(--accent); color: #000; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; }
+        .social-grid { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
+        .social-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; color: #fff; font-size: 11px; font-weight: bold; text-decoration: none; cursor: pointer; }
+        .social-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+
+        .fly-coin { position: fixed; font-size: 28px; font-weight: 900; color: var(--accent); text-shadow: 0 2px 5px rgba(0,0,0,0.8); pointer-events: none; z-index: 9999; transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1); opacity: 1; }
+        
+        /* Overlays (Offline & Bot Warning) */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(2,6,23,0.95); z-index: 999999; justify-content: center; align-items: center; padding: 20px; text-align: center; backdrop-filter: blur(10px); }
+        .modal-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 30px; border-radius: 20px; width: 100%; max-width: 320px; }
+        
+        .lb-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
+        .lb-tab { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; padding: 10px 15px; border-radius: 12px; font-size: 13px; font-weight: bold; cursor: pointer; width: 50%; }
         .lb-tab.active { background: #3b82f6; color: #fff; border-color: #3b82f6; }
-
-        /* Wallet Specific */
-        .wallet-card-big { 
-            background: linear-gradient(135deg, #1e293b, #0f172a); 
-            padding: 30px 25px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.15); 
-            text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.6); margin-bottom: 25px;
-        }
-
-        /* ==========================================
-           MODALS (WARNINGS & OFFLINE)
-           ========================================== */
-        .modal-overlay { 
-            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-            background: rgba(2,6,23,0.92); z-index: 999999; justify-content: center; align-items: center; 
-            padding: 20px; text-align: center; backdrop-filter: blur(12px); 
-        }
-        .modal-box {
-            background: linear-gradient(145deg, #1e293b, #0f172a);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 30px; border-radius: 24px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
-            width: 100%; max-width: 340px;
-        }
     </style>
 </head>
 <body>
 
-    <!-- 1. OFFLINE ALERT MODAL -->
+    <!-- 1. Offline Alert -->
     <div id="offlineOverlay" class="modal-overlay">
         <div class="modal-box">
-            <div style="font-size: 55px; margin-bottom: 15px;">📡</div>
-            <h3 style="color: #ef4444; font-size: 24px; font-weight: 900; margin-bottom: 10px;">Connection Lost</h3>
-            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px; line-height:1.5;">Please check your internet connection to continue playing.</p>
-            <button onclick="checkConnection()" style="background: var(--accent); color: #000; border: none; padding: 14px 24px; border-radius: 12px; font-weight: 900; font-size: 15px; width: 100%; cursor:pointer;">Retry Connection</button>
+            <div style="font-size: 50px; margin-bottom: 15px;">📡</div>
+            <h3 style="color: #ef4444; font-size: 22px; margin-bottom: 10px;">Connection Lost</h3>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">Please check your internet connection.</p>
+            <button onclick="checkConnection()" style="background: var(--accent); color: #000; border: none; padding: 12px 24px; border-radius: 12px; font-weight: bold; width: 100%; cursor:pointer;">Retry</button>
         </div>
     </div>
 
     <!-- 2. ANTI-BOT WARNING MODAL -->
     <div id="botWarningOverlay" class="modal-overlay">
-        <div class="modal-box" style="border-color: #ef4444;">
-            <div style="font-size: 55px; margin-bottom: 15px;">⚠️</div>
-            <h3 style="color: #ef4444; font-size: 22px; font-weight: 900; margin-bottom: 10px;">Auto-Clicker Detected!</h3>
-            <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 25px; line-height:1.5;">
-                Our system detected unnatural tapping speed or third-party tools.<br><br>
-                <b style="color: var(--accent);">CryptoTap X only allows human touch.</b> Please play fairly to protect your account.
+        <div class="modal-box" style="border: 2px solid #ef4444; background: #0f172a;">
+            <div style="font-size: 50px; margin-bottom: 15px;">⚠️</div>
+            <h3 style="color: #ef4444; font-size: 22px; margin-bottom: 10px;">Auto-Clicker Detected!</h3>
+            <p style="color: var(--text-main); font-size: 14px; margin-bottom: 25px;">
+                Only human touch is allowed. Third-party tapping tools are strictly prohibited.
             </p>
-            <button onclick="document.getElementById('botWarningOverlay').style.display='none'" style="background: #ef4444; color: #fff; border: none; padding: 14px 24px; border-radius: 12px; font-weight: 900; font-size: 15px; width: 100%; cursor:pointer;">I Understand</button>
+            <button onclick="document.getElementById('botWarningOverlay').style.display='none'" style="background: #ef4444; color: #fff; border: none; padding: 12px 24px; border-radius: 12px; font-weight: bold; width: 100%; cursor:pointer;">I Understand</button>
         </div>
     </div>
 
     <!-- MAIN APP CONTAINER -->
     <div id="app-container">
 
-        <!-- ==================== HOME VIEW ==================== -->
+        <!-- 1. HOME VIEW -->
         <div id="view-home" class="view-section active">
-            
-            <div class="top-header">
+            <div class="home-header">
                 <div class="user-profile">
                     <div class="avatar" id="avatarInitial">U</div>
                     <div>
-                        <div style="font-size: 13px; font-weight: 900; letter-spacing:0.5px;" id="username">Gamer</div>
-                        <div style="font-size: 10px; color: #10b981; font-weight: bold; margin-top:2px;">● Elite Web3</div>
+                        <div class="user-name" id="username">Gamer</div>
+                        <div style="font-size: 10px; color: #10b981;">● Online</div>
                     </div>
                 </div>
-                
-                <div class="premium-wallet-btn" onclick="switchView('view-wallet')">
-                    💳 Wallet
-                </div>
+                <div id="ton-connect"></div>
             </div>
 
-            <!-- Premium TGE Countdown Banner (Restored & Upgraded) -->
-            <div class="tge-premium-banner">
-                <div class="tge-title">🚀 TGE & Airdrop Countdown</div>
-                <div style="font-size: 11px; color: #334155; font-weight: bold; margin-bottom: 10px;">Official Launch: Dec 11, 2030</div>
-                <div class="tge-clock-container">
-                    <div class="tge-box"><span class="tge-num" id="tge-days">00</span><span class="tge-label">Days</span></div>
-                    <div class="tge-box"><span class="tge-num" id="tge-hours">00</span><span class="tge-label">Hours</span></div>
-                    <div class="tge-box"><span class="tge-num" id="tge-mins">00</span><span class="tge-label">Mins</span></div>
-                    <div class="tge-box"><span class="tge-num" id="tge-secs">00</span><span class="tge-label">Secs</span></div>
-                </div>
-            </div>
-
-            <div class="huge-balance-container">
-                <div class="xtap-logo-small">X</div>
+            <div class="huge-balance">
                 <h1 id="scoreDisplay">0</h1>
             </div>
 
@@ -560,124 +228,138 @@
                         <div class="energy-bar-mini"><div class="energy-fill" id="energyBarHome"></div></div>
                     </div>
                 </div>
-                
-                <div class="boost-pill" onclick="switchView('view-boosts')">
-                    🚀 Boosts
+                <div class="action-pills">
+                    <div class="action-pill" onclick="switchView('view-frens')" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2);">👥 Frens</div>
+                    <div class="action-pill" onclick="switchView('view-boosts')">🚀 Boosts</div>
                 </div>
             </div>
         </div>
 
-        <!-- ==================== EARN VIEW (NEW TASKS DESIGN) ==================== -->
+        <!-- 2. EARN / TASKS VIEW (No 3-dots, clean list) -->
         <div id="view-earn" class="view-section">
-            <h2 style="text-align: center; font-size: 26px; font-weight: 900; margin: 15px 0 5px;">Crypto Quests</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 25px; font-size: 14px;">Complete tasks to receive massive rewards!</p>
+            <h2 style="text-align: center; font-size: 24px; margin: 20px 0;">Earn More Coins</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 20px; font-size: 14px;">Complete tasks to receive huge rewards!</p>
             
-            <div class="quest-card">
-                <div class="quest-icon">📢</div>
-                <div class="quest-info">
-                    <div class="quest-title">Join Telegram</div>
-                    <div class="quest-reward"><div style="width:16px;height:16px;background:var(--accent);border-radius:50%;display:inline-block;color:#000;text-align:center;font-size:10px;line-height:16px;">X</div> +3,500</div>
+            <div class="generic-list">
+                <div class="task-item">
+                    <div>
+                        <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">📢 Join Telegram Channel</div>
+                        <div style="color: var(--accent); font-size: 12px; font-weight: bold;">+3,500 $XTAP</div>
+                    </div>
+                    <button class="btn-claim" id="task_tg_btn" onclick="handleTask('task_tg', 3500, 'https://t.me/Cryptotapxofficial')">Start</button>
                 </div>
-                <button class="quest-btn" id="task_tg_btn" onclick="handleTask('task_tg', 3500, 'https://t.me/Cryptotapxofficial')">Start</button>
-            </div>
-
-            <div class="quest-card">
-                <div class="quest-icon">📺</div>
-                <div class="quest-info">
-                    <div class="quest-title">Subscribe YouTube</div>
-                    <div class="quest-reward"><div style="width:16px;height:16px;background:var(--accent);border-radius:50%;display:inline-block;color:#000;text-align:center;font-size:10px;line-height:16px;">X</div> +3,500</div>
+                <div class="task-item">
+                    <div>
+                        <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">📺 Subscribe YouTube</div>
+                        <div style="color: var(--accent); font-size: 12px; font-weight: bold;">+3,500 $XTAP</div>
+                    </div>
+                    <button class="btn-claim" id="task_yt_btn" onclick="handleTask('task_yt', 3500, 'https://www.youtube.com/@Cryptotap-X')">Start</button>
                 </div>
-                <button class="quest-btn" id="task_yt_btn" onclick="handleTask('task_yt', 3500, 'https://www.youtube.com/@Cryptotap-X')">Start</button>
-            </div>
-
-            <div class="quest-card">
-                <div class="quest-icon">🐦</div>
-                <div class="quest-info">
-                    <div class="quest-title">Follow X (Twitter)</div>
-                    <div class="quest-reward"><div style="width:16px;height:16px;background:var(--accent);border-radius:50%;display:inline-block;color:#000;text-align:center;font-size:10px;line-height:16px;">X</div> +3,500</div>
+                <div class="task-item">
+                    <div>
+                        <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">🐦 Follow Twitter (X)</div>
+                        <div style="color: var(--accent); font-size: 12px; font-weight: bold;">+3,500 $XTAP</div>
+                    </div>
+                    <button class="btn-claim" id="task_tw_btn" onclick="handleTask('task_tw', 3500, 'https://x.com/Cryptotapx')">Start</button>
                 </div>
-                <button class="quest-btn" id="task_tw_btn" onclick="handleTask('task_tw', 3500, 'https://x.com/Cryptotapx')">Start</button>
+                <div class="task-item">
+                    <div>
+                        <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">💬 Support Bot</div>
+                        <div style="color: var(--accent); font-size: 12px; font-weight: bold;">+3,500 $XTAP</div>
+                    </div>
+                    <button class="btn-claim" id="task_bot_btn" onclick="handleTask('task_bot', 3500, 'http://t.me/XtapSupportBot')">Start</button>
+                </div>
             </div>
         </div>
 
-        <!-- ==================== BOOSTS VIEW ==================== -->
+        <!-- 3. BOOSTS & UPGRADES VIEW -->
         <div id="view-boosts" class="view-section">
-            <div style="text-align: center; font-size: 14px; color: var(--text-muted); margin-top:10px;">Your balance</div>
-            <div style="text-align: center; font-size: 40px; font-weight: 900; margin-bottom: 25px; color:var(--accent);" id="boostScoreDisplay">0</div>
+            <div class="page-title">Your balance</div>
+            <div class="boost-balance"><span style="color:var(--accent);">X</span> <span id="boostScoreDisplay">0</span></div>
 
-            <div style="font-size: 15px; font-weight: 900; margin-bottom: 12px;">Daily Free Boosters</div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
-                <div style="background:var(--panel-bg); padding:18px; border-radius:16px; border:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="claimDailyBonus()">
+            <div class="section-title">Free daily boosters</div>
+            <div class="free-boosts-grid">
+                <div class="free-boost-card" onclick="claimDailyBonus()">
                     <div>
-                        <div style="font-weight:900; font-size:15px;">Daily Reward</div>
-                        <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">+200 Coins</div>
+                        <div style="font-weight: bold; font-size: 14px;">Daily Reward</div>
+                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">+200 Coins</div>
                     </div>
-                    <div style="font-size:28px;">🎁</div>
+                    <div style="font-size: 24px;">🎁</div>
                 </div>
-                <div style="background:var(--panel-bg); padding:18px; border-radius:16px; border:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="refillEnergyFree()">
+                <div class="free-boost-card" onclick="refillEnergyFree()">
                     <div>
-                        <div style="font-weight:900; font-size:15px;">Full Energy</div>
-                        <div style="font-size:12px; color:#10b981; margin-top:4px;" id="energyRefillText">1/1 available</div>
+                        <div style="font-weight: bold; font-size: 14px;">Full Energy</div>
+                        <div style="font-size: 11px; color: #10b981; margin-top: 4px;" id="energyRefillText">1/1 available</div>
                     </div>
-                    <div style="font-size:28px;">⚡</div>
+                    <div style="font-size: 24px;">⚡</div>
                 </div>
             </div>
 
-            <div style="font-size: 15px; font-weight: 900; margin-bottom: 12px;">Upgrades</div>
-            <div class="generic-list" style="padding:5px;">
-                <div class="boost-item" onclick="upgradeTap()" style="cursor:pointer;">
-                    <div style="display:flex; align-items:center; gap:15px;">
-                        <div style="width:45px; height:45px; background:rgba(255,255,255,0.1); border-radius:12px; display:flex; justify-content:center; align-items:center; font-size:24px;">👆</div>
-                        <div>
-                            <div style="font-weight:bold; font-size:16px;">Multitap</div>
-                            <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">Cost: <span id="upgradeCostDisplay" style="color:var(--accent);">500</span> • Lvl <span id="tapPowerLvl">1</span></div>
-                        </div>
+            <div class="section-title">Boosters</div>
+            <div class="upgrades-list">
+                <div class="upgrade-item" onclick="upgradeTap()">
+                    <div class="upgrade-icon">👆</div>
+                    <div class="upgrade-info">
+                        <div class="upgrade-name">Multitap</div>
+                        <div class="upgrade-cost"><span style="color:var(--accent);">X</span> <span id="upgradeCostDisplay">500</span> • Lvl <span id="tapPowerLvl">1</span></div>
                     </div>
-                    <div style="color:var(--text-muted); font-size:18px;">❯</div>
+                    <div class="upgrade-arrow">❯</div>
                 </div>
-                <div class="boost-item" onclick="upgradeEnergy()" style="cursor:pointer;">
-                    <div style="display:flex; align-items:center; gap:15px;">
-                        <div style="width:45px; height:45px; background:rgba(255,255,255,0.1); border-radius:12px; display:flex; justify-content:center; align-items:center; font-size:24px;">🔋</div>
-                        <div>
-                            <div style="font-weight:bold; font-size:16px;">Battery Pack</div>
-                            <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">Cost: <span id="energyUpgradeCostDisplay" style="color:var(--accent);">1000</span> • Max <span id="maxEnergyDisplay">1000</span></div>
-                        </div>
-                    </div>
-                    <div style="color:var(--text-muted); font-size:18px;">❯</div>
-                </div>
-                <div class="boost-item" onclick="upgradeAutoBot()" style="cursor:pointer;">
-                    <div style="display:flex; align-items:center; gap:15px;">
-                        <div style="width:45px; height:45px; background:rgba(255,255,255,0.1); border-radius:12px; display:flex; justify-content:center; align-items:center; font-size:24px;">🤖</div>
-                        <div>
-                            <div style="font-weight:bold; font-size:16px;">Auto Bot</div>
-                            <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">Cost: <span id="botCostDisplay" style="color:var(--accent);">5000</span> • Lvl <span id="botLvlDisplay">0</span></div>
-                        </div>
-                    </div>
-                    <div style="color:var(--text-muted); font-size:18px;">❯</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ==================== WALLET VIEW ==================== -->
-        <div id="view-wallet" class="view-section">
-            <h2 style="text-align: center; font-size: 26px; font-weight: 900; margin: 10px 0 25px;">💼 $XTAP WALLET</h2>
-            
-            <div class="wallet-card-big">
-                <div style="color: #94a3b8; font-size: 15px; font-weight: bold;">Total Balance</div>
-                <div id="wallet-balance-display" style="font-size: 48px; font-weight: 900; color: var(--accent); margin: 15px 0;">0</div>
                 
-                <div style="margin: 30px 0; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-                    <div style="font-size:13px; font-weight:bold; color:var(--text-muted); margin-bottom:10px;">Connect TON Wallet</div>
-                    <div id="ton-connect" style="display:flex; justify-content:center;"></div>
+                <div class="upgrade-item" onclick="upgradeEnergy()">
+                    <div class="upgrade-icon">🔋</div>
+                    <div class="upgrade-info">
+                        <div class="upgrade-name">Battery Pack</div>
+                        <div class="upgrade-cost"><span style="color:var(--accent);">X</span> <span id="energyUpgradeCostDisplay">1000</span> • Max <span id="maxEnergyDisplay">1000</span></div>
+                    </div>
+                    <div class="upgrade-arrow">❯</div>
                 </div>
 
-                <button onclick="document.getElementById('withdrawModal').style.display='flex'" style="background:linear-gradient(135deg, #10b981, #047857); border:none; color:white; padding:15px 20px; border-radius:12px; font-weight:900; cursor:pointer; width:100%; font-size: 15px; box-shadow: 0 5px 20px rgba(16,185,129,0.4);">💸 Request Withdrawal</button>
+                <div class="upgrade-item" onclick="upgradeAutoBot()">
+                    <div class="upgrade-icon">🤖</div>
+                    <div class="upgrade-info">
+                        <div class="upgrade-name">Auto Bot</div>
+                        <div class="upgrade-cost"><span style="color:var(--accent);">X</span> <span id="botCostDisplay">5000</span> • Lvl <span id="botLvlDisplay">0</span></div>
+                    </div>
+                    <div class="upgrade-arrow">❯</div>
+                </div>
+            </div>
+            
+            <button onclick="buyBoost()" style="width:100%; margin-top:15px; background:linear-gradient(135deg, #a855f7, #9333ea); border:none; padding:15px; border-radius:16px; color:#fff; font-weight:bold; font-size:14px; cursor:pointer; box-shadow: 0 5px 15px rgba(168,85,247,0.4);">
+                ⭐ Buy Premium Booster (Stars)
+            </button>
+        </div>
+
+        <!-- 4. WALLET & TGE VIEW (Your Favorite Premium TGE Banner) -->
+        <div id="view-wallet" class="view-section">
+            <h2 style="text-align: center; font-size: 24px; margin: 10px 0 20px;">💼 $XTAP WALLET</h2>
+            
+            <div class="tge-banner">
+                <h4 style="color: #020617; font-weight: 900; font-size: 16px; margin-bottom: 5px;">🚀 TGE & Airdrop Countdown</h4>
+                <p style="color: #0f172a; font-size: 12px; font-weight: 700;">Token Generation Event: Dec 11, 2030</p>
+                <div style="display: flex; justify-content: center; gap: 8px; margin-top: 10px;">
+                    <div><span id="days" style="background: rgba(0,0,0,0.5); padding: 6px 10px; border-radius: 8px; font-size: 14px; font-weight: bold; color: #fff;">00</span><br><span style="font-size:9px; color:#020617; font-weight:bold;">Days</span></div>
+                    <div><span id="hours" style="background: rgba(0,0,0,0.5); padding: 6px 10px; border-radius: 8px; font-size: 14px; font-weight: bold; color: #fff;">00</span><br><span style="font-size:9px; color:#020617; font-weight:bold;">Hrs</span></div>
+                    <div><span id="minutes" style="background: rgba(0,0,0,0.5); padding: 6px 10px; border-radius: 8px; font-size: 14px; font-weight: bold; color: #fff;">00</span><br><span style="font-size:9px; color:#020617; font-weight:bold;">Mins</span></div>
+                    <div><span id="seconds" style="background: rgba(0,0,0,0.5); padding: 6px 10px; border-radius: 8px; font-size: 14px; font-weight: bold; color: #fff;">00</span><br><span style="font-size:9px; color:#020617; font-weight:bold;">Secs</span></div>
+                </div>
+            </div>
+
+            <div class="wallet-card-big">
+                <div style="color: #94a3b8; font-size: 14px;">Total Balance</div>
+                <div id="wallet-balance-display" style="font-size: 40px; font-weight: 900; color: var(--accent); margin: 10px 0;">0</div>
+                <button onclick="openWithdrawModal()" style="background:#10b981; border:none; color:white; padding:12px 20px; border-radius:12px; font-weight:bold; cursor:pointer; width:100%; font-size: 14px; box-shadow: 0 5px 15px rgba(16,185,129,0.3);">💸 Request Withdrawal</button>
+            </div>
+
+            <h3 style="margin: 25px 0 10px; font-size: 16px;">Activity History</h3>
+            <div class="generic-list" id="transaction-list">
+                <!-- Activity injects here -->
             </div>
         </div>
 
-        <!-- ==================== LEADERBOARD VIEW ==================== -->
+        <!-- 5. LEADERBOARD VIEW -->
         <div id="view-leaders" class="view-section">
-            <h2 style="text-align: center; font-size: 26px; font-weight: 900; margin: 10px 0 25px;">🏆 Global Leaders</h2>
+            <h2 style="text-align: center; font-size: 24px; margin: 10px 0 20px;">🏆 Global Leaders</h2>
             
             <div class="lb-tabs">
                 <button class="lb-tab active" id="tabEarners" onclick="switchLBTab('earners')">Top Earners</button>
@@ -685,20 +367,20 @@
             </div>
 
             <div class="generic-list" id="leaderboard-list">
-                <div style="font-size: 13px; color: var(--text-muted); padding: 20px; text-align: center; font-weight: bold;">Syncing real-time data...</div>
+                <div style="font-size: 12px; color: #64748b; padding: 15px; text-align: center;">Loading real-time data...</div>
             </div>
         </div>
 
-        <!-- ==================== FRENS (INVITE) VIEW ==================== -->
+        <!-- 6. FRENS (INVITE) VIEW -->
         <div id="view-frens" class="view-section">
-            <h2 style="text-align: center; font-size: 26px; font-weight: 900; margin: 10px 0 10px;">Invite Friends</h2>
-            <p style="text-align: center; color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">Grow your squad and earn passive income!</p>
+            <h2 style="text-align: center; font-size: 24px; margin: 10px 0 10px;">Invite Friends</h2>
+            <p style="text-align: center; color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Grow your squad and earn passive income!</p>
             
-            <div style="background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9)); padding: 25px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                <div style="font-size: 50px; margin-bottom: 15px;">🎁</div>
-                <div style="font-size: 18px; font-weight: 900; margin-bottom: 10px; color:#fff;">Invite & Earn Huge!</div>
-                <p style="font-size: 13px; color: #94a3b8; line-height: 1.6;">
-                    You get <b style="color:var(--accent); font-size:15px;">1,000 $XTAP</b> + <b style="color:#10b981; font-size:15px;">20% Commission</b>.<br>Your friend gets <b style="color:var(--accent); font-size:15px;">2,000 $XTAP</b>!
+            <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); text-align: center;">
+                <div style="font-size: 40px; margin-bottom: 10px;">🎁</div>
+                <div style="font-size: 14px; font-weight: bold; margin-bottom: 8px;">Invite & Earn Huge!</div>
+                <p style="font-size: 12px; color: #94a3b8; line-height: 1.5;">
+                    You get <b style="color:var(--accent);">1000 $XTAP</b> + <b style="color:#10b981;">20% Lifetime Commission</b>.<br>Your friend gets <b style="color:var(--accent);">2000 $XTAP</b> bonus!
                 </p>
             </div>
             
@@ -707,20 +389,12 @@
                 <button onclick="copyRefLink()">Copy</button>
             </div>
 
-            <div style="text-align: center; font-size: 13px; color: var(--text-muted); margin-top:20px; font-weight:bold;">Share directly to:</div>
+            <!-- Fixed Social Grid URLs -->
             <div class="social-grid">
-                <div class="social-btn" onclick="shareRef('tg')">
-                    <div class="social-icon" style="background: linear-gradient(135deg, #2AABEE, #229ED9);">✈️</div>Telegram
-                </div>
-                <div class="social-btn" onclick="shareRef('wa')">
-                    <div class="social-icon" style="background: linear-gradient(135deg, #25D366, #128C7E);">💬</div>WhatsApp
-                </div>
-                <div class="social-btn" onclick="shareRef('fb')">
-                    <div class="social-icon" style="background: linear-gradient(135deg, #1877F2, #0d5ea6);">📘</div>Facebook
-                </div>
-                <div class="social-btn" onclick="shareRef('x')">
-                    <div class="social-icon" style="background: #000; border: 2px solid #333;">𝕏</div>X
-                </div>
+                <div class="social-btn" onclick="shareRef('tg')"><div class="social-icon" style="background:#0088cc;">✈️</div>Telegram</div>
+                <div class="social-btn" onclick="shareRef('wa')"><div class="social-icon" style="background:#25D366;">💬</div>WhatsApp</div>
+                <div class="social-btn" onclick="shareRef('fb')"><div class="social-icon" style="background:#1877F2;">📘</div>Facebook</div>
+                <div class="social-btn" onclick="shareRef('x')"><div class="social-icon" style="background:#000000; border: 1px solid #333;">𝕏</div>X (Twitter)</div>
             </div>
         </div>
 
@@ -734,31 +408,58 @@
         <div class="nav-item" id="nav-earn" onclick="switchView('view-earn')">
             <div class="nav-icon">💰</div><span>Earn</span>
         </div>
-        <div class="nav-item" id="nav-frens" onclick="switchView('view-frens')">
-            <div class="nav-icon">👥</div><span>Frens</span>
+        <div class="nav-item" id="nav-wallet" onclick="switchView('view-wallet')">
+            <div class="nav-icon">💼</div><span>Wallet</span>
         </div>
         <div class="nav-item" id="nav-leaders" onclick="switchView('view-leaders')">
             <div class="nav-icon">🏆</div><span>Leaders</span>
         </div>
     </nav>
 
-    <!-- WITHDRAW LOCKED MODAL -->
+    <!-- Withdaw Locked Modal -->
     <div id="withdrawModal" class="modal-overlay">
-      <div class="modal-box">
-        <div style="font-size: 55px; margin-bottom: 15px;">🔒</div>
-        <h3 style="color: var(--accent); font-size: 24px; font-weight: 900; margin-bottom: 10px;">Withdrawal Locked</h3>
-        <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 25px; line-height: 1.6;">
-            Withdrawals are safely locked for ecosystem stability!<br><br>You will be able to claim real <b>$XTAP</b> tokens directly to your TON wallet after the official TGE on <b>Dec 11, 2030</b>.
+      <div class="modal-box" style="text-align: center;">
+        <div style="font-size: 40px; margin-bottom: 10px;">🔒</div>
+        <h3 style="color: #f59e0b;">Withdrawal Locked</h3>
+        <p style="font-size: 13px; color: #cbd5e1; margin: 15px 0; line-height: 1.5;">
+            Withdrawals are locked for ecosystem stability! You will be able to claim real $XTAP tokens directly to your TON wallet after the official TGE on <b>Dec 11, 2030</b>.
         </p>
-        <button onclick="document.getElementById('withdrawModal').style.display='none'" style="background:var(--accent); color:#000; padding:14px; width:100%; border:none; border-radius:12px; font-weight:900; font-size:15px; cursor:pointer;">Got it</button>
+        <button onclick="closeWithdrawModal()" style="background:var(--accent); color:#000; padding:12px; width:100%; border:none; border-radius:12px; font-weight:bold; cursor:pointer;">Got it</button>
       </div>
     </div>
 
-    <!-- MAIN JAVASCRIPT LOGIC -->
     <script>
-        /* ==========================================
-           CORE LOGIC & SYSTEM CHECKS
-           ========================================== */
+        // --- NAVIGATION LOGIC ---
+        function switchView(viewId) {
+            if (!checkConnection()) return;
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(viewId).classList.add('active');
+            
+            const navId = 'nav-' + viewId.split('-')[1];
+            if(document.getElementById(navId)) document.getElementById(navId).classList.add('active');
+
+            if(viewId === 'view-wallet') {
+                document.getElementById('wallet-balance-display').innerText = score.toLocaleString();
+                loadUserActivity();
+            }
+            if(viewId === 'view-leaders') {
+                switchLBTab('earners'); 
+            }
+        }
+
+        // --- CORE GAME LOGIC & NETWORK ---
+        function checkConnection() {
+            if (!navigator.onLine) {
+                document.getElementById('offlineOverlay').style.display = 'flex'; return false;
+            } else {
+                document.getElementById('offlineOverlay').style.display = 'none'; return true;
+            }
+        }
+        window.addEventListener('online', () => document.getElementById('offlineOverlay').style.display = 'none');
+        window.addEventListener('offline', () => document.getElementById('offlineOverlay').style.display = 'flex');
+
         let tg = window.Telegram.WebApp;
         let userId = "guest_" + Math.floor(Math.random()*1000);
         let userName = "Gamer";
@@ -773,32 +474,18 @@
             }
         } catch(e) {}
 
-        function checkConnection() {
-            if (!navigator.onLine) {
-                document.getElementById('offlineOverlay').style.display = 'flex'; 
-                return false;
-            } else {
-                document.getElementById('offlineOverlay').style.display = 'none'; 
-                return true;
-            }
-        }
-        window.addEventListener('online', () => document.getElementById('offlineOverlay').style.display = 'none');
-        window.addEventListener('offline', () => document.getElementById('offlineOverlay').style.display = 'flex');
-        
-        /* ==========================================
-           DATA STATE & LOCAL STORAGE
-           ========================================== */
-        const scoreKey = 'xtap_score_' + userId;
-        const powerKey = 'xtap_power_' + userId;
-        const costKey = 'xtap_cost_' + userId;
-        const energyKey = 'xtap_energy_' + userId;
-        const timeKey = 'xtap_time_' + userId;
-        const claimKey = 'xtap_claim_' + userId;
-        const refillKey = 'xtap_refill_' + userId;
-        const maxEnergyKey = 'xtap_maxEnergy_' + userId;
-        const energyCostKey = 'xtap_energyCost_' + userId;
-        const botLevelKey = 'xtap_botLvl_' + userId;
-        const botTimeKey = 'xtap_botExpiry_' + userId;
+        const scoreKey = 'taps_' + userId;
+        const powerKey = 'tapPower_' + userId;
+        const costKey = 'upgradeCost_' + userId;
+        const energyKey = 'energy_' + userId;
+        const timeKey = 'lastTime_' + userId;
+        const claimKey = 'lastClaim_' + userId;
+        const refillKey = 'lastRefill_' + userId;
+        const maxEnergyKey = 'maxEnergy_' + userId;
+        const energyCostKey = 'energyCost_' + userId;
+        const botLevelKey = 'botLevel_' + userId;
+        const botTimeKey = 'botExpiry_' + userId;
+        const historyKey = 'history_' + userId;
 
         let score = parseInt(localStorage.getItem(scoreKey)) || 0;
         let tapPower = parseInt(localStorage.getItem(powerKey)) || 1;
@@ -815,60 +502,58 @@
         let secondsPassed = Math.floor((now - lastTime) / 1000);
 
         checkConnection();
-        if (navigator.onLine) {
-            energy = Math.min(maxEnergy, energy + (secondsPassed * 2));
-        }
+        if (navigator.onLine) { energy = Math.min(maxEnergy, energy + (secondsPassed * 2)); }
 
-        // Referral Onboarding
         let tgStartParam = tg?.initDataUnsafe?.start_param || "";
         if (tgStartParam.startsWith("ref_") && !localStorage.getItem("referred_by_" + userId)) {
             let referrerId = tgStartParam.split("_")[1];
             if (referrerId !== userId) {
                 localStorage.setItem("referred_by_" + userId, referrerId);
                 score += 2000;
-                alert("🎉 You joined via a referral link! You received 2,000 $XTAP Bonus!");
+                addActivity('Welcome Referral Bonus', '+2000', '#10b981');
+                alert("🎉 You joined via a referral link! You received 2000 $XTAP Bonus!");
             }
         }
 
-        // Offline Auto-Bot Farming
         if (botLevel > 0 && now < botExpiry) {
             let offlineHours = (now - lastTime) / (1000 * 60 * 60);
             let botEarnings = Math.floor(offlineHours * botLevel * 1000);
             if (botEarnings > 0 && navigator.onLine) {
                 score += botEarnings;
-                alert(`🤖 Level ${botLevel} Auto-Bot farmed ${botEarnings.toLocaleString()} $XTAP while you were away!`);
+                addActivity(`Auto-Bot offline farming`, `+${botEarnings}`, '#10b981');
+                alert(`🤖 Level ${botLevel} Auto-Bot farmed ${botEarnings} $XTAP while you were away!`);
             }
         } else if (now >= botExpiry && botLevel > 0) {
-            botLevel = 0; 
-            localStorage.setItem(botLevelKey, '0');
+            botLevel = 0; localStorage.setItem(botLevelKey, '0');
         }
 
-        /* ==========================================
-           UI UPDATE LOOP
-           ========================================== */
+        updateUI();
+        startTgeCountdown();
+
         function updateUI() {
             let formattedScore = score.toLocaleString();
             document.getElementById('scoreDisplay').innerText = formattedScore;
-            
-            if(document.getElementById('boostScoreDisplay')) document.getElementById('boostScoreDisplay').innerText = formattedScore;
-            if(document.getElementById('wallet-balance-display')) document.getElementById('wallet-balance-display').innerText = formattedScore;
-
             document.getElementById('energyTextHome').innerText = `${energy}/${maxEnergy}`;
             document.getElementById('energyBarHome').style.width = (energy / maxEnergy) * 100 + '%';
             
+            document.getElementById('boostScoreDisplay').innerText = formattedScore;
             document.getElementById('upgradeCostDisplay').innerText = upgradeCost.toLocaleString();
             document.getElementById('tapPowerLvl').innerText = tapPower;
             document.getElementById('energyUpgradeCostDisplay').innerText = energyUpgradeCost.toLocaleString();
-            document.getElementById('maxEnergyDisplay').innerText = maxEnergy.toLocaleString();
+            document.getElementById('maxEnergyDisplay').innerText = maxEnergy;
             
             botCost = 5000 * Math.pow(2, botLevel);
             document.getElementById('botCostDisplay').innerText = botLevel === 0 ? "5,000" : botCost.toLocaleString();
             document.getElementById('botLvlDisplay').innerText = botLevel;
 
             document.getElementById('refLinkInput').value = `https://t.me/miraztap_bot/cryptotap?startapp=ref_${userId}`;
-        }
 
-        updateUI();
+            let lastRefillDate = localStorage.getItem(refillKey) || 0;
+            if (lastRefillDate === new Date().toDateString()) {
+                document.getElementById('energyRefillText').innerText = "0/1 available";
+                document.getElementById('energyRefillText').style.color = "var(--text-muted)";
+            }
+        }
 
         setInterval(() => {
             if (!navigator.onLine) return;
@@ -879,20 +564,28 @@
             localStorage.setItem(energyKey, energy);
             localStorage.setItem(timeKey, Date.now());
             localStorage.setItem(scoreKey, score);
-            
-            // Firebase background sync (20% chance every sec to save quota)
-            if(window.saveToFirebase && Math.random() < 0.2) {
-                window.saveToFirebase(score);
-            }
         }, 1000);
 
-        /* ==========================================
-           STRICT ANTI-BOT & TAP LOGIC (HUMAN TOUCH ONLY)
-           ========================================== */
-        let lastTapRecord = 0;
-        
-        function showBotWarning() {
-            document.getElementById('botWarningOverlay').style.display = 'flex';
+        function addActivity(title, amount, color) {
+            let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+            history.unshift({ title, amount, color, time: new Date().toLocaleTimeString() });
+            if (history.length > 10) history.pop();
+            localStorage.setItem(historyKey, JSON.stringify(history));
+        }
+
+        function loadUserActivity() {
+            const list = document.getElementById('transaction-list');
+            let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+            if (history.length === 0) {
+                list.innerHTML = `<div style="font-size:12px; color:var(--text-muted); text-align:center; padding:10px;">No recent activity.</div>`;
+                return;
+            }
+            list.innerHTML = history.map(item => `
+                <div class="history-item">
+                    <span>${item.title} <small style="color:var(--text-muted); font-size:10px; display:block;">${item.time}</small></span>
+                    <span style="color:${item.color}; font-weight:bold;">${item.amount}</span>
+                </div>
+            `).join('');
         }
 
         function spawnFlyingCoin(x, y, amount) {
@@ -902,8 +595,7 @@
             const coin = document.createElement('div');
             coin.innerText = '+' + amount;
             coin.className = 'fly-coin';
-            coin.style.left = (x - 20) + 'px'; 
-            coin.style.top = (y - 20) + 'px';
+            coin.style.left = x + 'px'; coin.style.top = y + 'px';
             document.body.appendChild(coin);
 
             setTimeout(() => {
@@ -911,161 +603,117 @@
                 const targetY = scoreRect.top + (scoreRect.height / 2) - 15;
                 coin.style.transform = `translate(${targetX - x}px, ${targetY - y}px) scale(0.5)`;
                 coin.style.opacity = '0';
-                setTimeout(() => coin.remove(), 600);
+                setTimeout(() => coin.remove(), 700);
             }, 10);
         }
 
+        // --- STRICT ANTI-BOT SYSTEM ---
+        let lastTapRecord = 0;
         const tapCoinBox = document.getElementById('tapCoinBox');
         
-        function handleTapEvent(e) {
-            e.preventDefault(); 
+        function handleTapEvent(event) {
+            event.preventDefault();
             if (!checkConnection()) return;
 
             let currentTime = Date.now();
             
-            // SECURITY CHECK 1: isTrusted browser flag
-            if (e.isTrusted === false) {
-                showBotWarning();
+            // Check 1: Must be trusted event
+            if (!event.isTrusted) {
+                document.getElementById('botWarningOverlay').style.display = 'flex';
                 return;
             }
-
-            // SECURITY CHECK 2: Velocity Limit (Tapping faster than 65ms is inhuman)
+            // Check 2: Velocity check (faster than 65ms is blocked)
             if (currentTime - lastTapRecord < 65) {
-                showBotWarning();
+                document.getElementById('botWarningOverlay').style.display = 'flex';
                 return;
             }
             lastTapRecord = currentTime;
 
             if (energy > 0) {
-                score += tapPower; 
-                energy -= 1; 
-                updateUI();
-                
-                let clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                let clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                score += tapPower; energy -= 1; updateUI();
+                let clientX = event.touches ? event.touches[0].clientX : event.clientX;
+                let clientY = event.touches ? event.touches[0].clientY : event.clientY;
                 spawnFlyingCoin(clientX, clientY, tapPower);
                 
                 try {
+                    let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(450, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(900, audioCtx.currentTime + 0.08); gain.gain.setValueAtTime(0.2, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.08);
                     if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-                } catch(err) {}
+                } catch(e) {}
+                if(window.saveToFirebase) window.saveToFirebase(score);
             } else {
-                // Optional UI indication for no energy
+                alert("Energy is empty! Please wait for it to refill.");
             }
         }
 
-        // Support both Mobile Touch and Desktop click natively
         tapCoinBox.addEventListener('touchstart', handleTapEvent, {passive: false});
         tapCoinBox.addEventListener('mousedown', (e) => {
             if (e.button === 0) handleTapEvent(e);
         });
 
-
-        /* ==========================================
-           VIEW NAVIGATION
-           ========================================== */
-        function switchView(viewId) {
-            if (!checkConnection()) return;
-            
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById(viewId).classList.add('active');
-            
-            // Activate Nav if applicable
-            const navId = 'nav-' + viewId.split('-')[1];
-            if(document.getElementById(navId)) {
-                document.getElementById(navId).classList.add('active');
-            }
-
-            // Specific View triggers
-            if(viewId === 'view-wallet') document.getElementById('wallet-balance-display').innerText = score.toLocaleString();
-            if(viewId === 'view-leaders') switchLBTab('earners');
-            if(viewId === 'view-boosts') document.getElementById('boostScoreDisplay').innerText = score.toLocaleString();
-        }
-
-        /* ==========================================
-           TGE PREMIUM COUNTDOWN TIMER
-           ========================================== */
-        function startTgeCountdown() {
-            const targetDate = new Date("December 11, 2030 00:00:00").getTime();
-            setInterval(() => {
-                let timeLeft = targetDate - new Date().getTime();
-                if (timeLeft > 0) {
-                    document.getElementById('tge-days').innerText = String(Math.floor(timeLeft / (1000 * 60 * 60 * 24))).padStart(2,'0');
-                    document.getElementById('tge-hours').innerText = String(Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2,'0');
-                    document.getElementById('tge-mins').innerText = String(Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60))).padStart(2,'0');
-                    document.getElementById('tge-secs').innerText = String(Math.floor((timeLeft % (1000 * 60)) / 1000)).padStart(2,'0');
-                }
-            }, 1000);
-        }
-        startTgeCountdown();
-
-
-        /* ==========================================
-           BOOSTS & UPGRADES
-           ========================================== */
+        // Boosts Logic
         function upgradeTap() {
-            if (score < upgradeCost) return alert("Not enough coins!");
-            score -= upgradeCost; 
-            tapPower += 1; 
-            upgradeCost = Math.floor(upgradeCost * 1.5);
-            localStorage.setItem(powerKey, tapPower); 
-            localStorage.setItem(costKey, upgradeCost); 
-            updateUI();
+            if (!checkConnection()) return;
+            if (score < upgradeCost) return alert("Not enough coins for Multitap!");
+            score -= upgradeCost; let spent = upgradeCost; tapPower += 1; upgradeCost = Math.floor(upgradeCost * 1.5);
+            localStorage.setItem(powerKey, tapPower); localStorage.setItem(costKey, upgradeCost);
+            addActivity('Multitap Upgrade', `-${spent}`, '#ef4444'); updateUI();
             if(window.saveToFirebase) window.saveToFirebase(score);
         }
 
         function upgradeEnergy() {
-            if (score < energyUpgradeCost) return alert("Not enough coins!");
-            score -= energyUpgradeCost; 
-            maxEnergy += 500; 
-            energy += 500; 
-            energyUpgradeCost = Math.floor(energyUpgradeCost * 1.5); 
-            localStorage.setItem(maxEnergyKey, maxEnergy); 
-            localStorage.setItem(energyCostKey, energyUpgradeCost); 
-            updateUI();
+            if (!checkConnection()) return;
+            if (score < energyUpgradeCost) return alert("Not enough coins for Battery Pack!");
+            score -= energyUpgradeCost; let spent = energyUpgradeCost; maxEnergy += 500; energy += 500; energyUpgradeCost = Math.floor(energyUpgradeCost * 1.5); 
+            localStorage.setItem(maxEnergyKey, maxEnergy); localStorage.setItem(energyCostKey, energyUpgradeCost);
+            addActivity('Battery Pack Upgrade', `-${spent}`, '#ef4444'); updateUI();
             if(window.saveToFirebase) window.saveToFirebase(score);
         }
 
         function upgradeAutoBot() {
-            if (score < botCost) return alert("Not enough coins!");
-            score -= botCost; 
-            botLevel += 1; 
-            botExpiry = Date.now() + (24 * 60 * 60 * 1000); // 24 hours
-            localStorage.setItem(botLevelKey, botLevel); 
-            localStorage.setItem(botTimeKey, botExpiry); 
-            updateUI();
+            if (!checkConnection()) return;
+            if (score < botCost) return alert(`Not enough coins! You need ${botCost.toLocaleString()} Coins.`);
+            score -= botCost; let spent = botCost; botLevel += 1; botExpiry = Date.now() + (24 * 60 * 60 * 1000);
+            localStorage.setItem(botLevelKey, botLevel); localStorage.setItem(botTimeKey, botExpiry);
+            addActivity('Auto-Bot Upgrade', `-${spent}`, '#ef4444'); updateUI();
             if(window.saveToFirebase) window.saveToFirebase(score);
             alert(`Auto-Bot upgraded to Level ${botLevel}!`);
         }
 
         function refillEnergyFree() {
+            if (!checkConnection()) return;
             let lastRefillDate = localStorage.getItem(refillKey) || 0;
             let today = new Date().toDateString();
-            if (lastRefillDate === today) return alert("You have already claimed Full Energy today!");
-            energy = maxEnergy; 
-            localStorage.setItem(refillKey, today); 
-            updateUI();
-            document.getElementById('energyRefillText').innerText = "0/1 available";
-            alert("⚡ Energy fully restored!");
+            if (lastRefillDate === today) {
+                alert("You have already used your free Full Energy today!");
+            } else {
+                energy = maxEnergy;
+                localStorage.setItem(refillKey, today);
+                updateUI();
+                alert("⚡ Energy fully restored!");
+            }
         }
 
         function claimDailyBonus() {
+            if (!checkConnection()) return;
             let lastClaimDate = localStorage.getItem(claimKey) || 0;
             let today = new Date().toDateString();
-            if (lastClaimDate === today) return alert("Already claimed today!");
-            score += 200; 
-            localStorage.setItem(claimKey, today); 
-            updateUI();
-            if(window.saveToFirebase) window.saveToFirebase(score);
-            alert("🎁 200 $XTAP added to your balance!");
+            if (lastClaimDate === today) {
+                alert("You have already claimed today's bonus! Come back tomorrow.");
+            } else {
+                score += 200;
+                localStorage.setItem(claimKey, today);
+                addActivity('Daily Bonus', `+200`, '#10b981');
+                updateUI();
+                if(window.saveToFirebase) window.saveToFirebase(score);
+                alert("🎁 200 $XTAP added to your balance!");
+            }
         }
 
-
-        /* ==========================================
-           NEW CRYPTO QUEST TASKS
-           ========================================== */
+        // Tasks Logic
         function handleTask(taskId, reward, link) {
+            if (!checkConnection()) return;
             const userTaskKey = taskId + '_' + userId;
             let status = localStorage.getItem(userTaskKey);
             let btn = document.getElementById(taskId + '_btn');
@@ -1074,98 +722,63 @@
 
             if (!status || status === 'unvisited') {
                 try {
-                    if (window.Telegram && window.Telegram.WebApp && link.includes('t.me')) { 
-                        window.Telegram.WebApp.openTelegramLink(link); 
-                    } else { 
-                        window.open(link, '_blank'); 
-                    }
+                    if (window.Telegram && window.Telegram.WebApp && link.includes('t.me') && window.Telegram.WebApp.openTelegramLink) {
+                        window.Telegram.WebApp.openTelegramLink(link);
+                    } else { window.open(link, '_blank'); }
                 } catch(e) { window.open(link, '_blank'); }
 
                 localStorage.setItem(userTaskKey, 'visited');
-                btn.innerText = 'Wait 5s...'; 
-                btn.disabled = true; 
-                btn.style.background = '#475569';
-                
+                btn.innerText = 'Wait 5s...'; btn.disabled = true; btn.style.background = '#64748b';
                 let timeLeft = 5;
                 let timer = setInterval(() => {
                     timeLeft--;
-                    if (timeLeft > 0) { 
-                        btn.innerText = `Wait ${timeLeft}s...`; 
-                    } else { 
-                        clearInterval(timer); 
-                        btn.innerText = 'Claim'; 
-                        btn.disabled = false; 
-                        btn.style.background = '#3b82f6'; 
-                    }
+                    if (timeLeft > 0) { btn.innerText = `Wait ${timeLeft}s...`; } 
+                    else { clearInterval(timer); btn.innerText = 'Claim'; btn.disabled = false; btn.style.background = 'var(--btn-blue)'; }
                 }, 1000);
             } else if (status === 'visited') {
-                score += reward; 
-                localStorage.setItem(userTaskKey, 'completed'); 
-                updateUI();
+                score += reward; localStorage.setItem(userTaskKey, 'completed');
+                addActivity('Task Completed', `+${reward}`, '#10b981'); updateUI();
                 if(window.saveToFirebase) window.saveToFirebase(score);
-                
-                btn.innerText = 'Claimed ✓'; 
-                btn.style.background = '#10b981'; 
-                btn.disabled = true;
+                btn.innerText = 'Done ✓'; btn.style.background = '#64748b'; btn.disabled = true;
                 alert(`Received ${reward} $XTAP bonus! 🎉`);
             }
         }
 
-
-        /* ==========================================
-           FIXED SOCIAL REFERRAL LOGIC
-           ========================================== */
+        // --- FIXED REFERRAL LOGIC ---
         function copyRefLink() {
             let copyText = document.getElementById("refLinkInput");
-            copyText.select(); 
-            document.execCommand("copy");
-            alert("Referral link copied!");
+            copyText.select(); document.execCommand("copy");
+            alert("Referral link copied! Share it with friends.");
         }
-
         function shareRef(platform) {
-            // URL এবং টেক্সট আলাদাভাবে এনকোড করতে হবে যাতে লিংকিং না ভাঙে
             let rawLink = document.getElementById("refLinkInput").value;
-            let encodedLink = encodeURIComponent(rawLink);
-            let rawText = "🔥 Play CryptoTap X & get 2000 $XTAP instantly! Real Web3 game on TON.";
-            let encodedText = encodeURIComponent(rawText);
+            let link = encodeURIComponent(rawLink);
+            let text = encodeURIComponent("🔥 Play CryptoTap X & get 2000 $XTAP instantly! Real Web3 game on TON.");
             
             if (platform === 'tg') {
-                if (tg && tg.openTelegramLink) { 
-                    tg.openTelegramLink(`https://t.me/share/url?url=${encodedLink}&text=${encodedText}`); 
-                } else { 
-                    window.open(`https://t.me/share/url?url=${encodedLink}&text=${encodedText}`, '_blank'); 
-                }
+                if (tg && tg.openTelegramLink) { tg.openTelegramLink(`https://t.me/share/url?url=${link}&text=${text}`); }
+                else { window.open(`https://t.me/share/url?url=${link}&text=${text}`, '_blank'); }
             }
-            if (platform === 'wa') {
-                window.open(`https://api.whatsapp.com/send?text=${encodedText}%0A${encodedLink}`, '_blank');
-            }
-            if (platform === 'fb') {
-                window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodedLink}`, '_blank');
-            }
-            if (platform === 'x') {
-                window.open(`https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedLink}`, '_blank');
-            }
+            if (platform === 'wa') window.open(`https://api.whatsapp.com/send?text=${text}%20${link}`, '_blank');
+            if (platform === 'fb') window.open(`https://www.facebook.com/sharer/sharer.php?u=${link}`, '_blank');
+            if (platform === 'x') window.open(`https://twitter.com/intent/tweet?text=${text}&url=${link}`, '_blank');
         }
 
-
-        /* ==========================================
-           REAL-TIME LEADERBOARD LOGIC
-           ========================================== */
+        // --- REAL-TIME LEADERBOARD LOGIC ---
         async function switchLBTab(tab) {
             document.getElementById('tabEarners').className = "lb-tab" + (tab === 'earners' ? " active" : "");
             document.getElementById('tabReferrers').className = "lb-tab" + (tab === 'referrers' ? " active" : "");
-            
             const list = document.getElementById('leaderboard-list');
-            list.innerHTML = `<div style="font-size: 13px; color: var(--text-muted); padding: 20px; text-align: center; font-weight: bold;">Fetching real-time global ranks...</div>`;
+            list.innerHTML = `<div style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 15px;">Syncing real-time global ranks...</div>`;
             
             try {
-                // রিয়েল-টাইম একুরেসি নিশ্চিত করতে লোকাল ডাটা আগে ফায়ারবেসে পুশ করা হচ্ছে
+                // Save current score to Firebase first so it's strictly real-time
                 if(window.saveToFirebase) {
                     await window.saveToFirebase(score);
                 }
 
                 const sortField = tab === 'earners' ? 'score' : 'total_referrals';
-                const labelField = tab === 'earners' ? 'XTAP' : 'Invites';
+                const labelField = tab === 'earners' ? '$XTAP' : 'Invites';
                 
                 const q = window.query(window.collection(window.db, "users"), window.orderBy(sortField, "desc"), window.limit(100));
                 const querySnapshot = await window.getDocs(q);
@@ -1174,52 +787,51 @@
                 querySnapshot.forEach((doc) => {
                     let data = doc.data();
                     let val = data[sortField] || 0;
-                    
-                    // মেডেল লজিক
                     let medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
                     
-                    // Current user highlighting
                     let isMe = doc.id === userId;
-                    let bgStyle = isMe ? 'background: rgba(250, 204, 21, 0.1); border: 1px solid rgba(250, 204, 21, 0.4); border-radius: 16px;' : '';
+                    let highlight = isMe ? 'background:rgba(250, 204, 21, 0.1); border-radius:10px;' : '';
 
                     rankHtml += `
-                        <div class="rank-item" style="${bgStyle}">
+                        <div class="rank-item" style="${highlight}">
                             <div style="display:flex; align-items:center;">
-                                <span style="display:inline-flex; justify-content:center; align-items:center; width:28px; height:28px; border-radius:50%; margin-right:12px; font-weight:900; font-size:12px; ${rank<=3 ? 'background:var(--accent);color:#000;' : 'background:rgba(255,255,255,0.1);color:#fff;'}">${medal}</span>
-                                <span style="font-weight:900; font-size:14px; color:${isMe ? 'var(--accent)' : '#f8fafc'};">${data.name || 'Gamer'} ${isMe ? '(You)' : ''}</span>
+                                <span class="serial-no" style="${rank<=3 ? 'background:var(--accent);color:#000;' : ''} width:25px; display:inline-block; text-align:center; border-radius:50%; margin-right:8px;">${medal}</span>
+                                <span style="font-weight:bold; color:${isMe ? 'var(--accent)' : '#f8fafc'};">${data.name || 'Gamer'} ${isMe ? '(You)' : ''}</span>
                             </div>
-                            <span style="color:#10b981; font-weight:900; font-size:14px;">${Number(val).toLocaleString()} <span style="color:var(--text-muted); font-size:10px;">${labelField}</span></span>
+                            <span style="color:#34d399; font-weight:bold;">${Number(val).toLocaleString()} ${labelField}</span>
                         </div>
                     `;
                     rank++;
                 });
-                list.innerHTML = rankHtml || `<div style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px; font-weight:bold;">No players found yet.</div>`;
+                list.innerHTML = rankHtml || `<div style="font-size: 12px; color: var(--text-muted); text-align:center;">No data available yet.</div>`;
             } catch (e) {
-                list.innerHTML = `<div style="font-size: 13px; color: #ef4444; font-weight:bold; text-align:center;">Database sync issue. Using local mode.</div>`;
+                list.innerHTML = `<div style="font-size: 12px; color: #ef4444; text-align:center;">Database disconnected.</div>`;
             }
         }
 
+        function openWithdrawModal() { document.getElementById('withdrawModal').style.display = 'flex'; }
+        function closeWithdrawModal() { document.getElementById('withdrawModal').style.display = 'none'; }
+        
+        function startTgeCountdown() {
+            const targetDate = new Date("December 11, 2030 00:00:00").getTime();
+            setInterval(() => {
+                let timeLeft = targetDate - new Date().getTime();
+                if (timeLeft > 0) {
+                    document.getElementById('days').innerText = String(Math.floor(timeLeft / (1000 * 60 * 60 * 24))).padStart(2,'0');
+                    document.getElementById('hours').innerText = String(Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2,'0');
+                    document.getElementById('minutes').innerText = String(Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60))).padStart(2,'0');
+                    document.getElementById('seconds').innerText = String(Math.floor((timeLeft % (1000 * 60)) / 1000)).padStart(2,'0');
+                }
+            }, 1000);
+        }
 
-        /* ==========================================
-           FIREBASE SYNC INTEGRATION
-           ========================================== */
         window.saveToFirebase = async function(currentCoins) {
             if (!navigator.onLine) return;
             try {
                 const userRef = window.doc(window.db, "users", userId);
-                await window.setDoc(userRef, { 
-                    name: userName, 
-                    score: currentCoins, 
-                    last_updated: new Date() 
-                }, { merge: true });
+                await window.setDoc(userRef, { name: userName, score: currentCoins, last_updated: new Date() }, { merge: true });
             } catch (error) {}
         };
-
-        // TON Connect Initialization
-        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://raw.githubusercontent.com/ton-connect/demo-dapp-with-react-ui/master/public/tonconnect-manifest.json',
-            buttonRootId: 'ton-connect'
-        });
     </script>
 </body>
 </html>
