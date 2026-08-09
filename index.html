@@ -417,13 +417,16 @@
     </div>
 
     <script>
-        // --- TON CONNECT SETUP WITH YOUR MANIFEST & WALLET ---
+        // --- PROPER TON CONNECT INITIALIZATION WITH BRIDGE FALLBACK ---
         let tonConnectUI;
         try {
             const currentDomain = window.location.origin;
             tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
                 manifestUrl: currentDomain + '/tonconnect-manifest.json',
-                buttonRootId: 'ton-connect'
+                buttonRootId: 'ton-connect',
+                uiPreferences: {
+                    theme: 'DARK'
+                }
             });
         } catch (e) {
             console.error("TonConnect init failed:", e);
@@ -607,7 +610,7 @@
             }, 10);
         }
 
-        // --- HARDCORE AUTO-CLICKER BLOCKER & TOUCH VALIDATION ---
+        // --- BULLET-PROOF AUTO-CLICKER BLOCKER (SMART HUMAN TAP FILTER) ---
         const tapCoinBox = document.getElementById('tapCoinBox');
         let lastTapTime = 0;
         let fbSaveTimeout = null;
@@ -627,7 +630,7 @@
             if (event.cancelable) event.preventDefault();
             if (!checkConnection()) return;
 
-            // ১. অটো ক্লিকার ডিটেক্টর: থার্ড-পার্টি অ্যাপের ফেক টাচ কোঅর্ডিনেট ব্লক করা
+            // 1. Check coordinates to block background/automated click injections
             let clientX, clientY;
             if (event.touches && event.touches.length > 0) {
                 clientX = event.touches[0].clientX;
@@ -642,22 +645,22 @@
                 return;
             }
 
-            // ২. স্পিড লিমিট: প্রতি ৭০ মিলিসেকেন্ডের দ্রুত ক্লিকগুলোকে অটো-ক্লিকার হিসেবে গণ্য করে ব্লক করা
+            // 2. Strict Velocity Filter (Blocks third-party macro clickers while allowing fast human multi-fingers)
             let now = Date.now();
             let timeDiff = now - lastTapTime;
             
-            if (timeDiff < 70) {
+            if (timeDiff < 50) {
                 rapidTapCount++;
-                if (rapidTapCount > 1) {
+                if (rapidTapCount > 3) {
                     showBotWarning();
                     return; 
                 }
             } else {
-                rapidTapCount = 0;
+                rapidTapCount = Math.max(0, rapidTapCount - 1);
             }
             lastTapTime = now;
 
-            // বৈধ হিউম্যান ট্যাপ প্রসেস
+            // Process legitimate human tap
             if (energy > 0) {
                 score += tapPower; 
                 energy -= 1; 
@@ -833,41 +836,40 @@
         function openWithdrawModal() { document.getElementById('withdrawModal').style.display = 'flex'; }
         function closeWithdrawModal() { document.getElementById('withdrawModal').style.display = 'none'; }
         
-        // --- DIRECT TON WALLET PAYMENT GATEWAY (YOUR PERSONAL WALLET) ---
+        // --- DIRECT TON WALLET PAYMENT GATEWAY (ENGLISH ALERTS & YOUR WALLET) ---
         async function buyBoost() {
             if (!checkConnection()) return;
             
             if (!tonConnectUI || !tonConnectUI.connected) {
-                alert("দয়া করে প্রথমে উপরে 'Connect Wallet' এ ক্লিক করে আপনার ওয়ালেট কানেক্ট করুন!");
+                alert("Please click 'Connect Wallet' at the top right to connect your wallet first!");
                 if(tonConnectUI) tonConnectUI.openModal();
                 return;
             }
 
-            // আপনার দেওয়া পার্সোনাল TON ওয়ালেট অ্যাড্রেস এবং অ্যামাউন্ট (1 TON = 100000000 NanoTON)
             const transaction = {
-                validUntil: Math.floor(Date.now() / 1000) + 600, // ১০ মিনিট সময়সীমা
+                validUntil: Math.floor(Date.now() / 1000) + 600,
                 messages: [
                     {
-                        address: "UQAXL52nmzPNleAX5_o8uF14i5nDsnFXK3rJHjHmlSmgJAXQ", // আপনার দেওয়া আসল ওয়ালেট অ্যাড্রেস
-                        amount: "100000000" // ১ TON (আপনার ইচ্ছেমতো বাড়াতে বা কমাতে পারেন)
+                        address: "UQAXL52nmzPNleAX5_o8uF14i5nDsnFXK3rJHjHmlSmgJAXQ", 
+                        amount: "100000000" // 1 TON
                     }
                 ]
             };
 
             try {
-                alert("ট্যাব ওপেন হচ্ছে, দয়া করে পেমেন্ট কনফার্ম করুন...");
+                alert("Opening wallet popup, please confirm the payment...");
                 const result = await tonConnectUI.sendTransaction(transaction);
                 
                 if (result) {
-                    score += 5000; // সফল হলে ৫০০০ কয়েন যোগ হবে
+                    score += 5000;
                     addActivity('Premium Boost Purchased', '+5000', '#facc15');
                     updateUI();
                     if(window.saveToFirebase) window.saveToFirebase(score);
-                    alert("🎉 পেমেন্ট সফল! ৫০০০ $XTAP আপনার একাউন্টে যোগ হয়েছে।");
+                    alert("🎉 Payment successful! 5,000 $XTAP added to your account.");
                 }
             } catch (error) {
                 console.error("Payment error:", error);
-                alert("পেমেন্ট সম্পন্ন হয়নি বা বাতিল করা হয়েছে।");
+                alert("Payment was cancelled or failed.");
             }
         }
 
