@@ -210,7 +210,7 @@
         /* Centered & Lowered Realistic 3D Big 'X' Gold Coin */
         .coin-wrapper {
             position: absolute;
-            top: 55%; /* Pushed lower as requested */
+            top: 55%; 
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 50;
@@ -253,16 +253,17 @@
             opacity: 1;
         }
 
-        /* Modals (General) */
+        /* HIGHEST Z-INDEX MODALS (Prevents Overlap) */
         .modal {
             display: none;
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(2, 6, 23, 0.9);
-            backdrop-filter: blur(12px);
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             justify-content: center;
             align-items: center;
-            z-index: 2000;
+            z-index: 99999; /* Forced to absolute top layer */
             padding: 15px;
         }
         .modal-content {
@@ -275,16 +276,36 @@
             max-height: 85vh;
             overflow-y: auto;
             text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.9);
         }
         .modal-content h3 { font-size: 18px; color: var(--accent); margin-bottom: 10px; font-weight: 800; }
+
+        /* Full Screen Wallet Modal */
+        .wallet-modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100vw; height: 100vh; 
+            background: #020617; /* Solid background to hide game screen */
+            z-index: 99999; 
+            padding: 20px; 
+            overflow-y: auto; 
+            text-align: left; 
+        }
+        .wallet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .wallet-card-big { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 22px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.08); text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+        .tge-banner { background: linear-gradient(135deg, #d97706, #ca8a04); padding: 12px; border-radius: 14px; text-align: center; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(202, 138, 4, 0.3); }
+        .countdown-box { display: flex; justify-content: center; gap: 6px; margin-top: 8px; }
+        .time-block { background: rgba(0, 0, 0, 0.4); padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; color: #fff; min-width: 40px; text-align: center; }
+        .history-item, .rank-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; align-items: center; }
 
         /* Leaderboard Specifics */
         .lb-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
         .lb-tab { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; width: 50%; }
         .lb-tab.active { background: var(--accent); color: #000; border-color: var(--accent); }
-        .rank-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; background: rgba(0,0,0,0.2); margin-bottom: 5px; border-radius: 8px; }
-        .serial-no { background: #334155; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; font-size: 10px; font-weight: bold; margin-right: 8px; }
+        
+        .task-item { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); padding: 10px 12px; border-radius: 12px; margin: 8px 0; display: flex; justify-content: space-between; align-items: center; font-size: 12px; text-align: left; font-weight: 500; }
+        .btn-task-claim { background: linear-gradient(135deg, #3b82f6, #1d4ed8); border: none; padding: 6px 12px; color: #fff; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 11px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); white-space: nowrap; }
 
         /* Social Share Referral */
         .social-btn { display: inline-flex; flex-direction: column; align-items: center; gap: 5px; background: none; border: none; color: white; font-size: 10px; cursor: pointer; margin: 0 5px; transition: transform 0.2s;}
@@ -297,7 +318,7 @@
         .copy-box button { background: var(--accent); color: #000; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; }
 
         /* Offline Warning Overlay */
-        #offlineOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #020617; z-index: 9999; justify-content: center; align-items: center; padding: 20px; text-align: center; }
+        #offlineOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #020617; z-index: 999999; justify-content: center; align-items: center; padding: 20px; text-align: center; }
     </style>
 </head>
 <body>
@@ -312,66 +333,69 @@
         </div>
     </div>
 
-    <!-- HUD Top (Score) -->
-    <div class="top-hud">
-        <div class="user-name" id="username">Welcome, Gamer!</div>
-        <div class="score-container">
-            <h2 id="score">0</h2>
-        </div>
-    </div>
-
-    <!-- HUD Left -->
-    <div class="hud-left">
-        <button class="btn-wallet-custom" onclick="openNativeWallet()">💼 $XTAP WALLET</button>
-        
-        <div class="robot-btn" onclick="upgradeAutoBot()">
-            🤖 Auto-Bot<br><span style="font-size: 9px; color: #fff;">Lvl <span id="botLevelText">0</span></span>
-        </div>
-
-        <a href="https://t.me/Cryptotapxofficial" target="_blank" class="hud-left-btn" style="color: #38bdf8;">
-            📢 Join Channel
-        </a>
-        <a href="http://t.me/XtapSupportBot" target="_blank" class="hud-left-btn" style="color: #34d399;">
-            💬 Support Bot
-        </a>
-    </div>
-
-    <!-- HUD Right -->
-    <div class="hud-right">
-        <button class="hud-right-btn" style="border-color: #3b82f6; color: #60a5fa;" onclick="openLeaderboard()">🏆 Leaders</button>
-        <button class="hud-right-btn" style="border-color: #10b981; color: #34d399;" onclick="openTasks()">📋 Tasks</button>
-        <button class="hud-right-btn" style="border-color: #f59e0b; color: #fbbf24;" onclick="claimDaily()">🎁 Daily</button>
-        <button class="hud-right-btn" style="border-color: #ef4444; color: #f87171;" onclick="openInviteModal()">👥 Invite</button>
-        <button class="hud-right-btn" style="border-color: #a855f7; color: #c084fc;" onclick="buyBoost()">⭐ Boost</button>
-    </div>
-
-    <!-- The Coin (Lowered) -->
-    <div class="coin-wrapper">
-        <div class="coin-box" id="tapCoinBox">X</div>
-    </div>
-
-    <!-- HUD Bottom (Upgrades & Energy) -->
-    <div class="hud-bottom">
-        <div class="upgrade-row">
-            <button class="hud-right-btn" style="width: 48%; background: rgba(255,255,255,0.05);" onclick="upgradeEnergy()">
-                🔋 Max Energy<br><span style="color:#38bdf8; font-size:9px;" id="energyUpgradeCost">1000</span>
-            </button>
-            <button class="hud-right-btn" style="width: 48%; background: rgba(255,255,255,0.05);" onclick="upgradeTap()">
-                🛠️ Tap Power<br><span style="color:var(--accent); font-size:9px;" id="upgradeCost">500</span>
-            </button>
-        </div>
-        
-        <div class="energy-wrapper">
-            <div class="energy-info">
-                <span>⚡ Energy</span>
-                <span id="energyText">1000/1000</span>
-            </div>
-            <div class="energy-box">
-                <div id="energyBar"></div>
+    <!-- MAIN UI WRAPPER (This is hidden when any modal opens to prevent overlapping) -->
+    <div id="mainUI">
+        <!-- HUD Top (Score) -->
+        <div class="top-hud">
+            <div class="user-name" id="username">Welcome, Gamer!</div>
+            <div class="score-container">
+                <h2 id="score">0</h2>
             </div>
         </div>
-        <div id="ton-connect" style="display: flex; justify-content: center; margin-top: 5px;"></div>
-    </div>
+
+        <!-- HUD Left -->
+        <div class="hud-left">
+            <button class="btn-wallet-custom" onclick="openNativeWallet()">💼 $XTAP WALLET</button>
+            
+            <div class="robot-btn" onclick="upgradeAutoBot()">
+                🤖 Auto-Bot<br><span style="font-size: 9px; color: #fff;">Lvl <span id="botLevelText">0</span></span>
+            </div>
+
+            <a href="https://t.me/Cryptotapxofficial" target="_blank" class="hud-left-btn" style="color: #38bdf8;">
+                📢 Join Channel
+            </a>
+            <a href="http://t.me/XtapSupportBot" target="_blank" class="hud-left-btn" style="color: #34d399;">
+                💬 Support Bot
+            </a>
+        </div>
+
+        <!-- HUD Right -->
+        <div class="hud-right">
+            <button class="hud-right-btn" style="border-color: #3b82f6; color: #60a5fa;" onclick="openLeaderboard()">🏆 Leaders</button>
+            <button class="hud-right-btn" style="border-color: #10b981; color: #34d399;" onclick="openTasks()">📋 Tasks</button>
+            <button class="hud-right-btn" style="border-color: #f59e0b; color: #fbbf24;" onclick="claimDaily()">🎁 Daily</button>
+            <button class="hud-right-btn" style="border-color: #ef4444; color: #f87171;" onclick="openInviteModal()">👥 Invite</button>
+            <button class="hud-right-btn" style="border-color: #a855f7; color: #c084fc;" onclick="buyBoost()">⭐ Boost</button>
+        </div>
+
+        <!-- The Coin (Lowered) -->
+        <div class="coin-wrapper">
+            <div class="coin-box" id="tapCoinBox">X</div>
+        </div>
+
+        <!-- HUD Bottom (Upgrades & Energy) -->
+        <div class="hud-bottom">
+            <div class="upgrade-row">
+                <button class="hud-right-btn" style="width: 48%; background: rgba(255,255,255,0.05);" onclick="upgradeEnergy()">
+                    🔋 Max Energy<br><span style="color:#38bdf8; font-size:9px;" id="energyUpgradeCost">1000</span>
+                </button>
+                <button class="hud-right-btn" style="width: 48%; background: rgba(255,255,255,0.05);" onclick="upgradeTap()">
+                    🛠️ Tap Power<br><span style="color:var(--accent); font-size:9px;" id="upgradeCost">500</span>
+                </button>
+            </div>
+            
+            <div class="energy-wrapper">
+                <div class="energy-info">
+                    <span>⚡ Energy</span>
+                    <span id="energyText">1000/1000</span>
+                </div>
+                <div class="energy-box">
+                    <div id="energyBar"></div>
+                </div>
+            </div>
+            <div id="ton-connect" style="display: flex; justify-content: center; margin-top: 5px;"></div>
+        </div>
+    </div> <!-- END MAIN UI WRAPPER -->
 
     <!-- Modals -->
 
@@ -416,7 +440,7 @@
         </div>
     </div>
 
-    <!-- Existing Wallet & Withdaw Modal HTML (Keeping original content) -->
+    <!-- Full Screen Wallet Modal -->
     <div id="nativeWallet" class="wallet-modal">
         <div class="wallet-header">
             <h2 style="color: var(--accent);">💼 $XTAP WALLET</h2>
@@ -442,7 +466,8 @@
         <button onclick="closeWallet()" style="margin-top: 20px; background: #334155; border:none; padding:10px; color:#fff; border-radius:10px; width:100%; font-weight:bold; cursor:pointer;">Back to Game</button>
     </div>
 
-    <div id="withdrawModal" class="modal" style="z-index: 2500;">
+    <!-- Withdaw Locked Modal -->
+    <div id="withdrawModal" class="modal" style="z-index: 999999;">
       <div class="modal-content">
         <h3 style="color: #f59e0b;">⚠️ Withdrawal Locked</h3>
         <p style="font-size: 13px; color: #cbd5e1; margin: 15px 0; line-height: 1.5;">
@@ -452,17 +477,23 @@
       </div>
     </div>
 
-    <!-- Task Modal (Hidden HTML implementation for brevity, same as previous logic) -->
+    <!-- Task Modal -->
     <div id="taskModal" class="modal">
         <div class="modal-content">
             <h3>📋 Task Center</h3>
             <div class="task-item"><span>📢 Join Telegram<br><b style="color:var(--accent);">+3500 Coins</b></span><button class="btn-task-claim" id="task_tg_btn" onclick="handleTask('task_tg', 3500, 'https://t.me/Cryptotapxofficial')">Start</button></div>
             <div class="task-item"><span>📺 Sub YouTube<br><b style="color:var(--accent);">+3500 Coins</b></span><button class="btn-task-claim" id="task_yt_btn" onclick="handleTask('task_yt', 3500, 'https://www.youtube.com/@Cryptotap-X')">Start</button></div>
+            <div class="task-item"><span>🐦 Follow X<br><b style="color:var(--accent);">+3500 Coins</b></span><button class="btn-task-claim" id="task_tw_btn" onclick="handleTask('task_tw', 3500, 'https://x.com/Cryptotapx')">Start</button></div>
             <button onclick="closeTasks()" style="margin-top: 12px; background: #ef4444; border:none; padding:8px 20px; color:#fff; border-radius:10px; cursor:pointer; font-weight:700; font-size:12px; width:100%;">Close</button>
         </div>
     </div>
 
     <script>
+        // Modal Visibility Helper Function to prevent Overlapping
+        function toggleMainUI(show) {
+            document.getElementById('mainUI').style.display = show ? 'block' : 'none';
+        }
+
         function checkConnection() {
             if (!navigator.onLine) {
                 document.getElementById('offlineOverlay').style.display = 'flex';
@@ -524,13 +555,6 @@
                 score += 2000;
                 addActivity('Welcome Referral Bonus', '+2000', '#10b981');
                 alert("🎉 You joined via a referral link! You received 2000 $XTAP Bonus!");
-                /* 
-                   Backend Logic Reminder: 
-                   Trigger a Cloud Function to find user doc of 'referrerId'.
-                   Increment their score by +1000.
-                   Increment their 'total_referrals' by +1.
-                   Record this user to give 20% commission from future earnings.
-                */
             }
         }
 
@@ -617,7 +641,6 @@
             }
         });
 
-        // Upgrades (Shortened for formatting)
         function upgradeTap() {
             if (!checkConnection() || score < upgradeCost) return alert("Not enough coins!");
             score -= upgradeCost; tapPower += 1; upgradeCost = Math.floor(upgradeCost * 1.5);
@@ -633,9 +656,10 @@
             score -= botCost; botLevel += 1; addActivity('Bot Upgrade', `-${botCost}`, '#ef4444'); updateUI();
         }
 
-        // Referral Modals & Sharing
-        function openInviteModal() { document.getElementById('inviteModal').style.display = 'flex'; }
-        function closeInviteModal() { document.getElementById('inviteModal').style.display = 'none'; }
+        // Modals opening logic (Hides Main UI to prevent overlap)
+        function openInviteModal() { toggleMainUI(false); document.getElementById('inviteModal').style.display = 'flex'; }
+        function closeInviteModal() { toggleMainUI(true); document.getElementById('inviteModal').style.display = 'none'; }
+        
         function copyRefLink() {
             let copyText = document.getElementById("refLinkInput");
             copyText.select(); document.execCommand("copy");
@@ -650,13 +674,13 @@
             if (platform === 'x') window.open(`https://twitter.com/intent/tweet?text=${text}&url=${link}`);
         }
 
-        // Leaderboard Tabs Logic
         async function openLeaderboard() {
             if (!checkConnection()) return;
+            toggleMainUI(false); 
             document.getElementById('leaderboardModal').style.display = 'flex';
             switchLBTab('earners');
         }
-        function closeLeaderboard() { document.getElementById('leaderboardModal').style.display = 'none'; }
+        function closeLeaderboard() { toggleMainUI(true); document.getElementById('leaderboardModal').style.display = 'none'; }
         
         async function switchLBTab(tab) {
             document.getElementById('tabEarners').className = "lb-tab" + (tab === 'earners' ? " active" : "");
@@ -665,7 +689,6 @@
             list.innerHTML = `<div style="font-size: 12px; color: #64748b; padding: 15px;">Loading...</div>`;
             
             try {
-                // Firebase call - For Earners: orderBy('score'), For Referrers: orderBy('total_referrals')
                 const sortField = tab === 'earners' ? 'score' : 'total_referrals';
                 const labelField = tab === 'earners' ? '$XTAP' : 'Invites';
                 
@@ -693,13 +716,19 @@
             }
         }
 
-        // Wallet & Other basic modals
-        function openNativeWallet() { document.getElementById('nativeWallet').style.display = 'block'; document.getElementById('wallet-balance').innerText = score.toLocaleString() + " $XTAP"; }
-        function closeWallet() { document.getElementById('nativeWallet').style.display = 'none'; }
+        // Wallet & Task Modals
+        function openNativeWallet() { 
+            if (!checkConnection()) return;
+            toggleMainUI(false); 
+            document.getElementById('nativeWallet').style.display = 'block'; 
+            document.getElementById('wallet-balance').innerText = score.toLocaleString() + " $XTAP"; 
+            loadUserActivity();
+        }
+        function closeWallet() { toggleMainUI(true); document.getElementById('nativeWallet').style.display = 'none'; }
         function openWithdrawModal() { document.getElementById('withdrawModal').style.display = 'flex'; }
         function closeWithdrawModal() { document.getElementById('withdrawModal').style.display = 'none'; }
-        function openTasks() { document.getElementById('taskModal').style.display = 'flex'; }
-        function closeTasks() { document.getElementById('taskModal').style.display = 'none'; }
+        function openTasks() { toggleMainUI(false); document.getElementById('taskModal').style.display = 'flex'; }
+        function closeTasks() { toggleMainUI(true); document.getElementById('taskModal').style.display = 'none'; }
         
         function claimDaily() { alert("Daily claimed!"); score+=200; updateUI(); }
         function buyBoost() { alert("Boost logic"); }
