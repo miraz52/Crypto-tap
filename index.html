@@ -32,482 +32,435 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CryptoTap X - Elite Web3</title>
+    <title>CryptoTap X - Pro Web3</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
-        :root { --accent: #facc15; --bg: #020617; }
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            -webkit-tap-highlight-color: transparent; 
-            -webkit-touch-callout: none;
-            user-select: none; 
+        :root { 
+            --accent: #facc15; 
+            --bg-dark: #070b19; 
+            --panel-bg: #111827; 
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --btn-blue: #3b82f6;
         }
-        
-        /* Premium Animated Background */
-        body {
-            background: linear-gradient(-45deg, #020617, #0f172a, #1e293b, #000000);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            color: #f8fafc;
+        * { 
+            box-sizing: border-box; margin: 0; padding: 0; 
+            -webkit-tap-highlight-color: transparent; user-select: none; 
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            text-align: center;
-            overflow: hidden;
+        }
+
+        /* App Container & Background */
+        body {
+            background: radial-gradient(circle at top, #1e3a8a 0%, var(--bg-dark) 60%);
+            color: var(--text-main);
+            overflow: hidden; /* Prevent scrolling on main body */
             height: 100vh;
             width: 100vw;
+        }
+
+        #app-container {
+            height: calc(100vh - 70px); /* Leave space for bottom nav */
+            overflow-y: auto;
             position: relative;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Top Centered Score HUD */
-        .top-hud {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 100;
-            width: 100%;
-        }
-        .user-name { font-size: 13px; font-weight: 700; color: #94a3b8; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
-        #score { 
-            font-size: 50px; 
-            font-weight: 900; 
-            background: linear-gradient(180deg, #ffffff 10%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 25px rgba(250, 204, 21, 0.4));
-            letter-spacing: 1px;
-        }
-
-        /* Side HUD Elements - LEFT */
-        .hud-left {
-            position: absolute;
-            top: 15vh;
-            left: 10px;
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            height: 70px;
+            background: #0f172a;
+            border-top: 1px solid rgba(255,255,255,0.05);
             display: flex;
-            flex-direction: column;
-            gap: 12px;
-            z-index: 100;
-        }
-
-        /* Premium Wallet Button */
-        .btn-wallet-custom {
-            background: linear-gradient(135deg, #10b981, #047857);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 10px 14px;
-            color: white;
-            border-radius: 12px;
-            font-weight: 900;
-            font-size: 11px;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
-            animation: pulseGlow 2s infinite;
-        }
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
-            50% { box-shadow: 0 0 25px rgba(16, 185, 129, 0.8); }
-            100% { box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
-        }
-
-        .hud-left-btn {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 8px 12px;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-            display: flex;
+            justify-content: space-around;
             align-items: center;
-            gap: 5px;
-            transition: all 0.2s;
+            z-index: 1000;
+            padding-bottom: env(safe-area-inset-bottom);
         }
-        .hud-left-btn:active { transform: scale(0.9); background: rgba(255, 255, 255, 0.1); }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--text-muted); font-size: 11px; font-weight: 600; cursor: pointer;
+            width: 25%; transition: 0.3s;
+        }
+        .nav-item.active { color: #fff; }
+        .nav-icon { font-size: 22px; margin-bottom: 4px; transition: transform 0.2s; }
+        .nav-item.active .nav-icon { transform: translateY(-3px); }
+
+        /* Views */
+        .view-section { display: none; padding: 15px; min-height: 100%; animation: fadeIn 0.3s; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- HOME VIEW SPECIFICS --- */
+        .home-header {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.05); padding: 10px 15px; border-radius: 16px;
+            backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05);
+        }
+        .user-profile { display: flex; align-items: center; gap: 10px; }
+        .avatar { width: 35px; height: 35px; background: #3b82f6; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 18px; font-weight: bold; }
         
-        /* Animated Robot */
-        .robot-btn {
-            background: linear-gradient(135deg, #059669, #047857);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
-            padding: 10px;
-            color: #facc15;
-            font-size: 10px;
-            font-weight: 800;
-            text-align: center;
-            animation: floatRobot 3s ease-in-out infinite;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(5, 150, 105, 0.5);
-        }
-        @keyframes floatRobot {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-            100% { transform: translateY(0px); }
-        }
+        .huge-balance { text-align: center; margin-top: 5vh; }
+        .huge-balance span { color: var(--accent); font-size: 35px; margin-right: 5px; }
+        .huge-balance h1 { font-size: 48px; font-weight: 900; filter: drop-shadow(0 0 20px rgba(250, 204, 21, 0.4)); display: inline-flex; align-items: center; gap: 8px;}
 
-        /* Side HUD Elements - RIGHT */
-        .hud-right {
-            position: absolute;
-            top: 15vh;
-            right: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            z-index: 100;
-        }
-        .hud-right-btn {
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 10px;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 75px;
-            transition: all 0.2s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        .hud-right-btn:active { transform: scale(0.9); }
-
-        /* Lower Center HUD */
-        .hud-bottom {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 350px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 100;
-        }
-
-        .upgrade-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 0 10px;
-        }
-
-        /* Energy Bar */
-        .energy-wrapper { width: 100%; padding: 0 15px; }
-        .energy-info { display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; margin-bottom: 4px; font-weight: 600; }
-        .energy-box { width: 100%; background: rgba(0, 0, 0, 0.5); border-radius: 20px; overflow: hidden; height: 10px; border: 1px solid rgba(255, 255, 255, 0.1); }
-        #energyBar { height: 100%; background: linear-gradient(90deg, #d97706, #facc15); width: 100%; border-radius: 20px; transition: width 0.15s ease-out; box-shadow: 0 0 10px rgba(250, 204, 21, 0.6); }
-
-        /* Centered & Lowered Realistic 3D Big 'X' Gold Coin */
-        .coin-wrapper {
-            position: absolute;
-            top: 55%; 
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 50;
-        }
+        /* Realistic Big 'X' Gold Coin */
+        .coin-wrapper { display: flex; justify-content: center; align-items: center; margin-top: 3vh; }
         .coin-box {
-            width: 180px;
-            height: 180px;
+            width: 250px; height: 250px;
             background: radial-gradient(circle at 35% 35%, #fffbeb 0%, #fde047 35%, #ca8a04 70%, #78350f 100%);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.05s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            outline: none;
-            border: 6px solid rgba(255, 255, 255, 0.85);
-            box-shadow: 0 0 50px rgba(234, 179, 8, 0.4), 
-                        inset 0 0 30px rgba(255, 255, 255, 0.9),
-                        0 15px 35px rgba(0, 0, 0, 0.7);
-            font-size: 90px;
-            font-weight: 900;
-            color: #ffffff;
-            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 215, 0, 0.8);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            cursor: pointer; transition: transform 0.05s;
+            border: 8px solid rgba(255, 255, 255, 0.85);
+            box-shadow: 0 0 60px rgba(234, 179, 8, 0.5), inset 0 0 35px rgba(255, 255, 255, 0.9), 0 20px 45px rgba(0, 0, 0, 0.8);
+            font-size: 130px; font-weight: 900; color: #ffffff;
+            text-shadow: 0 8px 20px rgba(0, 0, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.8);
         }
-        .coin-box:active { 
-            transform: scale(0.92); 
-            box-shadow: 0 0 30px rgba(234, 179, 8, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.6);
-        }
+        .coin-box:active { transform: scale(0.95); box-shadow: 0 0 40px rgba(234, 179, 8, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.7); }
 
-        /* Flying Coin Animation Feature */
-        .fly-coin {
-            position: fixed;
-            font-size: 26px;
-            font-weight: 900;
-            color: #facc15;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
-            pointer-events: none;
-            z-index: 9999;
-            transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1);
-            opacity: 1;
-        }
-
-        /* HIGHEST Z-INDEX MODALS (Prevents Overlap) */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(2, 6, 23, 0.95);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            justify-content: center;
-            align-items: center;
-            z-index: 99999; /* Forced to absolute top layer */
-            padding: 15px;
-        }
-        .modal-content {
-            background: linear-gradient(145deg, #1e293b, #0f172a);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 350px;
-            max-height: 85vh;
-            overflow-y: auto;
-            text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.9);
-        }
-        .modal-content h3 { font-size: 18px; color: var(--accent); margin-bottom: 10px; font-weight: 800; }
-
-        /* Full Screen Wallet Modal */
-        .wallet-modal { 
-            display: none; 
-            position: fixed; 
-            top: 0; left: 0; 
-            width: 100vw; height: 100vh; 
-            background: #020617; /* Solid background to hide game screen */
-            z-index: 99999; 
-            padding: 20px; 
-            overflow-y: auto; 
-            text-align: left; 
-        }
-        .wallet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .wallet-card-big { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 22px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.08); text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
-        .tge-banner { background: linear-gradient(135deg, #d97706, #ca8a04); padding: 12px; border-radius: 14px; text-align: center; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(202, 138, 4, 0.3); }
-        .countdown-box { display: flex; justify-content: center; gap: 6px; margin-top: 8px; }
-        .time-block { background: rgba(0, 0, 0, 0.4); padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; color: #fff; min-width: 40px; text-align: center; }
-        .history-item, .rank-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; align-items: center; }
-
-        /* Leaderboard Specifics */
-        .lb-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
-        .lb-tab { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; width: 50%; }
-        .lb-tab.active { background: var(--accent); color: #000; border-color: var(--accent); }
+        /* Floating Bottom Controls (Home) */
+        .home-controls { position: absolute; bottom: 20px; left: 15px; right: 15px; display: flex; justify-content: space-between; align-items: flex-end; }
         
-        .task-item { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); padding: 10px 12px; border-radius: 12px; margin: 8px 0; display: flex; justify-content: space-between; align-items: center; font-size: 12px; text-align: left; font-weight: 500; }
-        .btn-task-claim { background: linear-gradient(135deg, #3b82f6, #1d4ed8); border: none; padding: 6px 12px; color: #fff; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 11px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); white-space: nowrap; }
+        .energy-pill { background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 13px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .energy-bar-mini { width: 100px; height: 6px; background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden; margin-top: 4px; }
+        .energy-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #facc15); width: 100%; transition: 0.2s; }
 
-        /* Social Share Referral */
-        .social-btn { display: inline-flex; flex-direction: column; align-items: center; gap: 5px; background: none; border: none; color: white; font-size: 10px; cursor: pointer; margin: 0 5px; transition: transform 0.2s;}
-        .social-btn:active { transform: scale(0.9); }
-        .social-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; }
-        .bg-tg { background: #0088cc; } .bg-wa { background: #25D366; } .bg-fb { background: #1877F2; } .bg-x { background: #000000; border: 1px solid #333; }
+        .action-pills { display: flex; gap: 10px; }
+        .action-pill { background: linear-gradient(135deg, #3b82f6, #1d4ed8); padding: 10px 15px; border-radius: 20px; color: #fff; font-size: 13px; font-weight: bold; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 5px 15px rgba(59,130,246,0.4); display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        .action-pill:active { transform: scale(0.95); }
+
+        /* --- BOOSTS VIEW SPECIFICS --- */
+        .page-title { text-align: center; margin: 20px 0; font-size: 16px; color: var(--text-muted); }
+        .boost-balance { text-align: center; font-size: 40px; font-weight: 900; margin-bottom: 30px; display: flex; justify-content: center; align-items: center; gap: 10px; }
         
-        .copy-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); margin: 15px 0; display: flex; justify-content: space-between; align-items: center; }
-        .copy-box input { background: none; border: none; color: #94a3b8; font-size: 11px; width: 70%; outline: none; }
-        .copy-box button { background: var(--accent); color: #000; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; }
+        .section-title { font-size: 14px; font-weight: bold; margin-bottom: 10px; color: #fff; }
+        .free-boosts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .free-boost-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
+        .free-boost-card:active { transform: scale(0.96); background: rgba(255,255,255,0.1); }
+        
+        .upgrades-list { background: rgba(255,255,255,0.03); border-radius: 20px; padding: 10px; border: 1px solid rgba(255,255,255,0.05); }
+        .upgrade-item { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.2s; }
+        .upgrade-item:last-child { border-bottom: none; }
+        .upgrade-item:active { background: rgba(255,255,255,0.05); border-radius: 12px; }
+        .upgrade-icon { width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 24px; margin-right: 15px; }
+        .upgrade-info { flex-grow: 1; text-align: left; }
+        .upgrade-name { font-size: 15px; font-weight: bold; color: #fff; margin-bottom: 4px; }
+        .upgrade-cost { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+        .upgrade-arrow { color: var(--text-muted); font-size: 16px; }
 
+        /* --- GENERAL LISTS (Tasks, Leaders, Wallet) --- */
+        .generic-list { background: rgba(255,255,255,0.03); border-radius: 20px; padding: 10px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px;}
+        .task-item, .rank-item, .history-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .task-item:last-child, .rank-item:last-child, .history-item:last-child { border-bottom: none; }
+        .btn-claim { background: var(--btn-blue); border: none; padding: 8px 16px; color: #fff; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; }
+
+        /* Wallet specifics */
+        .wallet-card-big { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); margin-bottom: 20px;}
+        .tge-banner { background: linear-gradient(135deg, #d97706, #ca8a04); padding: 15px; border-radius: 16px; text-align: center; margin-bottom: 20px; }
+
+        /* Invite Specifics */
+        .copy-box { background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin: 20px 0; display: flex; justify-content: space-between; align-items: center; }
+        .copy-box input { background: none; border: none; color: var(--text-muted); font-size: 13px; width: 75%; outline: none; }
+        .copy-box button { background: var(--accent); color: #000; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; }
+        .social-grid { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
+        .social-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; color: #fff; font-size: 11px; font-weight: bold; text-decoration: none; cursor: pointer; }
+        .social-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+
+        /* Flying Coin Animation */
+        .fly-coin { position: fixed; font-size: 28px; font-weight: 900; color: var(--accent); text-shadow: 0 2px 5px rgba(0,0,0,0.8); pointer-events: none; z-index: 9999; transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1); opacity: 1; }
+        
         /* Offline Warning Overlay */
-        #offlineOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #020617; z-index: 999999; justify-content: center; align-items: center; padding: 20px; text-align: center; }
+        #offlineOverlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(2,6,23,0.95); z-index: 999999; justify-content: center; align-items: center; padding: 20px; text-align: center; backdrop-filter: blur(10px); }
+
+        /* Modals for simple popups */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(10px); justify-content: center; align-items: center; z-index: 5000; padding: 20px; }
+        .modal-content { background: #0f172a; border: 1px solid rgba(255,255,255,0.1); padding: 25px; border-radius: 20px; width: 100%; max-width: 320px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.8); }
+
     </style>
 </head>
 <body>
 
     <!-- Offline Alert -->
     <div id="offlineOverlay">
-        <div style="max-width: 320px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); padding: 25px; border-radius: 20px; backdrop-filter: blur(16px);">
-            <div style="font-size: 50px; margin-bottom: 10px;">📡</div>
-            <h3 style="color: #ef4444; font-size: 20px; margin-bottom: 10px; font-weight: 800;">No Internet Connection</h3>
-            <p style="color: #94a3b8; font-size: 13px; line-height: 1.5; margin-bottom: 20px;">CryptoTap X requires an active connection.</p>
-            <button onclick="checkConnection()" style="background: var(--accent); color: #000; border: none; padding: 12px 24px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%;">Retry Connection</button>
+        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 30px; border-radius: 20px;">
+            <div style="font-size: 50px; margin-bottom: 15px;">📡</div>
+            <h3 style="color: #ef4444; font-size: 22px; margin-bottom: 10px;">Connection Lost</h3>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">Please check your internet connection to continue playing.</p>
+            <button onclick="checkConnection()" style="background: var(--accent); color: #000; border: none; padding: 12px 24px; border-radius: 12px; font-weight: bold; width: 100%; cursor:pointer;">Retry</button>
         </div>
     </div>
 
-    <!-- MAIN UI WRAPPER (This is hidden when any modal opens to prevent overlapping) -->
-    <div id="mainUI">
-        <!-- HUD Top (Score) -->
-        <div class="top-hud">
-            <div class="user-name" id="username">Welcome, Gamer!</div>
-            <div class="score-container">
-                <h2 id="score">0</h2>
-            </div>
-        </div>
+    <!-- MAIN APP CONTAINER -->
+    <div id="app-container">
 
-        <!-- HUD Left -->
-        <div class="hud-left">
-            <button class="btn-wallet-custom" onclick="openNativeWallet()">💼 $XTAP WALLET</button>
-            
-            <div class="robot-btn" onclick="upgradeAutoBot()">
-                🤖 Auto-Bot<br><span style="font-size: 9px; color: #fff;">Lvl <span id="botLevelText">0</span></span>
-            </div>
-
-            <a href="https://t.me/Cryptotapxofficial" target="_blank" class="hud-left-btn" style="color: #38bdf8;">
-                📢 Join Channel
-            </a>
-            <a href="http://t.me/XtapSupportBot" target="_blank" class="hud-left-btn" style="color: #34d399;">
-                💬 Support Bot
-            </a>
-        </div>
-
-        <!-- HUD Right -->
-        <div class="hud-right">
-            <button class="hud-right-btn" style="border-color: #3b82f6; color: #60a5fa;" onclick="openLeaderboard()">🏆 Leaders</button>
-            <button class="hud-right-btn" style="border-color: #10b981; color: #34d399;" onclick="openTasks()">📋 Tasks</button>
-            <button class="hud-right-btn" style="border-color: #f59e0b; color: #fbbf24;" onclick="claimDaily()">🎁 Daily</button>
-            <button class="hud-right-btn" style="border-color: #ef4444; color: #f87171;" onclick="openInviteModal()">👥 Invite</button>
-            <button class="hud-right-btn" style="border-color: #a855f7; color: #c084fc;" onclick="buyBoost()">⭐ Boost</button>
-        </div>
-
-        <!-- The Coin (Lowered) -->
-        <div class="coin-wrapper">
-            <div class="coin-box" id="tapCoinBox">X</div>
-        </div>
-
-        <!-- HUD Bottom (Upgrades & Energy) -->
-        <div class="hud-bottom">
-            <div class="upgrade-row">
-                <button class="hud-right-btn" style="width: 48%; background: rgba(255,255,255,0.05);" onclick="upgradeEnergy()">
-                    🔋 Max Energy<br><span style="color:#38bdf8; font-size:9px;" id="energyUpgradeCost">1000</span>
-                </button>
-                <button class="hud-right-btn" style="width: 48%; background: rgba(255,255,255,0.05);" onclick="upgradeTap()">
-                    🛠️ Tap Power<br><span style="color:var(--accent); font-size:9px;" id="upgradeCost">500</span>
-                </button>
-            </div>
-            
-            <div class="energy-wrapper">
-                <div class="energy-info">
-                    <span>⚡ Energy</span>
-                    <span id="energyText">1000/1000</span>
+        <!-- 1. HOME VIEW -->
+        <div id="view-home" class="view-section active">
+            <div class="home-header">
+                <div class="user-profile">
+                    <div class="avatar" id="avatarInitial">U</div>
+                    <div>
+                        <div class="user-name" id="username">Gamer</div>
+                        <div style="font-size: 10px; color: #10b981;">● Online</div>
+                    </div>
                 </div>
-                <div class="energy-box">
-                    <div id="energyBar"></div>
+                <div id="ton-connect"></div>
+            </div>
+
+            <div class="huge-balance">
+                <h1 id="scoreDisplay">0</h1>
+            </div>
+
+            <div class="coin-wrapper">
+                <div class="coin-box" id="tapCoinBox">X</div>
+            </div>
+
+            <div class="home-controls">
+                <div class="energy-pill">
+                    ⚡ 
+                    <div>
+                        <div id="energyTextHome">1000/1000</div>
+                        <div class="energy-bar-mini"><div class="energy-fill" id="energyBarHome"></div></div>
+                    </div>
+                </div>
+                <div class="action-pills">
+                    <div class="action-pill" onclick="switchView('view-frens')" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2);">👥 Frens</div>
+                    <div class="action-pill" onclick="switchView('view-boosts')">🚀 Boosts</div>
                 </div>
             </div>
-            <div id="ton-connect" style="display: flex; justify-content: center; margin-top: 5px;"></div>
         </div>
-    </div> <!-- END MAIN UI WRAPPER -->
 
-    <!-- Modals -->
-
-    <!-- Invite/Referral Modal -->
-    <div id="inviteModal" class="modal">
-        <div class="modal-content">
-            <h3>👥 Invite & Earn Huge!</h3>
-            <p style="font-size: 11px; color: #94a3b8; margin-bottom: 15px; line-height: 1.4;">
-                You get <b style="color:var(--accent);">1000 $XTAP</b> + <b style="color:#10b981;">20% Lifetime Commission</b>.<br>Your friend gets <b style="color:var(--accent);">2000 $XTAP</b> bonus!
-            </p>
+        <!-- 2. EARN / TASKS VIEW -->
+        <div id="view-earn" class="view-section">
+            <h2 style="text-align: center; font-size: 24px; margin: 20px 0;">Earn More Coins</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 20px; font-size: 14px;">Complete tasks to receive huge rewards!</p>
             
-            <div class="copy-box">
-                <input type="text" id="refLinkInput" readonly value="https://t.me/miraztap_bot/cryptotap?startapp=ref_...">
-                <button onclick="copyRefLink()">Copy</button>
+            <div class="generic-list">
+                <div class="task-item">
+                    <div>
+                        <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">📢 Join Telegram Channel</div>
+                        <div style="color: var(--accent); font-size: 12px; font-weight: bold;">+3,500 $XTAP</div>
+                    </div>
+                    <button class="btn-claim" id="task_tg_btn" onclick="handleTask('task_tg', 3500, 'https://t.me/Cryptotapxofficial')">Start</button>
+                </div>
+                <div class="task-item">
+                    <div>
+                        <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">📺 Subscribe YouTube</div>
+                        <div style="color: var(--accent); font-size: 12px; font-weight: bold;">+3,500 $XTAP</div>
+                    </div>
+                    <button class="btn-claim" id="task_yt_btn" onclick="handleTask('task_yt', 3500, 'https://www.youtube.com/@Cryptotap-X')">Start</button>
+                </div>
+                <div class="task-item">
+                    <div>
+                        <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">🐦 Follow Twitter (X)</div>
+                        <div style="color: var(--accent); font-size: 12px; font-weight: bold;">+3,500 $XTAP</div>
+                    </div>
+                    <button class="btn-claim" id="task_tw_btn" onclick="handleTask('task_tw', 3500, 'https://x.com/Cryptotapx')">Start</button>
+                </div>
+                <div class="task-item">
+                    <div>
+                        <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">💬 Support Bot</div>
+                        <div style="color: var(--accent); font-size: 12px; font-weight: bold;">+3,500 $XTAP</div>
+                    </div>
+                    <button class="btn-claim" id="task_bot_btn" onclick="handleTask('task_bot', 3500, 'http://t.me/XtapSupportBot')">Start</button>
+                </div>
             </div>
-
-            <div style="display: flex; justify-content: center; margin: 20px 0;">
-                <button class="social-btn" onclick="shareRef('tg')"><div class="social-icon bg-tg">✈️</div>Telegram</button>
-                <button class="social-btn" onclick="shareRef('wa')"><div class="social-icon bg-wa">💬</div>WhatsApp</button>
-                <button class="social-btn" onclick="shareRef('fb')"><div class="social-icon bg-fb">📘</div>Facebook</button>
-                <button class="social-btn" onclick="shareRef('x')"><div class="social-icon bg-x">𝕏</div>Twitter</button>
-            </div>
-
-            <button onclick="closeInviteModal()" style="margin-top: 10px; background: #334155; border:none; padding:10px; color:#fff; border-radius:10px; width:100%; font-weight:bold; cursor:pointer;">Close</button>
         </div>
-    </div>
 
-    <!-- Leaderboard Modal (Tabs System) -->
-    <div id="leaderboardModal" class="modal">
-        <div class="modal-content">
-            <h3>🏆 Global Leaderboard</h3>
+        <!-- 3. BOOSTS & UPGRADES VIEW -->
+        <div id="view-boosts" class="view-section">
+            <div class="page-title">Your balance</div>
+            <div class="boost-balance"><span style="color:var(--accent);">X</span> <span id="boostScoreDisplay">0</span></div>
+
+            <div class="section-title">Free daily boosters</div>
+            <div class="free-boosts-grid">
+                <div class="free-boost-card" onclick="claimDailyBonus()">
+                    <div>
+                        <div style="font-weight: bold; font-size: 14px;">Daily Reward</div>
+                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">+200 Coins</div>
+                    </div>
+                    <div style="font-size: 24px;">🎁</div>
+                </div>
+                <div class="free-boost-card" onclick="refillEnergyFree()">
+                    <div>
+                        <div style="font-weight: bold; font-size: 14px;">Full Energy</div>
+                        <div style="font-size: 11px; color: #10b981; margin-top: 4px;" id="energyRefillText">1/1 available</div>
+                    </div>
+                    <div style="font-size: 24px;">⚡</div>
+                </div>
+            </div>
+
+            <div class="section-title">Boosters</div>
+            <div class="upgrades-list">
+                <div class="upgrade-item" onclick="upgradeTap()">
+                    <div class="upgrade-icon">👆</div>
+                    <div class="upgrade-info">
+                        <div class="upgrade-name">Multitap</div>
+                        <div class="upgrade-cost"><span style="color:var(--accent);">X</span> <span id="upgradeCostDisplay">500</span> • Lvl <span id="tapPowerLvl">1</span></div>
+                    </div>
+                    <div class="upgrade-arrow">❯</div>
+                </div>
+                
+                <div class="upgrade-item" onclick="upgradeEnergy()">
+                    <div class="upgrade-icon">🔋</div>
+                    <div class="upgrade-info">
+                        <div class="upgrade-name">Battery Pack</div>
+                        <div class="upgrade-cost"><span style="color:var(--accent);">X</span> <span id="energyUpgradeCostDisplay">1000</span> • Max <span id="maxEnergyDisplay">1000</span></div>
+                    </div>
+                    <div class="upgrade-arrow">❯</div>
+                </div>
+
+                <div class="upgrade-item" onclick="upgradeAutoBot()">
+                    <div class="upgrade-icon">🤖</div>
+                    <div class="upgrade-info">
+                        <div class="upgrade-name">Auto Bot</div>
+                        <div class="upgrade-cost"><span style="color:var(--accent);">X</span> <span id="botCostDisplay">5000</span> • Lvl <span id="botLvlDisplay">0</span></div>
+                    </div>
+                    <div class="upgrade-arrow">❯</div>
+                </div>
+            </div>
+            
+            <button onclick="buyBoost()" style="width:100%; margin-top:15px; background:linear-gradient(135deg, #a855f7, #9333ea); border:none; padding:15px; border-radius:16px; color:#fff; font-weight:bold; font-size:14px; cursor:pointer; box-shadow: 0 5px 15px rgba(168,85,247,0.4);">
+                ⭐ Buy Premium Booster (Stars)
+            </button>
+        </div>
+
+        <!-- 4. WALLET & TGE VIEW -->
+        <div id="view-wallet" class="view-section">
+            <h2 style="text-align: center; font-size: 24px; margin: 10px 0 20px;">💼 $XTAP WALLET</h2>
+            
+            <div class="tge-banner">
+                <h4 style="color: #020617; font-weight: 900; font-size: 16px; margin-bottom: 5px;">🚀 TGE & Airdrop Countdown</h4>
+                <p style="color: #0f172a; font-size: 12px; font-weight: 700;">Token Generation Event: Dec 11, 2030</p>
+                <div style="display: flex; justify-content: center; gap: 8px; margin-top: 10px;">
+                    <div><span id="days" style="background: rgba(0,0,0,0.5); padding: 6px 10px; border-radius: 8px; font-size: 14px; font-weight: bold; color: #fff;">00</span><br><span style="font-size:9px; color:#020617; font-weight:bold;">Days</span></div>
+                    <div><span id="hours" style="background: rgba(0,0,0,0.5); padding: 6px 10px; border-radius: 8px; font-size: 14px; font-weight: bold; color: #fff;">00</span><br><span style="font-size:9px; color:#020617; font-weight:bold;">Hrs</span></div>
+                    <div><span id="minutes" style="background: rgba(0,0,0,0.5); padding: 6px 10px; border-radius: 8px; font-size: 14px; font-weight: bold; color: #fff;">00</span><br><span style="font-size:9px; color:#020617; font-weight:bold;">Mins</span></div>
+                    <div><span id="seconds" style="background: rgba(0,0,0,0.5); padding: 6px 10px; border-radius: 8px; font-size: 14px; font-weight: bold; color: #fff;">00</span><br><span style="font-size:9px; color:#020617; font-weight:bold;">Secs</span></div>
+                </div>
+            </div>
+
+            <div class="wallet-card-big">
+                <div style="color: #94a3b8; font-size: 14px;">Total Balance</div>
+                <div id="wallet-balance-display" style="font-size: 40px; font-weight: 900; color: var(--accent); margin: 10px 0;">0</div>
+                <button onclick="openWithdrawModal()" style="background:#10b981; border:none; color:white; padding:12px 20px; border-radius:12px; font-weight:bold; cursor:pointer; width:100%; font-size: 14px; box-shadow: 0 5px 15px rgba(16,185,129,0.3);">💸 Request Withdrawal</button>
+            </div>
+
+            <h3 style="margin: 25px 0 10px; font-size: 16px;">Activity History</h3>
+            <div class="generic-list" id="transaction-list">
+                <!-- Activity injects here -->
+            </div>
+        </div>
+
+        <!-- 5. LEADERBOARD VIEW -->
+        <div id="view-leaders" class="view-section">
+            <h2 style="text-align: center; font-size: 24px; margin: 10px 0 20px;">🏆 Global Leaders</h2>
             
             <div class="lb-tabs">
                 <button class="lb-tab active" id="tabEarners" onclick="switchLBTab('earners')">Top Earners</button>
                 <button class="lb-tab" id="tabReferrers" onclick="switchLBTab('referrers')">Top Referrers</button>
             </div>
 
-            <div id="leaderboard-list" style="max-height: 250px; overflow-y: auto;">
-                <div style="font-size: 12px; color: #64748b; padding: 15px;">Loading data...</div>
+            <div class="generic-list" id="leaderboard-list">
+                <div style="font-size: 12px; color: #64748b; padding: 15px; text-align: center;">Loading data...</div>
             </div>
-            <button onclick="closeLeaderboard()" style="margin-top: 15px; background: #334155; border:none; padding:10px; color:#fff; border-radius:10px; width:100%; font-weight:bold; cursor:pointer;">Close</button>
         </div>
-    </div>
 
-    <!-- Full Screen Wallet Modal -->
-    <div id="nativeWallet" class="wallet-modal">
-        <div class="wallet-header">
-            <h2 style="color: var(--accent);">💼 $XTAP WALLET</h2>
-            <button onclick="closeWallet()" style="background:none; border:none; color:white; font-size:22px; cursor:pointer;">✕</button>
-        </div>
-        <div style="background: linear-gradient(135deg, #d97706, #ca8a04); padding: 12px; border-radius: 14px; text-align: center; margin-bottom: 15px;">
-            <h4 style="color: #020617; font-weight: 900; font-size: 14px;">🚀 TGE & Airdrop Countdown</h4>
-            <p style="color: #0f172a; font-size: 11px; font-weight: 700;">Event on Dec 11, 2030</p>
-            <div style="display: flex; justify-content: center; gap: 6px; margin-top: 8px;">
-                <div><span id="days" style="background: rgba(0,0,0,0.4); padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; color: #fff;">00</span><br><span style="font-size:8px; color:#020617; font-weight:bold;">Days</span></div>
-                <div><span id="hours" style="background: rgba(0,0,0,0.4); padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; color: #fff;">00</span><br><span style="font-size:8px; color:#020617; font-weight:bold;">Hrs</span></div>
-                <div><span id="minutes" style="background: rgba(0,0,0,0.4); padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; color: #fff;">00</span><br><span style="font-size:8px; color:#020617; font-weight:bold;">Mins</span></div>
-                <div><span id="seconds" style="background: rgba(0,0,0,0.4); padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; color: #fff;">00</span><br><span style="font-size:8px; color:#020617; font-weight:bold;">Secs</span></div>
+        <!-- 6. FRENS (INVITE) VIEW -->
+        <div id="view-frens" class="view-section">
+            <h2 style="text-align: center; font-size: 24px; margin: 10px 0 10px;">Invite Friends</h2>
+            <p style="text-align: center; color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Grow your squad and earn passive income!</p>
+            
+            <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); text-align: center;">
+                <div style="font-size: 40px; margin-bottom: 10px;">🎁</div>
+                <div style="font-size: 14px; font-weight: bold; margin-bottom: 8px;">Invite & Earn Huge!</div>
+                <p style="font-size: 12px; color: #94a3b8; line-height: 1.5;">
+                    You get <b style="color:var(--accent);">1000 $XTAP</b> + <b style="color:#10b981;">20% Lifetime Commission</b>.<br>Your friend gets <b style="color:var(--accent);">2000 $XTAP</b> bonus!
+                </p>
+            </div>
+            
+            <div class="copy-box">
+                <input type="text" id="refLinkInput" readonly value="https://t.me/miraztap_bot/cryptotap?startapp=ref_...">
+                <button onclick="copyRefLink()">Copy</button>
+            </div>
+
+            <div class="social-grid">
+                <div class="social-btn" onclick="shareRef('tg')"><div class="social-icon" style="background:#0088cc;">✈️</div>Telegram</div>
+                <div class="social-btn" onclick="shareRef('wa')"><div class="social-icon" style="background:#25D366;">💬</div>WhatsApp</div>
+                <div class="social-btn" onclick="shareRef('fb')"><div class="social-icon" style="background:#1877F2;">📘</div>Facebook</div>
+                <div class="social-btn" onclick="shareRef('x')"><div class="social-icon" style="background:#000000; border: 1px solid #333;">𝕏</div>X (Twitter)</div>
             </div>
         </div>
-        <div style="background: linear-gradient(135deg, #1e293b, #0f172a); padding: 22px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.08); text-align: center;">
-            <div style="color: #94a3b8; font-size: 13px;">Total Balance</div>
-            <div id="wallet-balance" style="font-size: 34px; font-weight: bold; color: var(--accent); margin: 8px 0;">0</div>
-            <button onclick="openWithdrawModal()" style="background:#10b981; border:none; color:white; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer; width:100%;">💸 Request Withdrawal</button>
+
+    </div> <!-- END MAIN APP CONTAINER -->
+
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" id="nav-home" onclick="switchView('view-home')">
+            <div class="nav-icon">🏠</div><span>Home</span>
         </div>
-        <h3 style="margin-top: 20px; margin-bottom: 8px; color: var(--accent);">Your Activity History</h3>
-        <div id="transaction-list"></div>
-        <button onclick="closeWallet()" style="margin-top: 20px; background: #334155; border:none; padding:10px; color:#fff; border-radius:10px; width:100%; font-weight:bold; cursor:pointer;">Back to Game</button>
-    </div>
+        <div class="nav-item" id="nav-earn" onclick="switchView('view-earn')">
+            <div class="nav-icon">💰</div><span>Earn</span>
+        </div>
+        <div class="nav-item" id="nav-wallet" onclick="switchView('view-wallet')">
+            <div class="nav-icon">💼</div><span>Wallet</span>
+        </div>
+        <div class="nav-item" id="nav-leaders" onclick="switchView('view-leaders')">
+            <div class="nav-icon">🏆</div><span>Leaders</span>
+        </div>
+    </nav>
 
     <!-- Withdaw Locked Modal -->
-    <div id="withdrawModal" class="modal" style="z-index: 999999;">
+    <div id="withdrawModal" class="modal">
       <div class="modal-content">
-        <h3 style="color: #f59e0b;">⚠️ Withdrawal Locked</h3>
+        <div style="font-size: 40px; margin-bottom: 10px;">🔒</div>
+        <h3 style="color: #f59e0b;">Withdrawal Locked</h3>
         <p style="font-size: 13px; color: #cbd5e1; margin: 15px 0; line-height: 1.5;">
-            Withdrawals are currently locked for ecosystem stability! You will be able to claim real $XTAP tokens directly to your TON wallet after the official TGE on <b>Dec 11, 2030</b>.
+            Withdrawals are locked for ecosystem stability! You will be able to claim real $XTAP tokens directly to your TON wallet after the official TGE on <b>Dec 11, 2030</b>.
         </p>
-        <button onclick="closeWithdrawModal()" style="background:var(--accent); color:#000; padding:10px; width:100%; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">Got it</button>
+        <button onclick="closeWithdrawModal()" style="background:var(--accent); color:#000; padding:12px; width:100%; border:none; border-radius:12px; font-weight:bold; cursor:pointer;">Got it</button>
       </div>
     </div>
 
-    <!-- Task Modal -->
-    <div id="taskModal" class="modal">
-        <div class="modal-content">
-            <h3>📋 Task Center</h3>
-            <div class="task-item"><span>📢 Join Telegram<br><b style="color:var(--accent);">+3500 Coins</b></span><button class="btn-task-claim" id="task_tg_btn" onclick="handleTask('task_tg', 3500, 'https://t.me/Cryptotapxofficial')">Start</button></div>
-            <div class="task-item"><span>📺 Sub YouTube<br><b style="color:var(--accent);">+3500 Coins</b></span><button class="btn-task-claim" id="task_yt_btn" onclick="handleTask('task_yt', 3500, 'https://www.youtube.com/@Cryptotap-X')">Start</button></div>
-            <div class="task-item"><span>🐦 Follow X<br><b style="color:var(--accent);">+3500 Coins</b></span><button class="btn-task-claim" id="task_tw_btn" onclick="handleTask('task_tw', 3500, 'https://x.com/Cryptotapx')">Start</button></div>
-            <button onclick="closeTasks()" style="margin-top: 12px; background: #ef4444; border:none; padding:8px 20px; color:#fff; border-radius:10px; cursor:pointer; font-weight:700; font-size:12px; width:100%;">Close</button>
-        </div>
-    </div>
-
     <script>
-        // Modal Visibility Helper Function to prevent Overlapping
-        function toggleMainUI(show) {
-            document.getElementById('mainUI').style.display = show ? 'block' : 'none';
+        // --- NAVIGATION LOGIC ---
+        function switchView(viewId) {
+            if (!checkConnection()) return;
+            // Hide all views
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            // Remove active from nav
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            // Show target view
+            document.getElementById(viewId).classList.add('active');
+            
+            // Highlight nav if it matches
+            const navId = 'nav-' + viewId.split('-')[1];
+            if(document.getElementById(navId)) document.getElementById(navId).classList.add('active');
+
+            // Trigger specific actions on view load
+            if(viewId === 'view-wallet') {
+                document.getElementById('wallet-balance-display').innerText = score.toLocaleString();
+                loadUserActivity();
+            }
+            if(viewId === 'view-leaders') {
+                switchLBTab('earners'); // Load default leaderboard
+            }
         }
 
+        // --- CORE GAME LOGIC & NETWORK ---
         function checkConnection() {
             if (!navigator.onLine) {
-                document.getElementById('offlineOverlay').style.display = 'flex';
-                return false;
+                document.getElementById('offlineOverlay').style.display = 'flex'; return false;
             } else {
-                document.getElementById('offlineOverlay').style.display = 'none';
-                return true;
+                document.getElementById('offlineOverlay').style.display = 'none'; return true;
             }
         }
         window.addEventListener('online', () => document.getElementById('offlineOverlay').style.display = 'none');
         window.addEventListener('offline', () => document.getElementById('offlineOverlay').style.display = 'flex');
 
         let tg = window.Telegram.WebApp;
-        let userId = "guest_user_" + Math.floor(Math.random()*1000);
+        let userId = "guest_" + Math.floor(Math.random()*1000);
         let userName = "Gamer";
         
         try {
@@ -515,38 +468,45 @@
             if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
                 userId = String(tg.initDataUnsafe.user.id);
                 userName = tg.initDataUnsafe.user.first_name || "Gamer";
-                document.getElementById('username').innerText = `Welcome, ${userName}! 🚀`;
+                document.getElementById('username').innerText = userName;
+                document.getElementById('avatarInitial').innerText = userName.charAt(0).toUpperCase();
             }
         } catch(e) {}
 
+        // State Keys
         const scoreKey = 'taps_' + userId;
         const powerKey = 'tapPower_' + userId;
         const costKey = 'upgradeCost_' + userId;
         const energyKey = 'energy_' + userId;
         const timeKey = 'lastTime_' + userId;
+        const claimKey = 'lastClaim_' + userId;
+        const refillKey = 'lastRefill_' + userId;
         const maxEnergyKey = 'maxEnergy_' + userId;
+        const energyCostKey = 'energyCost_' + userId;
         const botLevelKey = 'botLevel_' + userId;
         const botTimeKey = 'botExpiry_' + userId;
         const historyKey = 'history_' + userId;
 
+        // Load State
         let score = parseInt(localStorage.getItem(scoreKey)) || 0;
         let tapPower = parseInt(localStorage.getItem(powerKey)) || 1;
         let upgradeCost = parseInt(localStorage.getItem(costKey)) || 500;
-        
         let maxEnergy = parseInt(localStorage.getItem(maxEnergyKey)) || 1000;
         let energy = parseInt(localStorage.getItem(energyKey)) || maxEnergy;
-        
+        let energyUpgradeCost = parseInt(localStorage.getItem(energyCostKey)) || 1000;
         let botLevel = parseInt(localStorage.getItem(botLevelKey)) || 0;
         let botExpiry = parseInt(localStorage.getItem(botTimeKey)) || 0;
+        let botCost = 5000 * Math.pow(2, botLevel);
 
         let lastTime = parseInt(localStorage.getItem(timeKey)) || Date.now();
         let now = Date.now();
         let secondsPassed = Math.floor((now - lastTime) / 1000);
 
         checkConnection();
+        
         if (navigator.onLine) { energy = Math.min(maxEnergy, energy + (secondsPassed * 2)); }
 
-        // Referral System On Load logic
+        // Referral System On Load
         let tgStartParam = tg?.initDataUnsafe?.start_param || "";
         if (tgStartParam.startsWith("ref_") && !localStorage.getItem("referred_by_" + userId)) {
             let referrerId = tgStartParam.split("_")[1];
@@ -558,16 +518,51 @@
             }
         }
 
+        // Offline Bot Logic
+        if (botLevel > 0 && now < botExpiry) {
+            let offlineHours = (now - lastTime) / (1000 * 60 * 60);
+            let botEarnings = Math.floor(offlineHours * botLevel * 1000);
+            if (botEarnings > 0 && navigator.onLine) {
+                score += botEarnings;
+                addActivity(`Auto-Bot offline farming`, `+${botEarnings}`, '#10b981');
+                alert(`🤖 Level ${botLevel} Auto-Bot farmed ${botEarnings} $XTAP while you were away!`);
+            }
+        } else if (now >= botExpiry && botLevel > 0) {
+            botLevel = 0; localStorage.setItem(botLevelKey, '0');
+        }
+
         updateUI();
         startTgeCountdown();
 
+        // Main UI Update Loop
         function updateUI() {
-            document.getElementById('score').innerText = score;
-            document.getElementById('energyText').innerText = `${energy}/${maxEnergy}`;
-            document.getElementById('energyBar').style.width = (energy / maxEnergy) * 100 + '%';
-            document.getElementById('upgradeCost').innerText = `${upgradeCost}`;
+            let formattedScore = score.toLocaleString();
+            // Home
+            document.getElementById('scoreDisplay').innerText = formattedScore;
+            document.getElementById('energyTextHome').innerText = `${energy}/${maxEnergy}`;
+            document.getElementById('energyBarHome').style.width = (energy / maxEnergy) * 100 + '%';
             document.getElementById('botLevelText').innerText = botLevel;
+            
+            // Boosts
+            document.getElementById('boostScoreDisplay').innerText = formattedScore;
+            document.getElementById('upgradeCostDisplay').innerText = upgradeCost.toLocaleString();
+            document.getElementById('tapPowerLvl').innerText = tapPower;
+            document.getElementById('energyUpgradeCostDisplay').innerText = energyUpgradeCost.toLocaleString();
+            document.getElementById('maxEnergyDisplay').innerText = maxEnergy;
+            
+            botCost = 5000 * Math.pow(2, botLevel);
+            document.getElementById('botCostDisplay').innerText = botLevel === 0 ? "5,000" : botCost.toLocaleString();
+            document.getElementById('botLvlDisplay').innerText = botLevel;
+
+            // Invite
             document.getElementById('refLinkInput').value = `https://t.me/miraztap_bot/cryptotap?startapp=ref_${userId}`;
+
+            // Check Daily Free Energy status
+            let lastRefillDate = localStorage.getItem(refillKey) || 0;
+            if (lastRefillDate === new Date().toDateString()) {
+                document.getElementById('energyRefillText').innerText = "0/1 available";
+                document.getElementById('energyRefillText').style.color = "var(--text-muted)";
+            }
         }
 
         setInterval(() => {
@@ -581,6 +576,7 @@
             localStorage.setItem(scoreKey, score);
         }, 1000);
 
+        // Activity Log
         function addActivity(title, amount, color) {
             let history = JSON.parse(localStorage.getItem(historyKey)) || [];
             history.unshift({ title, amount, color, time: new Date().toLocaleTimeString() });
@@ -588,82 +584,159 @@
             localStorage.setItem(historyKey, JSON.stringify(history));
         }
 
-        // Flying Coin Animation
+        function loadUserActivity() {
+            const list = document.getElementById('transaction-list');
+            let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+            if (history.length === 0) {
+                list.innerHTML = `<div style="font-size:12px; color:var(--text-muted); text-align:center; padding:10px;">No recent activity.</div>`;
+                return;
+            }
+            list.innerHTML = history.map(item => `
+                <div class="history-item">
+                    <span>${item.title} <small style="color:var(--text-muted); font-size:10px; display:block;">${item.time}</small></span>
+                    <span style="color:${item.color}; font-weight:bold;">${item.amount}</span>
+                </div>
+            `).join('');
+        }
+
+        // Tap Mechanics & Animation
         function spawnFlyingCoin(x, y, amount) {
-            const scoreEl = document.getElementById('score');
+            const scoreEl = document.getElementById('scoreDisplay');
             const scoreRect = scoreEl.getBoundingClientRect();
             
             const coin = document.createElement('div');
             coin.innerText = '+' + amount;
             coin.className = 'fly-coin';
-            coin.style.left = x + 'px';
-            coin.style.top = y + 'px';
+            coin.style.left = x + 'px'; coin.style.top = y + 'px';
             document.body.appendChild(coin);
 
-            // Animate to score position
             setTimeout(() => {
                 const targetX = scoreRect.left + (scoreRect.width / 2) - 15;
                 const targetY = scoreRect.top + (scoreRect.height / 2) - 15;
-                
                 coin.style.transform = `translate(${targetX - x}px, ${targetY - y}px) scale(0.5)`;
                 coin.style.opacity = '0';
-                
                 setTimeout(() => coin.remove(), 700);
             }, 10);
         }
 
-        // Anti-Bot & Human Touch Verification Logic
         const tapCoinBox = document.getElementById('tapCoinBox');
         tapCoinBox.addEventListener('pointerdown', function(event) {
-            if (!event.isTrusted || (event.pointerType && event.pointerType !== 'touch' && event.pointerType !== 'mouse')) {
-                return; // Auto-clicker blocked
-            }
+            if (!event.isTrusted || (event.pointerType && event.pointerType !== 'touch' && event.pointerType !== 'mouse')) return; 
             if (!checkConnection()) return;
 
             if (energy > 0) {
-                score += tapPower;
-                energy -= 1;
-                updateUI();
+                score += tapPower; energy -= 1; updateUI();
                 spawnFlyingCoin(event.clientX, event.clientY, tapPower);
                 
                 try {
                     let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    let osc = audioCtx.createOscillator();
-                    let gain = audioCtx.createGain();
+                    let osc = audioCtx.createOscillator(); let gain = audioCtx.createGain();
                     osc.type = 'sine'; osc.frequency.setValueAtTime(450, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(900, audioCtx.currentTime + 0.08); gain.gain.setValueAtTime(0.2, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.08);
-                    
                     if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
                 } catch(e) {}
-                
                 if(window.saveToFirebase) window.saveToFirebase(score);
             } else {
                 alert("Energy is empty! Please wait for it to refill.");
             }
         });
 
+        // Boosts Logic
         function upgradeTap() {
-            if (!checkConnection() || score < upgradeCost) return alert("Not enough coins!");
-            score -= upgradeCost; tapPower += 1; upgradeCost = Math.floor(upgradeCost * 1.5);
-            addActivity('Tap Power Upgrade', `-${upgradeCost}`, '#ef4444'); updateUI();
-        }
-        function upgradeEnergy() {
-            if (!checkConnection() || score < 1000) return alert("Not enough coins!");
-            score -= 1000; maxEnergy += 500; energy += 500; addActivity('Energy Upgrade', `-1000`, '#ef4444'); updateUI();
-        }
-        function upgradeAutoBot() {
-            let botCost = 5000 * Math.pow(2, botLevel);
-            if (!checkConnection() || score < botCost) return alert("Not enough coins!");
-            score -= botCost; botLevel += 1; addActivity('Bot Upgrade', `-${botCost}`, '#ef4444'); updateUI();
+            if (!checkConnection()) return;
+            if (score < upgradeCost) return alert("Not enough coins for Multitap!");
+            score -= upgradeCost; let spent = upgradeCost; tapPower += 1; upgradeCost = Math.floor(upgradeCost * 1.5);
+            localStorage.setItem(powerKey, tapPower); localStorage.setItem(costKey, upgradeCost);
+            addActivity('Multitap Upgrade', `-${spent}`, '#ef4444'); updateUI();
+            if(window.saveToFirebase) window.saveToFirebase(score);
         }
 
-        // Modals opening logic (Hides Main UI to prevent overlap)
-        function openInviteModal() { toggleMainUI(false); document.getElementById('inviteModal').style.display = 'flex'; }
-        function closeInviteModal() { toggleMainUI(true); document.getElementById('inviteModal').style.display = 'none'; }
-        
+        function upgradeEnergy() {
+            if (!checkConnection()) return;
+            if (score < energyUpgradeCost) return alert("Not enough coins for Battery Pack!");
+            score -= energyUpgradeCost; let spent = energyUpgradeCost; maxEnergy += 500; energy += 500; energyUpgradeCost = Math.floor(energyUpgradeCost * 1.5); 
+            localStorage.setItem(maxEnergyKey, maxEnergy); localStorage.setItem(energyCostKey, energyUpgradeCost);
+            addActivity('Battery Pack Upgrade', `-${spent}`, '#ef4444'); updateUI();
+            if(window.saveToFirebase) window.saveToFirebase(score);
+        }
+
+        function upgradeAutoBot() {
+            if (!checkConnection()) return;
+            if (score < botCost) return alert(`Not enough coins! You need ${botCost.toLocaleString()} Coins.`);
+            score -= botCost; let spent = botCost; botLevel += 1; botExpiry = Date.now() + (24 * 60 * 60 * 1000);
+            localStorage.setItem(botLevelKey, botLevel); localStorage.setItem(botTimeKey, botExpiry);
+            addActivity('Auto-Bot Upgrade', `-${spent}`, '#ef4444'); updateUI();
+            if(window.saveToFirebase) window.saveToFirebase(score);
+            alert(`Auto-Bot upgraded to Level ${botLevel}!`);
+        }
+
+        function refillEnergyFree() {
+            if (!checkConnection()) return;
+            let lastRefillDate = localStorage.getItem(refillKey) || 0;
+            let today = new Date().toDateString();
+            if (lastRefillDate === today) {
+                alert("You have already used your free Full Energy today!");
+            } else {
+                energy = maxEnergy;
+                localStorage.setItem(refillKey, today);
+                updateUI();
+                alert("⚡ Energy fully restored!");
+            }
+        }
+
+        function claimDailyBonus() {
+            if (!checkConnection()) return;
+            let lastClaimDate = localStorage.getItem(claimKey) || 0;
+            let today = new Date().toDateString();
+            if (lastClaimDate === today) {
+                alert("You have already claimed today's bonus! Come back tomorrow.");
+            } else {
+                score += 200;
+                localStorage.setItem(claimKey, today);
+                addActivity('Daily Bonus', `+200`, '#10b981');
+                updateUI();
+                if(window.saveToFirebase) window.saveToFirebase(score);
+                alert("🎁 200 $XTAP added to your balance!");
+            }
+        }
+
+        // Tasks Logic
+        function handleTask(taskId, reward, link) {
+            if (!checkConnection()) return;
+            const userTaskKey = taskId + '_' + userId;
+            let status = localStorage.getItem(userTaskKey);
+            let btn = document.getElementById(taskId + '_btn');
+
+            if (status === 'completed') return alert("Task already completed!");
+
+            if (!status || status === 'unvisited') {
+                try {
+                    if (window.Telegram && window.Telegram.WebApp && link.includes('t.me') && window.Telegram.WebApp.openTelegramLink) {
+                        window.Telegram.WebApp.openTelegramLink(link);
+                    } else { window.open(link, '_blank'); }
+                } catch(e) { window.open(link, '_blank'); }
+
+                localStorage.setItem(userTaskKey, 'visited');
+                btn.innerText = 'Wait 5s...'; btn.disabled = true; btn.style.background = '#64748b';
+                let timeLeft = 5;
+                let timer = setInterval(() => {
+                    timeLeft--;
+                    if (timeLeft > 0) { btn.innerText = `Wait ${timeLeft}s...`; } 
+                    else { clearInterval(timer); btn.innerText = 'Claim'; btn.disabled = false; btn.style.background = 'var(--btn-blue)'; }
+                }, 1000);
+            } else if (status === 'visited') {
+                score += reward; localStorage.setItem(userTaskKey, 'completed');
+                addActivity('Task Completed', `+${reward}`, '#10b981'); updateUI();
+                if(window.saveToFirebase) window.saveToFirebase(score);
+                btn.innerText = 'Done ✓'; btn.style.background = '#64748b'; btn.disabled = true;
+                alert(`Received ${reward} $XTAP bonus! 🎉`);
+            }
+        }
+
+        // Referral/Invite Logic
         function copyRefLink() {
             let copyText = document.getElementById("refLinkInput");
             copyText.select(); document.execCommand("copy");
-            alert("Referral link copied!");
+            alert("Referral link copied! Share it with friends.");
         }
         function shareRef(platform) {
             let link = encodeURIComponent(document.getElementById("refLinkInput").value);
@@ -674,35 +747,29 @@
             if (platform === 'x') window.open(`https://twitter.com/intent/tweet?text=${text}&url=${link}`);
         }
 
-        async function openLeaderboard() {
-            if (!checkConnection()) return;
-            toggleMainUI(false); 
-            document.getElementById('leaderboardModal').style.display = 'flex';
-            switchLBTab('earners');
-        }
-        function closeLeaderboard() { toggleMainUI(true); document.getElementById('leaderboardModal').style.display = 'none'; }
-        
+        // Leaderboard Logic
         async function switchLBTab(tab) {
             document.getElementById('tabEarners').className = "lb-tab" + (tab === 'earners' ? " active" : "");
             document.getElementById('tabReferrers').className = "lb-tab" + (tab === 'referrers' ? " active" : "");
             const list = document.getElementById('leaderboard-list');
-            list.innerHTML = `<div style="font-size: 12px; color: #64748b; padding: 15px;">Loading...</div>`;
+            list.innerHTML = `<div style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 15px;">Syncing global ranks...</div>`;
             
             try {
                 const sortField = tab === 'earners' ? 'score' : 'total_referrals';
                 const labelField = tab === 'earners' ? '$XTAP' : 'Invites';
                 
-                const q = window.query(window.collection(window.db, "users"), window.orderBy(sortField, "desc"), window.limit(10));
+                const q = window.query(window.collection(window.db, "users"), window.orderBy(sortField, "desc"), window.limit(100));
                 const querySnapshot = await window.getDocs(q);
                 let rankHtml = "", rank = 1;
                 
                 querySnapshot.forEach((doc) => {
                     let data = doc.data();
                     let val = data[sortField] || 0;
+                    let medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
                     rankHtml += `
                         <div class="rank-item">
-                            <div>
-                                <span class="serial-no">${rank}</span>
+                            <div style="display:flex; align-items:center;">
+                                <span class="serial-no" style="${rank<=3 ? 'background:var(--accent);color:#000;' : ''}">${medal}</span>
                                 <span style="font-weight:bold; color:#f8fafc;">${data.name || 'Gamer'}</span>
                             </div>
                             <span style="color:#34d399; font-weight:bold;">${Number(val).toLocaleString()} ${labelField}</span>
@@ -710,28 +777,28 @@
                     `;
                     rank++;
                 });
-                list.innerHTML = rankHtml || `<div style="font-size: 12px; color: #64748b;">No data yet.</div>`;
+                list.innerHTML = rankHtml || `<div style="font-size: 12px; color: var(--text-muted); text-align:center;">No data available yet.</div>`;
             } catch (e) {
-                list.innerHTML = `<div style="font-size: 12px; color: #ef4444;">Could not load leaderboard! (Simulation Mode if DB strict)</div>`;
+                list.innerHTML = `<div style="font-size: 12px; color: #ef4444; text-align:center;">Database disconnected.</div>`;
             }
         }
 
-        // Wallet & Task Modals
-        function openNativeWallet() { 
-            if (!checkConnection()) return;
-            toggleMainUI(false); 
-            document.getElementById('nativeWallet').style.display = 'block'; 
-            document.getElementById('wallet-balance').innerText = score.toLocaleString() + " $XTAP"; 
-            loadUserActivity();
-        }
-        function closeWallet() { toggleMainUI(true); document.getElementById('nativeWallet').style.display = 'none'; }
+        // Modals & Timers
         function openWithdrawModal() { document.getElementById('withdrawModal').style.display = 'flex'; }
         function closeWithdrawModal() { document.getElementById('withdrawModal').style.display = 'none'; }
-        function openTasks() { toggleMainUI(false); document.getElementById('taskModal').style.display = 'flex'; }
-        function closeTasks() { toggleMainUI(true); document.getElementById('taskModal').style.display = 'none'; }
         
-        function claimDaily() { alert("Daily claimed!"); score+=200; updateUI(); }
-        function buyBoost() { alert("Boost logic"); }
+        async function buyBoost() {
+            if (!checkConnection()) return;
+            try {
+                let res = await fetch('/api/buy'); let data = await res.json();
+                if (data.invoiceLink) {
+                    tg.openInvoice(data.invoiceLink, (status) => {
+                        if (status === 'paid') { score += 5000; updateUI(); alert("Payment successful! 5000 $XTAP added."); } 
+                        else { alert("Payment cancelled."); }
+                    });
+                } else { alert("Failed to generate payment link."); }
+            } catch (e) { alert("Server connection failed!"); }
+        }
 
         function startTgeCountdown() {
             const targetDate = new Date("December 11, 2030 00:00:00").getTime();
@@ -746,10 +813,13 @@
             }, 1000);
         }
 
-        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://raw.githubusercontent.com/ton-connect/demo-dapp-with-react-ui/master/public/tonconnect-manifest.json',
-            buttonRootId: 'ton-connect'
-        });
+        window.saveToFirebase = async function(currentCoins) {
+            if (!navigator.onLine) return;
+            try {
+                const userRef = window.doc(window.db, "users", userId);
+                await window.setDoc(userRef, { name: userName, score: currentCoins, last_updated: new Date() }, { merge: true });
+            } catch (error) {}
+        };
     </script>
 </body>
 </html>
