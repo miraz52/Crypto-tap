@@ -34,7 +34,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CryptoTap X - Pro Web3</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         :root { 
             --accent: #facc15; 
@@ -96,8 +95,6 @@
         }
         .user-profile { display: flex; align-items: center; gap: 10px; }
         .avatar { width: 35px; height: 35px; background: #3b82f6; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 18px; font-weight: bold; }
-        
-        #ton-connect { display: flex; align-items: center; justify-content: center; }
         
         .huge-balance { text-align: center; margin-top: 5vh; }
         .huge-balance span { color: var(--accent); font-size: 35px; margin-right: 5px; }
@@ -197,7 +194,7 @@
                         <div style="font-size: 10px; color: #10b981;">● Online</div>
                     </div>
                 </div>
-                <div id="ton-connect"></div>
+                <button onclick="openDepositModal()" style="background:linear-gradient(135deg, #3b82f6, #1d4ed8); border:none; color:#fff; padding:8px 14px; border-radius:12px; font-weight:bold; font-size:12px; cursor:pointer;">💎 Deposit TON</button>
             </div>
 
             <div class="huge-balance">
@@ -314,8 +311,8 @@
                 </div>
             </div>
             
-            <button onclick="buyBoost()" style="width:100%; margin-top:15px; background:linear-gradient(135deg, #a855f7, #9333ea); border:none; padding:15px; border-radius:16px; color:#fff; font-weight:bold; font-size:14px; cursor:pointer; box-shadow: 0 5px 15px rgba(168,85,247,0.4);">
-                ⭐ Buy Premium Booster (TON Direct)
+            <button onclick="openDepositModal()" style="width:100%; margin-top:15px; background:linear-gradient(135deg, #a855f7, #9333ea); border:none; padding:15px; border-radius:16px; color:#fff; font-weight:bold; font-size:14px; cursor:pointer; box-shadow: 0 5px 15px rgba(168,85,247,0.4);">
+                ⭐ Buy Premium Booster (Manual TON)
             </button>
         </div>
 
@@ -404,6 +401,22 @@
         </div>
     </nav>
 
+    <!-- Deposit / Manual Payment Modal -->
+    <div id="depositModal" class="modal">
+      <div class="modal-content">
+        <div style="font-size: 40px; margin-bottom: 10px;">💎</div>
+        <h3 style="color: var(--accent); margin-bottom: 10px;">Deposit TON</h3>
+        <p style="font-size: 12px; color: #cbd5e1; margin-bottom: 15px; line-height: 1.4;">
+            Send TON to the address below to buy premium boost and packages directly.
+        </p>
+        <div style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; word-break: break-all; font-size: 11px; color: #34d399; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);" id="myTonAddress">
+            UQAXL52nmzPNleAX5_o8uF14i5nDsnFXK3rJHjHmlSmgJAXQ
+        </div>
+        <button onclick="copyTonAddress()" style="background:var(--accent); color:#000; padding:10px; width:100%; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px; margin-bottom: 10px;">Copy Address</button>
+        <button onclick="closeDepositModal()" style="background:rgba(255,255,255,0.1); color:#fff; padding:10px; width:100%; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px;">Close</button>
+      </div>
+    </div>
+
     <!-- Withdaw Locked Modal -->
     <div id="withdrawModal" class="modal">
       <div class="modal-content">
@@ -417,21 +430,6 @@
     </div>
 
     <script>
-        // --- PROPER TON CONNECT INITIALIZATION WITH BRIDGE FALLBACK ---
-        let tonConnectUI;
-        try {
-            const currentDomain = window.location.origin;
-            tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-                manifestUrl: currentDomain + '/tonconnect-manifest.json',
-                buttonRootId: 'ton-connect',
-                uiPreferences: {
-                    theme: 'DARK'
-                }
-            });
-        } catch (e) {
-            console.error("TonConnect init failed:", e);
-        }
-
         // --- NAVIGATION LOGIC ---
         function switchView(viewId) {
             if (!checkConnection()) return;
@@ -610,7 +608,7 @@
             }, 10);
         }
 
-        // --- BULLET-PROOF AUTO-CLICKER BLOCKER (SMART HUMAN TAP FILTER) ---
+        // --- BULLET-PROOF AUTO-CLICKER BLOCKER ---
         const tapCoinBox = document.getElementById('tapCoinBox');
         let lastTapTime = 0;
         let fbSaveTimeout = null;
@@ -630,7 +628,6 @@
             if (event.cancelable) event.preventDefault();
             if (!checkConnection()) return;
 
-            // 1. Check coordinates to block background/automated click injections
             let clientX, clientY;
             if (event.touches && event.touches.length > 0) {
                 clientX = event.touches[0].clientX;
@@ -645,7 +642,6 @@
                 return;
             }
 
-            // 2. Strict Velocity Filter (Blocks third-party macro clickers while allowing fast human multi-fingers)
             let now = Date.now();
             let timeDiff = now - lastTapTime;
             
@@ -660,7 +656,6 @@
             }
             lastTapTime = now;
 
-            // Process legitimate human tap
             if (energy > 0) {
                 score += tapPower; 
                 energy -= 1; 
@@ -676,7 +671,6 @@
                     if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
                 } catch(e) {}
                 
-                // Debounced Firebase Saving
                 clearTimeout(fbSaveTimeout);
                 fbSaveTimeout = setTimeout(() => {
                     if(window.saveToFirebase) window.saveToFirebase(score);
@@ -833,45 +827,15 @@
         }
 
         // Modals & Timers
+        function openDepositModal() { document.getElementById('depositModal').style.display = 'flex'; }
+        function closeDepositModal() { document.getElementById('depositModal').style.display = 'none'; }
+        function copyTonAddress() {
+            navigator.clipboard.writeText("UQAXL52nmzPNleAX5_o8uF14i5nDsnFXK3rJHjHmlSmgJAXQ");
+            alert("TON Address copied to clipboard!");
+        }
+
         function openWithdrawModal() { document.getElementById('withdrawModal').style.display = 'flex'; }
         function closeWithdrawModal() { document.getElementById('withdrawModal').style.display = 'none'; }
-        
-        // --- DIRECT TON WALLET PAYMENT GATEWAY (ENGLISH ALERTS & YOUR WALLET) ---
-        async function buyBoost() {
-            if (!checkConnection()) return;
-            
-            if (!tonConnectUI || !tonConnectUI.connected) {
-                alert("Please click 'Connect Wallet' at the top right to connect your wallet first!");
-                if(tonConnectUI) tonConnectUI.openModal();
-                return;
-            }
-
-            const transaction = {
-                validUntil: Math.floor(Date.now() / 1000) + 600,
-                messages: [
-                    {
-                        address: "UQAXL52nmzPNleAX5_o8uF14i5nDsnFXK3rJHjHmlSmgJAXQ", 
-                        amount: "100000000" // 1 TON
-                    }
-                ]
-            };
-
-            try {
-                alert("Opening wallet popup, please confirm the payment...");
-                const result = await tonConnectUI.sendTransaction(transaction);
-                
-                if (result) {
-                    score += 5000;
-                    addActivity('Premium Boost Purchased', '+5000', '#facc15');
-                    updateUI();
-                    if(window.saveToFirebase) window.saveToFirebase(score);
-                    alert("🎉 Payment successful! 5,000 $XTAP added to your account.");
-                }
-            } catch (error) {
-                console.error("Payment error:", error);
-                alert("Payment was cancelled or failed.");
-            }
-        }
 
         function startTgeCountdown() {
             const targetDate = new Date("December 11, 2030 00:00:00").getTime();
