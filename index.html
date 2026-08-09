@@ -32,7 +32,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CryptoTap X - Pro Web3</title>
+    <title>CryptoTap X - Pro Web3 & Swap</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root { 
@@ -78,7 +78,7 @@
         .nav-item {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             color: var(--text-muted); font-size: 11px; font-weight: 600; cursor: pointer;
-            width: 25%; transition: 0.3s;
+            width: 20%; transition: 0.3s;
         }
         .nav-item.active { color: #fff; }
         .nav-icon { font-size: 22px; margin-bottom: 4px; transition: transform 0.2s; }
@@ -168,7 +168,9 @@
         #offlineOverlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(2,6,23,0.95); z-index: 999999; justify-content: center; align-items: center; padding: 20px; text-align: center; backdrop-filter: blur(10px); }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(10px); justify-content: center; align-items: center; z-index: 5000; padding: 20px; }
-        .modal-content { background: #0f172a; border: 1px solid rgba(255,255,255,0.1); padding: 25px; border-radius: 20px; width: 100%; max-width: 320px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.8); }
+        .modal-content { background: #0f172a; border: 1px solid rgba(255,255,255,0.1); padding: 25px; border-radius: 20px; width: 100%; max-width: 340px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.8); }
+        
+        .swap-input-box { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 12px; margin-bottom: 12px; text-align: left; }
     </style>
 </head>
 <body>
@@ -194,7 +196,7 @@
                         <div style="font-size: 10px; color: #10b981;">● Online</div>
                     </div>
                 </div>
-                <button onclick="openDepositModal()" style="background:linear-gradient(135deg, #3b82f6, #1d4ed8); border:none; color:#fff; padding:8px 14px; border-radius:12px; font-weight:bold; font-size:12px; cursor:pointer;">💎 Deposit TON</button>
+                <button onclick="openSwapModal()" style="background:linear-gradient(135deg, #10b981, #059669); border:none; color:#fff; padding:8px 14px; border-radius:12px; font-weight:bold; font-size:12px; cursor:pointer;">⚡ Swap Tokens</button>
             </div>
 
             <div class="huge-balance">
@@ -311,8 +313,8 @@
                 </div>
             </div>
             
-            <button onclick="openDepositModal()" style="width:100%; margin-top:15px; background:linear-gradient(135deg, #a855f7, #9333ea); border:none; padding:15px; border-radius:16px; color:#fff; font-weight:bold; font-size:14px; cursor:pointer; box-shadow: 0 5px 15px rgba(168,85,247,0.4);">
-                ⭐ Buy Premium Booster (Manual TON)
+            <button onclick="openSwapModal()" style="width:100%; margin-top:15px; background:linear-gradient(135deg, #10b981, #059669); border:none; padding:15px; border-radius:16px; color:#fff; font-weight:bold; font-size:14px; cursor:pointer; box-shadow: 0 5px 15px rgba(16,185,129,0.4);">
+                ⚡ Real-Time Token Swap (Min 1M)
             </button>
         </div>
 
@@ -334,7 +336,8 @@
             <div class="wallet-card-big">
                 <div style="color: #94a3b8; font-size: 14px;">Total Balance</div>
                 <div id="wallet-balance-display" style="font-size: 40px; font-weight: 900; color: var(--accent); margin: 10px 0;">0</div>
-                <button onclick="openWithdrawModal()" style="background:#10b981; border:none; color:white; padding:12px 20px; border-radius:12px; font-weight:bold; cursor:pointer; width:100%; font-size: 14px; box-shadow: 0 5px 15px rgba(16,185,129,0.3);">💸 Request Withdrawal</button>
+                <button onclick="openSwapModal()" style="background:#10b981; border:none; color:white; padding:12px 20px; border-radius:12px; font-weight:bold; cursor:pointer; width:100%; font-size: 14px; box-shadow: 0 5px 15px rgba(16,185,129,0.3); margin-bottom:10px;">⚡ Swap $XTAP</button>
+                <button onclick="openWithdrawModal()" style="background:rgba(255,255,255,0.08); border:none; color:white; padding:10px 20px; border-radius:12px; font-weight:bold; cursor:pointer; width:100%; font-size: 13px;">💸 Request Withdrawal</button>
             </div>
 
             <h3 style="margin: 25px 0 10px; font-size: 16px;">Activity History</h3>
@@ -347,9 +350,9 @@
         <div id="view-leaders" class="view-section">
             <h2 style="text-align: center; font-size: 24px; margin: 10px 0 20px;">🏆 Global Leaders</h2>
             
-            <div class="lb-tabs">
-                <button class="lb-tab active" id="tabEarners" onclick="switchLBTab('earners')">Top Earners</button>
-                <button class="lb-tab" id="tabReferrers" onclick="switchLBTab('referrers')">Top Referrers</button>
+            <div class="lb-tabs" style="display:flex; justify-content:center; gap:10px; margin-bottom:15px;">
+                <button class="lb-tab active" id="tabEarners" onclick="switchLBTab('earners')" style="background:var(--btn-blue); color:#fff; border:none; padding:8px 16px; border-radius:10px; font-weight:bold;">Top Earners</button>
+                <button class="lb-tab" id="tabReferrers" onclick="switchLBTab('referrers')" style="background:rgba(255,255,255,0.1); color:#fff; border:none; padding:8px 16px; border-radius:10px; font-weight:bold;">Top Referrers</button>
             </div>
 
             <div class="generic-list" id="leaderboard-list">
@@ -401,23 +404,42 @@
         </div>
     </nav>
 
-    <!-- Deposit / Manual Payment Modal -->
-    <div id="depositModal" class="modal">
+    <!-- SWAP MODAL -->
+    <div id="swapModal" class="modal">
       <div class="modal-content">
-        <div style="font-size: 40px; margin-bottom: 10px;">💎</div>
-        <h3 style="color: var(--accent); margin-bottom: 10px;">Deposit TON</h3>
-        <p style="font-size: 12px; color: #cbd5e1; margin-bottom: 15px; line-height: 1.4;">
-            Send TON to the address below to buy premium boost and packages directly.
+        <div style="font-size: 35px; margin-bottom: 5px;">⚡</div>
+        <h3 style="color: var(--accent); margin-bottom: 5px;">Real-Time Token Swap</h3>
+        <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">
+            Rate: Per 1,000 $XTAP = <span id="liveRateDisplay" style="color:#10b981; font-weight:bold;">0.0005 TON</span> (Future Value)
         </p>
-        <div style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; word-break: break-all; font-size: 11px; color: #34d399; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);" id="myTonAddress">
-            UQAXL52nmzPNleAX5_o8uF14i5nDsnFXK3rJHjHmlSmgJAXQ
+
+        <div class="swap-input-box">
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">You Swap ($XTAP) (Min 1,000,000)</div>
+            <input type="number" id="swapAmountInput" placeholder="1000000" oninput="calculateSwap()" style="background:none; border:none; color:#fff; font-size: 18px; font-weight:bold; width:100%; outline:none;">
         </div>
-        <button onclick="copyTonAddress()" style="background:var(--accent); color:#000; padding:10px; width:100%; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px; margin-bottom: 10px;">Copy Address</button>
-        <button onclick="closeDepositModal()" style="background:rgba(255,255,255,0.1); color:#fff; padding:10px; width:100%; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px;">Close</button>
+
+        <div class="swap-input-box" style="margin-bottom:10px;">
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">You Will Get (TON Estimated)</div>
+            <div id="estimatedTonOutput" style="color: #10b981; font-size: 18px; font-weight: bold;">0.00 TON</div>
+        </div>
+
+        <div style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); padding:10px; border-radius:10px; font-size:11px; color:#fca5a5; margin-bottom:12px; text-align:left; line-height:1.4;">
+            <b>Swap Fee Requirement:</b> Send exactly <b>2 TON</b> swap fee to the address below, then submit your TxID.
+            <div style="color:#facc15; word-break:break-all; margin-top:4px; font-size:10px;" id="swapAdminAddr">UQAXL52nmzPNleAX5_o8uF14i5nDsnFXK3rJHjHmlSmgJAXQ</div>
+            <button onclick="copySwapAddress()" style="background:#334155; color:#fff; border:none; padding:3px 8px; border-radius:5px; font-size:10px; margin-top:5px; cursor:pointer;">Copy Address</button>
+        </div>
+
+        <div class="swap-input-box" style="margin-bottom:12px;">
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Transaction Hash (TxID / Proof of 2 TON)</div>
+            <input type="text" id="swapTxIdInput" placeholder="Enter 2 TON transfer TxID" style="background:none; border:none; color:#fff; font-size: 13px; width:100%; outline:none;">
+        </div>
+
+        <button onclick="submitSwapRequest()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; padding:12px; width:100%; border:none; border-radius:12px; font-weight:bold; cursor:pointer; font-size:14px; margin-bottom:8px;">Submit Swap Request</button>
+        <button onclick="closeSwapModal()" style="background:rgba(255,255,255,0.1); color:#fff; padding:10px; width:100%; border:none; border-radius:12px; font-weight:bold; cursor:pointer; font-size:12px;">Cancel</button>
       </div>
     </div>
 
-    <!-- Withdaw Locked Modal -->
+    <!-- Withdraw Locked Modal -->
     <div id="withdrawModal" class="modal">
       <div class="modal-content">
         <div style="font-size: 40px; margin-bottom: 10px;">🔒</div>
@@ -792,8 +814,8 @@
 
         // Leaderboard Logic
         async function switchLBTab(tab) {
-            document.getElementById('tabEarners').className = "lb-tab" + (tab === 'earners' ? " active" : "");
-            document.getElementById('tabReferrers').className = "lb-tab" + (tab === 'referrers' ? " active" : "");
+            document.getElementById('tabEarners').style.background = tab === 'earners' ? 'var(--btn-blue)' : 'rgba(255,255,255,0.1)';
+            document.getElementById('tabReferrers').style.background = tab === 'referrers' ? 'var(--btn-blue)' : 'rgba(255,255,255,0.1)';
             const list = document.getElementById('leaderboard-list');
             list.innerHTML = `<div style="font-size: 12px; color: var(--text-muted); text-align: center; padding: 15px;">Syncing global ranks...</div>`;
             
@@ -826,14 +848,54 @@
             }
         }
 
-        // Modals & Timers
-        function openDepositModal() { document.getElementById('depositModal').style.display = 'flex'; }
-        function closeDepositModal() { document.getElementById('depositModal').style.display = 'none'; }
-        function copyTonAddress() {
+        // --- SWAP LOGIC (FIXED 2 TON FEE & 1M MINIMUM) ---
+        const FUTURE_RATE_PER_1000 = 0.0005; // Future value rate representation
+
+        function openSwapModal() { 
+            document.getElementById('swapModal').style.display = 'flex'; 
+            document.getElementById('liveRateDisplay').innerText = FUTURE_RATE_PER_1000 + " TON";
+        }
+        function closeSwapModal() { document.getElementById('swapModal').style.display = 'none'; }
+        
+        function copySwapAddress() {
             navigator.clipboard.writeText("UQAXL52nmzPNleAX5_o8uF14i5nDsnFXK3rJHjHmlSmgJAXQ");
-            alert("TON Address copied to clipboard!");
+            alert("Admin fee address copied to clipboard!");
         }
 
+        function calculateSwap() {
+            let val = parseInt(document.getElementById('swapAmountInput').value) || 0;
+            let estimatedTon = (val / 1000) * FUTURE_RATE_PER_1000;
+            document.getElementById('estimatedTonOutput').innerText = estimatedTon.toFixed(4) + " TON";
+        }
+
+        function submitSwapRequest() {
+            let swapAmt = parseInt(document.getElementById('swapAmountInput').value) || 0;
+            let txId = document.getElementById('swapTxIdInput').value.trim();
+
+            if (swapAmt < 1000000) {
+                alert("Minimum swap amount is 1,000,000 $XTAP!");
+                return;
+            }
+            if (score < swapAmt) {
+                alert("You do not have enough $XTAP balance to swap!");
+                return;
+            }
+            if (!txId) {
+                alert("Please enter your 2 TON fee transaction hash (TxID)! First send 2 TON fee to the provided address.");
+                return;
+            }
+
+            // Deduct score after successful validation
+            score -= swapAmt;
+            updateUI();
+            if(window.saveToFirebase) window.saveToFirebase(score);
+            addActivity('Token Swap Request', `-${swapAmt} $XTAP`, '#ef4444');
+
+            closeSwapModal();
+            alert("Your swap is pending, please wait 48 hours.");
+        }
+
+        // Modals & Timers
         function openWithdrawModal() { document.getElementById('withdrawModal').style.display = 'flex'; }
         function closeWithdrawModal() { document.getElementById('withdrawModal').style.display = 'none'; }
 
