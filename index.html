@@ -50,22 +50,20 @@
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
 
-        /* App Container & Background */
         body {
             background: radial-gradient(circle at top, #1e3a8a 0%, var(--bg-dark) 60%);
             color: var(--text-main);
-            overflow: hidden; /* Prevent scrolling on main body */
+            overflow: hidden;
             height: 100vh;
             width: 100vw;
         }
 
         #app-container {
-            height: calc(100vh - 70px); /* Leave space for bottom nav */
+            height: calc(100vh - 70px);
             overflow-y: auto;
             position: relative;
         }
 
-        /* Bottom Navigation Bar */
         .bottom-nav {
             position: fixed;
             bottom: 0; left: 0; width: 100%;
@@ -87,12 +85,10 @@
         .nav-icon { font-size: 22px; margin-bottom: 4px; transition: transform 0.2s; }
         .nav-item.active .nav-icon { transform: translateY(-3px); }
 
-        /* Views */
         .view-section { display: none; padding: 15px; min-height: 100%; animation: fadeIn 0.3s; }
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- HOME VIEW SPECIFICS --- */
         .home-header {
             display: flex; justify-content: space-between; align-items: center;
             background: rgba(255,255,255,0.05); padding: 10px 15px; border-radius: 16px;
@@ -101,15 +97,13 @@
         .user-profile { display: flex; align-items: center; gap: 10px; }
         .avatar { width: 35px; height: 35px; background: #3b82f6; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 18px; font-weight: bold; }
         
-        /* Wallet Button override to fit well in header */
         #ton-connect { display: flex; align-items: center; justify-content: center; }
         
         .huge-balance { text-align: center; margin-top: 5vh; }
         .huge-balance span { color: var(--accent); font-size: 35px; margin-right: 5px; }
         .huge-balance h1 { font-size: 48px; font-weight: 900; filter: drop-shadow(0 0 20px rgba(250, 204, 21, 0.4)); display: inline-flex; align-items: center; gap: 8px;}
 
-        /* Realistic Big 'X' Gold Coin */
-        .coin-wrapper { display: flex; justify-content: center; align-items: center; margin-top: 3vh; }
+        .coin-wrapper { display: flex; justify-content: center; align-items: center; margin-top: 3vh; position: relative; }
         .coin-box {
             width: 250px; height: 250px;
             background: radial-gradient(circle at 35% 35%, #fffbeb 0%, #fde047 35%, #ca8a04 70%, #78350f 100%);
@@ -122,7 +116,14 @@
         }
         .coin-box:active { transform: scale(0.95); box-shadow: 0 0 40px rgba(234, 179, 8, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.7); }
 
-        /* Floating Bottom Controls (Home) */
+        /* Bot Alert Popup on Coin */
+        #botAlertText {
+            position: absolute; top: 38%; left: 50%; transform: translate(-50%, -50%);
+            color: #ef4444; font-size: 16px; font-weight: 900; background: rgba(0,0,0,0.85);
+            padding: 8px 16px; border-radius: 20px; border: 1px solid #ef4444;
+            display: none; pointer-events: none; z-index: 100; text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
         .home-controls { position: absolute; bottom: 20px; left: 15px; right: 15px; display: flex; justify-content: space-between; align-items: flex-end; }
         
         .energy-pill { background: rgba(0,0,0,0.6); padding: 8px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 13px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
@@ -133,7 +134,6 @@
         .action-pill { background: linear-gradient(135deg, #3b82f6, #1d4ed8); padding: 10px 15px; border-radius: 20px; color: #fff; font-size: 13px; font-weight: bold; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 5px 15px rgba(59,130,246,0.4); display: flex; align-items: center; gap: 6px; cursor: pointer; }
         .action-pill:active { transform: scale(0.95); }
 
-        /* --- BOOSTS VIEW SPECIFICS --- */
         .page-title { text-align: center; margin: 20px 0; font-size: 16px; color: var(--text-muted); }
         .boost-balance { text-align: center; font-size: 40px; font-weight: 900; margin-bottom: 30px; display: flex; justify-content: center; align-items: center; gap: 10px; }
         
@@ -152,17 +152,14 @@
         .upgrade-cost { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
         .upgrade-arrow { color: var(--text-muted); font-size: 16px; }
 
-        /* --- GENERAL LISTS (Tasks, Leaders, Wallet) --- */
         .generic-list { background: rgba(255,255,255,0.03); border-radius: 20px; padding: 10px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px;}
         .task-item, .rank-item, .history-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .task-item:last-child, .rank-item:last-child, .history-item:last-child { border-bottom: none; }
         .btn-claim { background: var(--btn-blue); border: none; padding: 8px 16px; color: #fff; border-radius: 10px; font-weight: bold; font-size: 12px; cursor: pointer; }
 
-        /* Wallet specifics */
         .wallet-card-big { background: linear-gradient(135deg, #1e293b, #0f172a); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); margin-bottom: 20px;}
         .tge-banner { background: linear-gradient(135deg, #d97706, #ca8a04); padding: 15px; border-radius: 16px; text-align: center; margin-bottom: 20px; }
 
-        /* Invite Specifics */
         .copy-box { background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin: 20px 0; display: flex; justify-content: space-between; align-items: center; }
         .copy-box input { background: none; border: none; color: var(--text-muted); font-size: 13px; width: 75%; outline: none; }
         .copy-box button { background: var(--accent); color: #000; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; }
@@ -170,16 +167,12 @@
         .social-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; color: #fff; font-size: 11px; font-weight: bold; text-decoration: none; cursor: pointer; }
         .social-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
-        /* Flying Coin Animation */
         .fly-coin { position: fixed; font-size: 28px; font-weight: 900; color: var(--accent); text-shadow: 0 2px 5px rgba(0,0,0,0.8); pointer-events: none; z-index: 9999; transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1); opacity: 1; }
         
-        /* Offline Warning Overlay */
         #offlineOverlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(2,6,23,0.95); z-index: 999999; justify-content: center; align-items: center; padding: 20px; text-align: center; backdrop-filter: blur(10px); }
 
-        /* Modals for simple popups */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(2, 6, 23, 0.85); backdrop-filter: blur(10px); justify-content: center; align-items: center; z-index: 5000; padding: 20px; }
         .modal-content { background: #0f172a; border: 1px solid rgba(255,255,255,0.1); padding: 25px; border-radius: 20px; width: 100%; max-width: 320px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.8); }
-
     </style>
 </head>
 <body>
@@ -199,7 +192,6 @@
 
         <!-- 1. HOME VIEW -->
         <div id="view-home" class="view-section active">
-            <!-- হেডার সেকশন: এখানে ডানপাশে ওয়ালেট বাটন বসবে -->
             <div class="home-header">
                 <div class="user-profile">
                     <div class="avatar" id="avatarInitial">U</div>
@@ -208,7 +200,7 @@
                         <div style="font-size: 10px; color: #10b981;">● Online</div>
                     </div>
                 </div>
-                <!-- রিয়েল ওয়ালেট বাটন কন্টেইনার -->
+                <!-- আপনার নিজস্ব ডোমেইনের ওয়ালেট বাটন কন্টেইনার -->
                 <div id="ton-connect"></div>
             </div>
 
@@ -217,6 +209,7 @@
             </div>
 
             <div class="coin-wrapper">
+                <div id="botAlertText">⚠️ No Bot Allowed!</div>
                 <div class="coin-box" id="tapCoinBox">X</div>
             </div>
 
@@ -428,11 +421,14 @@
     </div>
 
     <script>
-        // --- TON CONNECT INITIALIZATION ---
+        // --- PROPER TON CONNECT INITIALIZATION (YOUR DOMAIN MANIFEST) ---
         let tonConnectUI;
         try {
+            // এখানে আপনার নিজস্ব হোস্টে রাখা 'tonconnect-manifest.json' ফাইলের সঠিক লিংক বসাবেন। 
+            // উদাহরণস্বরূপ: window.location.origin + '/tonconnect-manifest.json' অথবা আপনার মেইন ডোমেইন।
+            const currentDomain = window.location.origin;
             tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-                manifestUrl: 'https://ton-connect.github.io/demo-dapp-with-react-ui/tonconnect-manifest.json', // Safe default test manifest
+                manifestUrl: currentDomain + '/tonconnect-manifest.json', 
                 buttonRootId: 'ton-connect'
             });
         } catch (e) {
@@ -442,25 +438,20 @@
         // --- NAVIGATION LOGIC ---
         function switchView(viewId) {
             if (!checkConnection()) return;
-            // Hide all views
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            // Remove active from nav
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             
-            // Show target view
             document.getElementById(viewId).classList.add('active');
             
-            // Highlight nav if it matches
             const navId = 'nav-' + viewId.split('-')[1];
             if(document.getElementById(navId)) document.getElementById(navId).classList.add('active');
 
-            // Trigger specific actions on view load
             if(viewId === 'view-wallet') {
                 document.getElementById('wallet-balance-display').innerText = score.toLocaleString();
                 loadUserActivity();
             }
             if(viewId === 'view-leaders') {
-                switchLBTab('earners'); // Load default leaderboard
+                switchLBTab('earners'); 
             }
         }
 
@@ -489,7 +480,6 @@
             }
         } catch(e) {}
 
-        // State Keys
         const scoreKey = 'taps_' + userId;
         const powerKey = 'tapPower_' + userId;
         const costKey = 'upgradeCost_' + userId;
@@ -503,7 +493,6 @@
         const botTimeKey = 'botExpiry_' + userId;
         const historyKey = 'history_' + userId;
 
-        // Load State
         let score = parseInt(localStorage.getItem(scoreKey)) || 0;
         let tapPower = parseInt(localStorage.getItem(powerKey)) || 1;
         let upgradeCost = parseInt(localStorage.getItem(costKey)) || 500;
@@ -519,10 +508,8 @@
         let secondsPassed = Math.floor((now - lastTime) / 1000);
 
         checkConnection();
-        
         if (navigator.onLine) { energy = Math.min(maxEnergy, energy + (secondsPassed * 2)); }
 
-        // Referral System On Load
         let tgStartParam = tg?.initDataUnsafe?.start_param || "";
         if (tgStartParam.startsWith("ref_") && !localStorage.getItem("referred_by_" + userId)) {
             let referrerId = tgStartParam.split("_")[1];
@@ -534,7 +521,6 @@
             }
         }
 
-        // Offline Bot Logic
         if (botLevel > 0 && now < botExpiry) {
             let offlineHours = (now - lastTime) / (1000 * 60 * 60);
             let botEarnings = Math.floor(offlineHours * botLevel * 1000);
@@ -550,16 +536,12 @@
         updateUI();
         startTgeCountdown();
 
-        // Main UI Update Loop
         function updateUI() {
             let formattedScore = score.toLocaleString();
-            // Home
             document.getElementById('scoreDisplay').innerText = formattedScore;
             document.getElementById('energyTextHome').innerText = `${energy}/${maxEnergy}`;
             document.getElementById('energyBarHome').style.width = (energy / maxEnergy) * 100 + '%';
-            document.getElementById('botLevelText')?.innerText && (document.getElementById('botLevelText').innerText = botLevel);
             
-            // Boosts
             document.getElementById('boostScoreDisplay').innerText = formattedScore;
             document.getElementById('upgradeCostDisplay').innerText = upgradeCost.toLocaleString();
             document.getElementById('tapPowerLvl').innerText = tapPower;
@@ -570,10 +552,8 @@
             document.getElementById('botCostDisplay').innerText = botLevel === 0 ? "5,000" : botCost.toLocaleString();
             document.getElementById('botLvlDisplay').innerText = botLevel;
 
-            // Invite
             document.getElementById('refLinkInput').value = `https://t.me/miraztap_bot/cryptotap?startapp=ref_${userId}`;
 
-            // Check Daily Free Energy status
             let lastRefillDate = localStorage.getItem(refillKey) || 0;
             if (lastRefillDate === new Date().toDateString()) {
                 document.getElementById('energyRefillText').innerText = "0/1 available";
@@ -592,7 +572,6 @@
             localStorage.setItem(scoreKey, score);
         }, 1000);
 
-        // Activity Log
         function addActivity(title, amount, color) {
             let history = JSON.parse(localStorage.getItem(historyKey)) || [];
             history.unshift({ title, amount, color, time: new Date().toLocaleTimeString() });
@@ -615,7 +594,6 @@
             `).join('');
         }
 
-        // --- NEW FIXED TAP LOGIC & ANTI-BOT SYSTEM ---
         function spawnFlyingCoin(x, y, amount) {
             const scoreEl = document.getElementById('scoreDisplay');
             const scoreRect = scoreEl.getBoundingClientRect();
@@ -635,47 +613,63 @@
             }, 10);
         }
 
+        // --- BULLET-PROOF ANTI-AUTO-CLICKER & TAP SYSTEM ---
         const tapCoinBox = document.getElementById('tapCoinBox');
         let lastTapTime = 0;
         let fbSaveTimeout = null;
+        let rapidTapCount = 0;
+        let botWarningTimer = null;
+
+        function showBotWarning() {
+            const warningEl = document.getElementById('botAlertText');
+            warningEl.style.display = 'block';
+            clearTimeout(botWarningTimer);
+            botWarningTimer = setTimeout(() => {
+                warningEl.style.display = 'none';
+            }, 1500);
+        }
 
         function handleTap(event) {
-            // Prevent default behavior to stop double-firing or zooming
             if (event.cancelable) event.preventDefault();
             if (!checkConnection()) return;
 
-            // Anti-Bot: Check if event is generated by real hardware
-            if (!event.isTrusted) {
-                if (tg && tg.showAlert) { tg.showAlert("⚠️ Auto-Clicker Detected! Please tap normally."); } 
-                else { alert("⚠️ Auto-Clicker Detected! Please tap normally."); }
+            // Strict Check 1: Must be a genuine pointer/touch coordinate (Auto-clickers often pass clientX/Y as 0 or undefined)
+            let clientX, clientY;
+            if (event.touches && event.touches.length > 0) {
+                clientX = event.touches[0].clientX;
+                clientY = event.touches[0].clientY;
+            } else {
+                clientX = event.clientX;
+                clientY = event.clientY;
+            }
+
+            if (!clientX || !clientY || (clientX === 0 && clientY === 0)) {
+                showBotWarning();
                 return;
             }
 
+            // Strict Check 2: Speed / Velocity Filter (Anything faster than 70ms per tap is artificially generated by a bot/macro)
             let now = Date.now();
-            // Anti-Bot: Prevent inhuman tapping speed (less than 35ms between taps)
-            if (now - lastTapTime < 35) {
-                return; // Silently block superhuman/bot speed
+            let timeDiff = now - lastTapTime;
+            
+            if (timeDiff < 70) {
+                rapidTapCount++;
+                if (rapidTapCount > 2) {
+                    showBotWarning();
+                    return; // Block the click entirely
+                }
+            } else {
+                rapidTapCount = 0;
             }
             lastTapTime = now;
 
+            // Process valid human tap
             if (energy > 0) {
                 score += tapPower; 
                 energy -= 1; 
                 updateUI();
                 
-                // Get tap coordinates for flying coin (support both touch and mouse)
-                let clientX, clientY;
-                if (event.touches && event.touches.length > 0) {
-                    clientX = event.touches[0].clientX;
-                    clientY = event.touches[0].clientY;
-                } else {
-                    clientX = event.clientX;
-                    clientY = event.clientY;
-                }
-
-                if(clientX && clientY) {
-                    spawnFlyingCoin(clientX, clientY, tapPower);
-                }
+                spawnFlyingCoin(clientX, clientY, tapPower);
                 
                 try {
                     let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -685,20 +679,15 @@
                     if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
                 } catch(e) {}
                 
-                // Debounce Firebase Save: Wait 1 second after tapping stops before saving to DB
-                // This prevents UI freezing and Firebase rate limits
+                // Debounced Firebase Saving
                 clearTimeout(fbSaveTimeout);
                 fbSaveTimeout = setTimeout(() => {
                     if(window.saveToFirebase) window.saveToFirebase(score);
                 }, 1000);
-
-            } else {
-                // Out of energy handling
-                // Let it just be silent or you could show a toast here
             }
         }
 
-        // Listen for both touch and mouse click
+        // Attach listeners securely
         tapCoinBox.addEventListener('touchstart', handleTap, {passive: false});
         tapCoinBox.addEventListener('mousedown', function(e) {
             if (e.button === 0) handleTap(e);
